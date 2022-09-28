@@ -6,7 +6,20 @@
       "command": "apt",
       "needsSudo": true,
       "args": ["install", "-y"],
-      "packages": ["git", "build-essential", "curl", "dirmngr", "gpg", "gawk"],
+      "packages": [
+        "git",
+        "build-essential",
+        "zlib1g-dev",
+        "openssl",
+        "readline",
+        "sqlite3",
+        "xz",
+        "tcl-tk",
+        "curl",
+        "dirmngr",
+        "gpg",
+        "gawk"
+      ],
       "preInstall": ["sudo apt update"],
       "postInstall": ["sudo apt autoremove -y"]
     },
