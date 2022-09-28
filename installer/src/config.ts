@@ -9,6 +9,7 @@ const configSchema = z.object({
       name: z.string(),
       command: z.string(),
       needsSudo: z.boolean().default(false),
+      isSingleCommand: z.boolean().default(true),
       args: z.array(z.string()),
       packages: z.array(z.string()),
       preInstall: z.array(z.string()).optional(),

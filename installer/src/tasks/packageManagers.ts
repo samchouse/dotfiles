@@ -21,32 +21,36 @@ export const runPackageManagerTasks = async () => {
 
     if ((pm.preInstall?.length ?? 0) > 0) {
       instructions.push(...(pm.preInstall ?? []));
-
-      // Logger.success(
-      //   `Ran pre install commands for ${pm.name}`,
-      // );
     }
 
-    instructions.push(
-      [
-        ...(pm.needsSudo
-          ? ["echo", config.sudoPassword, "|", "sudo", "-S"]
-          : []),
-        pm.command,
-        ...pm.args,
-        ...pm.packages,
-      ].join(" "),
-    );
-    // Logger.success(
-    //   `Installed ${pm.name} packages`,
-    // );
+    if (pm.isSingleCommand) {
+      instructions.push(
+        [
+          ...(pm.needsSudo
+            ? ["echo", config.sudoPassword, "|", "sudo", "-S"]
+            : []),
+          pm.command,
+          ...pm.args,
+          ...pm.packages,
+        ].join(" "),
+      );
+    } else {
+      pm.packages.forEach((pkg) => {
+        instructions.push(
+          [
+            ...(pm.needsSudo
+              ? ["echo", config.sudoPassword, "|", "sudo", "-S"]
+              : []),
+            pm.command,
+            ...pm.args,
+            pkg,
+          ].join(" "),
+        );
+      });
+    }
 
     if ((pm.postInstall?.length ?? 0) > 0) {
       instructions.push(...(pm.postInstall ?? []));
-
-      // Logger.success(
-      //   `Ran pre install commands for ${pm.name}`,
-      // );
     }
 
     await createInstructionsFile(instructions);

@@ -6,7 +6,7 @@
       "command": "apt",
       "needsSudo": true,
       "args": ["install", "-y"],
-      "packages": ["git", "curl", "dirmngr", "gpg", "gawk"],
+      "packages": ["git", "build-essential", "curl", "dirmngr", "gpg", "gawk"],
       "preInstall": ["sudo apt update"],
       "postInstall": ["sudo apt autoremove -y"]
     },
@@ -23,8 +23,14 @@
     {
       "name": "ASDF",
       "command": "asdf",
+      "isSingleCommand": false,
       "args": ["install"],
-      "packages": ["nodejs", "golang", "python"],
+      "packages": [
+        "nodejs latest",
+        "nodejs 16.17.1",
+        "golang latest",
+        "python latest"
+      ],
       "preInstall": [
         "git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2",
         ". $HOME/.asdf/asdf.sh",
@@ -60,5 +66,8 @@
         }
       ]
     }
-  ]
+  ],
+  "copier": {
+    "configs": "../configs"
+  }
 }

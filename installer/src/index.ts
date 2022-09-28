@@ -1,8 +1,10 @@
 import { Logger } from "./logger.ts";
-import { runGitRepositoriesTasks } from "./util/gitRepositories.ts";
-import { runPackageManagerTasks } from "./util/packageManagers.ts";
+import { runGitRepositoriesTasks } from "./tasks/gitRepositories.ts";
+import { runPackageManagerTasks } from "./tasks/packageManagers.ts";
 
 Logger.info("Loaded config");
 
 await runPackageManagerTasks();
-// runGitRepositoriesTasks();
+await runGitRepositoriesTasks();
+
+Logger.success("Finished installing");
