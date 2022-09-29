@@ -1,9 +1,10 @@
 import { exec } from "https://deno.land/x/denoexec@v1.1.5/mod.ts";
 
-import { config } from "../config.ts";
-import { Logger } from "../logger.ts";
+import { config, Logger, NullStream } from "../util/mod.ts";
 
 export const runGitRepositoriesTasks = async () => {
+  const nullStream = new NullStream();
+
   const gitProjects = config.gitProjects.reduce(
     (
       acc,
@@ -44,6 +45,7 @@ export const runGitRepositoriesTasks = async () => {
         project.name,
         ...(project.folder ? [project.folder] : []),
       ],
+      stdout: nullStream,
     });
     Logger.info(
       `Cloned ${project.name}${

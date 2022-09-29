@@ -3,22 +3,28 @@
   "packageManagers": [
     {
       "name": "APT",
-      "command": "apt",
-      "needsSudo": true,
+      "command": "sudo apt",
       "args": ["install", "-y"],
       "packages": [
         "git",
-        "build-essential",
-        "zlib1g-dev",
-        "openssl",
-        "readline",
-        "sqlite3",
-        "xz",
-        "tcl-tk",
         "curl",
-        "dirmngr",
         "gpg",
-        "gawk"
+        "gawk",
+        "dirmngr",
+        "build-essential",
+        "libssl-dev",
+        "zlib1g-dev",
+        "libbz2-dev",
+        "libreadline-dev",
+        "libsqlite3-dev",
+        "llvm",
+        "libncursesw5-dev",
+        "xz-utils",
+        "tk-dev",
+        "libxml2-dev",
+        "libxmlsec1-dev",
+        "libffi-dev",
+        "liblzma-dev"
       ],
       "preInstall": ["sudo apt update"],
       "postInstall": ["sudo apt autoremove -y"]
@@ -63,6 +69,23 @@
       "args": ["install", "--location=global"],
       "packages": ["yarn", "pnpm", "npm-check-updates"],
       "postInstall": ["corepack enable"]
+    },
+    {
+      "name": "Cargo",
+      "command": "cargo",
+      "args": ["install"],
+      "packages": ["cargo-edit", "just", "exa", "bat"],
+      "preInstall": [
+        "curl -sSf https://sh.rustup.rs | sh -s -- -y",
+        "source \"$HOME/.cargo/env\""
+      ]
+    },
+    {
+      "name": "Go",
+      "command": "go",
+      "args": ["install"],
+      "packages": ["github.com/cosmtrek/air@latest"],
+      "preInstall": [". $HOME/.asdf/asdf.sh"]
     }
   ],
   "gitProjects": [
@@ -81,6 +104,6 @@
     }
   ],
   "copier": {
-    "configs": "../configs"
+    "configs": "./configs"
   }
 }

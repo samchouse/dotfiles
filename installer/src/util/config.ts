@@ -1,6 +1,6 @@
 import * as z from "https://deno.land/x/zod@v3.19.1/mod.ts";
 
-import rawConfig from "../config.json" assert { type: "json" };
+import rawConfig from "../../config.json" assert { type: "json" };
 
 const configSchema = z.object({
   sudoPassword: z.string().optional(),
@@ -8,7 +8,6 @@ const configSchema = z.object({
     z.object({
       name: z.string(),
       command: z.string(),
-      needsSudo: z.boolean().default(false),
       isSingleCommand: z.boolean().default(true),
       args: z.array(z.string()),
       packages: z.array(z.string()),
@@ -29,7 +28,7 @@ const configSchema = z.object({
   ),
 }).refine((schema) =>
   schema.packageManagers.reduce(
-        (prev, curr) => curr.needsSudo ? prev + 1 : prev,
+        (prev, curr) => curr.command.includes("sudo") ? prev + 1 : prev,
         0,
       ) > 0 && !schema.sudoPassword
     ? false
