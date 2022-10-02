@@ -25,14 +25,6 @@ export const runGitRepositoriesTasks = async () => {
     [] as { cwd: string; name: string; folder?: string }[],
   );
 
-  await exec({
-    cmd: [
-      "gh",
-      "auth",
-      "login",
-    ],
-  });
-
   for await (const project of gitProjects) {
     const stat = await Deno.stat(project.cwd).catch(() => undefined);
     if (!stat) {
