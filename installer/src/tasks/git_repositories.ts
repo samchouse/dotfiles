@@ -12,7 +12,10 @@ export const runGitRepositoriesTasks = async () => {
     ) => [
       ...acc,
       ...project.repositories.map((repo) => {
-        const cwd = project.cwd.replace("~", Deno.env.get("HOME") ?? "");
+        const cwd = project.cwd.replace(
+          "~",
+          Deno.env.get("HOME") ?? "",
+        );
 
         return typeof repo === "string"
           ? ({ cwd, name: repo })
@@ -46,10 +49,15 @@ export const runGitRepositoriesTasks = async () => {
         ...(project.folder ? [project.folder] : []),
       ],
       stdout: nullStream,
+      stderr: nullStream,
     });
     Logger.info(
       `Cloned ${project.name}${
-        project.folder ? ` into ${project.folder}` : ""
+        project.folder
+          ? ` into ${
+            project.cwd.replace(Deno.env.get("HOME") ?? "", "~")
+          }/${project.folder}`
+          : ""
       }`,
     );
   }
