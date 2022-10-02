@@ -68,6 +68,7 @@
       "command": "npm",
       "args": ["install", "--location=global"],
       "packages": ["yarn", "pnpm", "npm-check-updates"],
+      "preInstall": [". $HOME/.asdf/asdf.sh"],
       "postInstall": ["corepack enable"]
     },
     {
@@ -104,6 +105,6 @@
     }
   ],
   "copier": {
-    "configs": "./configs"
+    "configDir": "./configs"
   }
 }

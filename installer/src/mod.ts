@@ -1,8 +1,8 @@
 import { Logger } from "./util/mod.ts";
 import {
+  runCopierTasks,
   runGitRepositoriesTasks,
   runPackageManagerTasks,
-  runCopierTasks,
 } from "./tasks/mod.ts";
 
 Logger.info("Loaded config");

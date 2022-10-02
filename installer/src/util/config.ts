@@ -2,7 +2,7 @@ import * as z from "https://deno.land/x/zod@v3.19.1/mod.ts";
 
 import rawConfig from "../../config.json" assert { type: "json" };
 
-const configSchema = z.object({
+export const configSchema = z.object({
   sudoPassword: z.string().optional(),
   packageManagers: z.array(
     z.object({
