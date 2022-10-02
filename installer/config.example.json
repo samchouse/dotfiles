@@ -37,7 +37,8 @@
       "preInstall": [
         "bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
         "eval \"$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\""
-      ]
+      ],
+      "postInstall": ["gh auth login"]
     },
     {
       "name": "ASDF",
@@ -68,6 +69,7 @@
       "command": "npm",
       "args": ["install", "--location=global"],
       "packages": ["yarn", "pnpm", "npm-check-updates"],
+      "preInstall": [". $HOME/.asdf/asdf.sh"],
       "postInstall": ["corepack enable"]
     },
     {
@@ -104,6 +106,6 @@
     }
   ],
   "copier": {
-    "configs": "./configs"
+    "configDir": "./configs"
   }
 }
