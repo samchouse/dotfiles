@@ -26,6 +26,9 @@ const configSchema = z.object({
       ),
     }),
   ),
+  copier: z.object({
+    configDir: z.string(),
+  }),
 }).refine((schema) =>
   schema.packageManagers.reduce(
         (prev, curr) => curr.command.includes("sudo") ? prev + 1 : prev,
