@@ -1,4 +1,4 @@
-import { cyan, green } from "https://deno.land/std@0.157.0/fmt/colors.ts";
+import { cyan, green } from "https://deno.land/std@0.158.0/fmt/colors.ts";
 
 export class Logger {
   public static info(message: string) {
