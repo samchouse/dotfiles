@@ -24,10 +24,16 @@ export const configSchema = z.object({
       ),
     }),
   ),
+  customCommands: z.array(
+    z.object({
+      name: z.string(),
+      commands: z.array(z.string()),
+    }),
+  ),
   copier: z.object({
     configDir: z.string(),
   }),
-}).refine((schema) =>
+}).strict().refine((schema) =>
   schema.packageManagers.reduce(
         (prev, curr) => curr.command.includes("sudo") ? prev + 1 : prev,
         0,

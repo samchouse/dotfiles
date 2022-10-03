@@ -24,7 +24,8 @@
         "libxml2-dev",
         "libxmlsec1-dev",
         "libffi-dev",
-        "liblzma-dev"
+        "liblzma-dev",
+        "zsh"
       ],
       "preInstall": ["sudo apt update"],
       "postInstall": ["sudo apt autoremove -y"]
@@ -35,10 +36,10 @@
       "args": ["install"],
       "packages": ["gcc", "gh", "btop"],
       "preInstall": [
+        "export NONINTERACTIVE=1",
         "bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
         "eval \"$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\""
-      ],
-      "postInstall": ["gh auth login"]
+      ]
     },
     {
       "name": "ASDF",
@@ -102,6 +103,16 @@
           "name": "aheeva/aheeva-msg-center",
           "folder": "msg-center"
         }
+      ]
+    }
+  ],
+  "customCommands": [
+    {
+      "name": "Oh-My-Zsh",
+      "commands": [
+        "sh -c \"$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\"",
+        "git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k",
+        "git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
       ]
     }
   ],

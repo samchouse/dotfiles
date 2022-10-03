@@ -1,9 +1,11 @@
-import { exec } from "https://deno.land/x/denoexec@v1.1.5/mod.ts";
+import { config, exec, Logger } from "../util/mod.ts";
 
-import { config, Logger, NullStream } from "../util/mod.ts";
+const pathWithGhCli = `${
+  Deno.env.get("PATH") ?? ""
+}:/home/linuxbrew/.linuxbrew/bin`;
 
 export const runGitRepositoriesTasks = async () => {
-  const nullStream = new NullStream();
+  Logger.info("Running Git repository tasks");
 
   const gitProjects = config.gitProjects.reduce(
     (
@@ -25,6 +27,20 @@ export const runGitRepositoriesTasks = async () => {
     [] as { cwd: string; name: string; folder?: string }[],
   );
 
+  await exec({
+    cmd: [
+      "gh",
+      "auth",
+      "login",
+      "-w",
+      "-p",
+      "https",
+    ],
+    env: {
+      PATH: pathWithGhCli,
+    },
+  });
+
   for await (const project of gitProjects) {
     const stat = await Deno.stat(project.cwd).catch(() => undefined);
     if (!stat) {
@@ -32,6 +48,7 @@ export const runGitRepositoriesTasks = async () => {
     }
 
     await exec({
+      silent: true,
       cwd: project.cwd,
       cmd: [
         "gh",
@@ -40,8 +57,9 @@ export const runGitRepositoriesTasks = async () => {
         project.name,
         ...(project.folder ? [project.folder] : []),
       ],
-      stdout: nullStream,
-      stderr: nullStream,
+      env: {
+        PATH: pathWithGhCli,
+      },
     });
     Logger.info(
       `Cloned ${project.name}${
@@ -53,4 +71,6 @@ export const runGitRepositoriesTasks = async () => {
       }`,
     );
   }
+
+  Logger.info("Finished running Git repository tasks");
 };
