@@ -1,9 +1,9 @@
 import { Logger } from "./util/mod.ts";
 import {
   runCopierTasks,
+  runCustomCommandTasks,
   runGitRepositoriesTasks,
   runPackageManagerTasks,
-  runCustomCommandTasks,
 } from "./tasks/mod.ts";
 
 Logger.info("Loaded config");
