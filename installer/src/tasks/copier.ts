@@ -15,7 +15,7 @@ export const runCopierTasks = async () => {
       ),
       {
         overwrite: true,
-      }
+      },
     );
   }
 

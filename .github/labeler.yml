@@ -1,5 +1,7 @@
 "scope: configs":
+  - configs/*
   - configs/**/*
 
 "scope: installer":
+  - installer/*
   - installer/**/*
