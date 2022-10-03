@@ -51,7 +51,12 @@ export const runPackageManagerTasks = async () => {
     }
 
     await createInstructionsFile(instructions);
-    await exec({ silent: true, cmd: [`./${instructionsFilename}`] });
+    await exec({
+      env: pm.env,
+      silent: true,
+      cmd: [`./${instructionsFilename}`],
+    });
+
     Logger.success(
       `Installed ${pm.name} packages`,
     );

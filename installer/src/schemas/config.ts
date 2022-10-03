@@ -11,6 +11,7 @@ export const configSchema = z.object({
       packages: z.array(z.string()),
       preInstall: z.array(z.string()).optional(),
       postInstall: z.array(z.string()).optional(),
+      env: z.record(z.string()).optional(),
     }),
   ),
   gitProjects: z.array(
