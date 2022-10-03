@@ -135,7 +135,7 @@
     },
     {
       "name": "Fig",
-      "commands": ["curl -SsL https://pkg.fig.io/install.sh | bash"]
+      "commands": ["curl -fsSL https://fig.io/install-headless.sh | INTEGRATIONS=dotfiles bash"]
     }
   ],
   "copier": {
