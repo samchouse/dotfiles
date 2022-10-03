@@ -1,6 +1,6 @@
 import { config, Instructions, Logger } from "../util/mod.ts";
 
-export const runCopierTasks = async () => {
+export const runCustomCommandTasks = async () => {
   Logger.info("Running all custom command tasks");
 
   for await (const cc of config.customCommands) {
