@@ -136,8 +136,7 @@
     {
       "name": "Fig",
       "commands": ["curl -SsL https://pkg.fig.io/install.sh | bash"]
-    },
-    {}
+    }
   ],
   "copier": {
     "configDir": "./configs"
