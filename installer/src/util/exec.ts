@@ -1,5 +1,11 @@
-export class NullStream implements Deno.Writer {
-  public write = (data: Uint8Array) => {
-    return Promise.resolve(data.byteLength);
+export const exec = async (
+  options: Pick<Deno.RunOptions, "cwd" | "cmd" | "env"> & { silent?: boolean },
+) => {
+  const procOptions: Deno.RunOptions = {
+    ...options,
+    ...(options.silent ? { stdout: "null", stderr: "null" } : {}),
   };
-}
+
+  const process = Deno.run(procOptions);
+  return await process.status();
+};

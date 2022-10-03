@@ -1,6 +1,4 @@
-import { exec } from "https://deno.land/x/denoexec@v1.1.5/mod.ts";
-
-import { config, Logger, NullStream } from "../util/mod.ts";
+import { config, exec, Logger } from "../util/mod.ts";
 
 const instructionsFilename = "instructions.sh";
 
@@ -21,8 +19,6 @@ const createInstructionsFile = async (instructions: string[]) => {
 };
 
 export const runPackageManagerTasks = async () => {
-  const nullStream = new NullStream();
-
   for await (const pm of config.packageManagers) {
     const instructions: string[] = [];
 
@@ -55,7 +51,7 @@ export const runPackageManagerTasks = async () => {
     }
 
     await createInstructionsFile(instructions);
-    await exec({ cmd: [`./${instructionsFilename}`], stdout: nullStream });
+    await exec({ silent: true, cmd: [`./${instructionsFilename}`] });
     Logger.success(
       `Installed ${pm.name} packages`,
     );
