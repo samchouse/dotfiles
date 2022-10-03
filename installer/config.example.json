@@ -135,7 +135,9 @@
     },
     {
       "name": "Fig",
-      "commands": ["curl -fsSL https://fig.io/install-headless.sh | INTEGRATIONS=dotfiles bash"]
+      "commands": [
+        "curl -fsSL https://fig.io/install-headless.sh | INTEGRATIONS=dotfiles bash"
+      ]
     }
   ],
   "copier": {
