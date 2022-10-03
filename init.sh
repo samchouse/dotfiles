@@ -11,17 +11,19 @@ if [ -z "$BRANCH" ]; then
 	BRANCH="main"
 fi
 
+DIR_SAFE_BRANCH=$(echo "$BRANCH" | sed 's/\//_/g')
+
 # Install dependencies
 sudo apt install -y unzip
 
 # Download the repo to /tmp as a zip file and extract it
 wget https://github.com/Xenfo/dotfiles/archive/refs/heads/$BRANCH.zip -O /tmp/dotfiles.zip
 unzip /tmp/dotfiles.zip -d /tmp
-cd /tmp/dotfiles-$BRANCH || exit 1
+cd "/tmp/dotfiles-$DIR_SAFE_BRANCH" || exit 1
 
 # Wait for user to confirm that they setup the config file
 echo
-echo -e "${BOLD_CYAN}Please make sure you have setup the config file before continuing! It is located at /tmp/dotfiles-$BRANCH/installer/config.json${RESET}"
+echo -e "${BOLD_CYAN}Please make sure you have setup the config file before continuing! It is located at /tmp/dotfiles-$DIR_SAFE_BRANCH/installer/config.json${RESET}"
 read -rp "$(echo -e "${BOLD_WHITE}Press enter to continue:${RESET} [ENTER]")"
 echo
 
