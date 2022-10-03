@@ -11,7 +11,6 @@ export const configSchema = z.object({
       packages: z.array(z.string()),
       preInstall: z.array(z.string()).optional(),
       postInstall: z.array(z.string()).optional(),
-      env: z.record(z.string()).optional(),
     }),
   ),
   gitProjects: z.array(
@@ -25,10 +24,16 @@ export const configSchema = z.object({
       ),
     }),
   ),
+  customCommands: z.array(
+    z.object({
+      name: z.string(),
+      commands: z.array(z.string()),
+    }),
+  ),
   copier: z.object({
     configDir: z.string(),
   }),
-}).refine((schema) =>
+}).strict().refine((schema) =>
   schema.packageManagers.reduce(
         (prev, curr) => curr.command.includes("sudo") ? prev + 1 : prev,
         0,

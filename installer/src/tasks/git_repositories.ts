@@ -5,6 +5,8 @@ const pathWithGhCli = `${
 }:/home/linuxbrew/.linuxbrew/bin`;
 
 export const runGitRepositoriesTasks = async () => {
+  Logger.info("Running Git repository tasks");
+
   const gitProjects = config.gitProjects.reduce(
     (
       acc,
@@ -69,4 +71,6 @@ export const runGitRepositoriesTasks = async () => {
       }`,
     );
   }
+
+  Logger.info("Finished running Git repository tasks");
 };
