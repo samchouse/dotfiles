@@ -25,7 +25,7 @@ export class Instructions extends Set<string> {
     return this;
   }
 
-  public execute = async () => {
+  public execute = async (silent = true) => {
     await Deno.writeTextFile(
       Instructions.fileName,
       ["#!/usr/bin/env bash", "", ...[...this.values()], ""].join("\n"),
@@ -35,7 +35,7 @@ export class Instructions extends Set<string> {
     );
 
     await exec({
-      silent: true,
+      silent,
       cmd: [`./${Instructions.fileName}`],
     });
 

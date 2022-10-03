@@ -8,7 +8,7 @@ export const runCustomCommandTasks = async () => {
 
     instructions.add(...cc.commands);
 
-    await instructions.execute();
+    await instructions.execute(false);
 
     Logger.success(
       `Ran ${cc.name} commands`,
