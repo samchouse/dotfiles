@@ -27,18 +27,22 @@
         "liblzma-dev",
         "zsh"
       ],
-      "preInstall": ["sudo apt update"],
+      "preInstall": [
+        "sudo add-apt-repository ppa:git-core/ppa",
+        "sudo apt update"
+      ],
       "postInstall": ["sudo apt autoremove -y"]
     },
     {
       "name": "HomeBrew",
       "command": "brew",
       "args": ["install"],
-      "packages": ["gcc", "gh", "btop"],
+      "packages": ["gcc", "gh", "btop", "hashicorp/tap/terraform"],
       "preInstall": [
         "export NONINTERACTIVE=1",
         "bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
-        "eval \"$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\""
+        "eval \"$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"",
+        "brew tap hashicorp/tap"
       ]
     },
     {
@@ -91,21 +95,30 @@
       "preInstall": [". $HOME/.asdf/asdf.sh"]
     }
   ],
-  "gitProjects": [
-    {
-      "cwd": "~/projects",
-      "repositories": ["Xenfo/cosa-mangiamo", "Xenfo/website", "Xenfo/Xenfo"]
+  "git": {
+    "config": {
+      "commit.gpgsign": "true",
+      "init.defaultBranch": "main",
+      "push.autoSetupRemote": "true",
+      "user.name": "Samuel Corsi-House",
+      "user.email": "chouse.samuel@gmail.com"
     },
-    {
-      "cwd": "~/aheeva/projects",
-      "repositories": [
-        {
-          "name": "aheeva/aheeva-msg-center",
-          "folder": "msg-center"
-        }
-      ]
-    }
-  ],
+    "projects": [
+      {
+        "cwd": "~/projects",
+        "repositories": ["Xenfo/cosa-mangiamo", "Xenfo/website", "Xenfo/Xenfo"]
+      },
+      {
+        "cwd": "~/aheeva/projects",
+        "repositories": [
+          {
+            "name": "aheeva/aheeva-msg-center",
+            "folder": "msg-center"
+          }
+        ]
+      }
+    ]
+  },
   "customCommands": [
     {
       "name": "Oh-My-Zsh",
@@ -114,6 +127,16 @@
         "sh -c \"$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\"",
         "git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k",
         "git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
+      ]
+    },
+    {
+      "name": "Bun",
+      "commands": ["curl https://bun.sh/install | bash"]
+    },
+    {
+      "name": "Fig",
+      "commands": [
+        "curl -fsSL https://fig.io/install-headless.sh | INTEGRATIONS=dotfiles bash"
       ]
     }
   ],

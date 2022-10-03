@@ -7,7 +7,7 @@ const pathWithGhCli = `${
 export const runGitRepositoriesTasks = async () => {
   Logger.info("Running Git repository tasks");
 
-  const gitProjects = config.gitProjects.reduce(
+  const gitProjects = config.git.projects.reduce(
     (
       acc,
       project,
@@ -40,6 +40,18 @@ export const runGitRepositoriesTasks = async () => {
       PATH: pathWithGhCli,
     },
   });
+
+  for await (const configKey of Object.keys(config.git.config)) {
+    await exec({
+      cmd: [
+        "git",
+        "config",
+        "--global",
+        configKey,
+        config.git.config[configKey],
+      ],
+    });
+  }
 
   for await (const project of gitProjects) {
     const stat = await Deno.stat(project.cwd).catch(() => undefined);
