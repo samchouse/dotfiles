@@ -11,7 +11,7 @@ if [ -z "$BRANCH" ]; then
   BRANCH="main"
 fi
 
-DIR_SAFE_BRANCH=$(echo "$BRANCH" | sed 's/\//_/g')
+DIR_SAFE_BRANCH=$(echo "$BRANCH" | sed 's/\//-/g')
 
 # Install dependencies
 sudo apt install -y unzip
