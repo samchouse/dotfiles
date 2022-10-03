@@ -13,17 +13,20 @@ export const configSchema = z.object({
       postInstall: z.array(z.string()).optional(),
     }),
   ),
-  gitProjects: z.array(
-    z.object({
-      cwd: z.string(),
-      repositories: z.array(
-        z.string().or(z.object({
-          "name": z.string(),
-          "folder": z.string(),
-        })),
-      ),
-    }),
-  ),
+  git: z.object({
+    config: z.record(z.string()),
+    projects: z.array(
+      z.object({
+        cwd: z.string(),
+        repositories: z.array(
+          z.string().or(z.object({
+            "name": z.string(),
+            "folder": z.string(),
+          })),
+        ),
+      }),
+    ),
+  }),
   customCommands: z.array(
     z.object({
       name: z.string(),
