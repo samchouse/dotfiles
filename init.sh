@@ -8,7 +8,7 @@ BOLD_WHITE='\033[1;37m'
 BRANCH="$1"
 
 if [ -z "$BRANCH" ]; then
-	BRANCH="main"
+  BRANCH="main"
 fi
 
 DIR_SAFE_BRANCH=$(echo "$BRANCH" | sed 's/\//_/g')
