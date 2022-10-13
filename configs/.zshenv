@@ -5,7 +5,7 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 . "$HOME/.cargo/env"
 
 # go
-export PATH="$PATH:$(go env GOPATH)/bin"
+export PATH="$PATH:$(/home/xenfo/.asdf/shims/go env GOPATH)/bin"
 
 # bun completions
 [ -s "/home/xenfo/.bun/_bun" ] && source "/home/xenfo/.bun/_bun"
