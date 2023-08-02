@@ -25,13 +25,27 @@
         "libxmlsec1-dev",
         "libffi-dev",
         "liblzma-dev",
-        "zsh"
+        "zsh",
+        "wslu",
+        "linux-tools-virtual",
+        "hwdata",
+        "scdaemon",
+        "librsvg2-dev",
+        "libayatana-appindicator3-dev",
+        "libwebkit2gtk-4.0-dev",
+        "libnss3-tools",
+        "jq",
+        "ncdu",
+        "zip"
       ],
       "preInstall": [
         "sudo add-apt-repository ppa:git-core/ppa",
         "sudo apt update"
       ],
-      "postInstall": ["sudo apt autoremove -y"]
+      "postInstall": [
+        "sudo apt autoremove -y",
+        "sudo update-alternatives --install /usr/local/bin/usbip usbip `/usr/bin/ls /usr/lib/linux-tools/*/usbip | tail -n1` 20"
+      ]
     },
     {
       "name": "HomeBrew",
@@ -91,7 +105,10 @@
       "name": "Go",
       "command": "go",
       "args": ["install"],
-      "packages": ["github.com/cosmtrek/air@latest"],
+      "packages": [
+        "github.com/cosmtrek/air@latest",
+        "github.com/schollz/croc/v9@latest"
+      ],
       "preInstall": [". $HOME/.asdf/asdf.sh"]
     }
   ],
@@ -137,6 +154,16 @@
       "name": "Fig",
       "commands": [
         "curl -fsSL https://fig.io/install-headless.sh | INTEGRATIONS=dotfiles bash"
+      ]
+    },
+    {
+      "name": "Bottle Imp",
+      "commands": [
+        "sudo wget -O /etc/apt/trusted.gpg.d/wsl-transdebian.gpg https://arkane-systems.github.io/wsl-transdebian/apt/wsl-transdebian.gpg",
+        "sudo chmod a+r /etc/apt/trusted.gpg.d/wsl-transdebian.gpg",
+        "sudo cat << EOF > /etc/apt/sources.list.d/wsl-transdebian.list\ndeb https://arkane-systems.github.io/wsl-transdebian/apt/ $(lsb_release -cs) main\ndeb-src https://arkane-systems.github.io/wsl-transdebian/apt/ $(lsb_release -cs) main\nEOF",
+        "sudo apt update",
+        "sudo apt install bottle-imp"
       ]
     }
   ],
