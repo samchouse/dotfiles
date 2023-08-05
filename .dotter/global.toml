@@ -2,7 +2,7 @@
 bin = "~/.bin"
 "zsh/zshrc" = "~/.zshrc"
 "zsh/zshenv" = "~/.zshenv"
-"rtx.toml" = "~/.rtx.toml"
+"rtx.toml" = "~/.config/rtx/config.toml"
 
 [desktop]
 depends = ["default"]
