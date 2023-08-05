@@ -1,0 +1,12 @@
+[linux-desktop]
+depends = ["bin", "zsh", "hypr"]
+
+[bin.files]
+"bin" = "~/.bin"
+
+[zsh.files]
+"zsh/zshrc" = "~/.zshrc"
+"zsh/zshenv" = "~/.zshenv"
+
+[hypr.files]
+"hypr" = "~/.config/hypr"
