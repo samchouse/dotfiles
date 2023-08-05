@@ -1,12 +1,14 @@
-[linux-desktop]
-depends = ["bin", "zsh", "hypr"]
-
-[bin.files]
-"bin" = "~/.bin"
-
-[zsh.files]
+[default.files]
+bin = "~/.bin"
 "zsh/zshrc" = "~/.zshrc"
 "zsh/zshenv" = "~/.zshenv"
+"rtx.toml" = "~/.rtx.toml"
 
-[hypr.files]
-"hypr" = "~/.config/hypr"
+[desktop]
+depends = ["default"]
+
+[desktop.files]
+eww = "~/.config/eww"
+hypr = "~/.config/hypr"
+rofi = "~/.config/rofi"
+"pacman/udf.hook" = { target = "/usr/share/libalpm/hooks/update-desktop-files.hook", type = "template", owner = "root" }

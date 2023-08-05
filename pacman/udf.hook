@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Path
+Target = usr/share/applications/*.desktop
+
+[Action]
+Description = Updating desktop files to be Wayland compatible
+When = PostTransaction
+Exec = {{ env_var "HOME" }}/.bin/update-desktop-files.sh

@@ -1,0 +1,69 @@
+(defwindow topbar-left
+  :monitor 0
+  :exclusive true
+  :focusable false
+  :stacking "fg"
+  :windowtype "dock"
+  
+  :geometry (geometry
+    :x "0%"
+    :y "20px"
+    :width "98%"
+    :height "30px"
+    :anchor "top center"
+  )
+  
+  (topbar)
+)
+
+(defwindow topbar-right
+  :monitor 1
+  :exclusive true
+  :focusable false
+  :stacking "fg"
+  :windowtype "dock"
+  
+  :geometry (geometry
+    :x "0%"
+    :y "20px"
+    :width "98%"
+    :height "30px"
+    :anchor "top center"
+  )
+  
+  (topbar)
+)
+
+(defwidget topbar []
+  (centerbox :class "topbar" :orientation "h"
+    (window)
+    (clock)
+    ""
+  )
+)
+
+(defwidget window []
+  (box :orientation "h" :halign "start"
+    "${window_name}"
+  )
+)
+
+(deflisten window_name :initial "" "sh ~/.config/eww/scripts/get-window-title.sh")
+
+(defwidget clock []
+  (box :orientation "h" :halign "center"
+    "${time} ${day}, ${year}"
+  )
+)
+
+(defpoll time :interval "1s"
+  "date '+%_I:%M %p | %B'"
+)
+
+(defpoll day :interval "10s"
+  "date '+%_d' | xargs"
+)
+
+(defpoll year :interval "10s"
+  "date '+%Y'"
+)
