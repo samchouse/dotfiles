@@ -1,0 +1,6 @@
+[submodule "hypr/hyprfocus"]
+	path = hypr/hyprfocus
+	url = https://github.com/VortexCoyote/hyprfocus.git
+[submodule "flight"]
+	path = flight
+	url = https://github.com/L4ki/Flight-Plasma-Themes.git
