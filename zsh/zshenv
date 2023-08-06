@@ -8,4 +8,4 @@ export GPG_TTY=$(tty)
 export PATH="$PATH:$("$HOME/.local/share/rtx/shims/go" env GOPATH)/bin"
 
 # other
-export PATH="$PATH:$HOME/.bin:/opt/cuda/bin/nvcc"
+export PATH="$PATH:$HOME/.bin:/opt/cuda/bin"
