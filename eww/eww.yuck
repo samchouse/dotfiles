@@ -3,7 +3,6 @@
   :exclusive true
   :focusable false
   :stacking "fg"
-  :windowtype "dock"
   :namespace "topbar"
   
   :geometry (geometry
@@ -22,7 +21,6 @@
   :exclusive true
   :focusable false
   :stacking "fg"
-  :windowtype "dock"
   :namespace "topbar"
 
   :geometry (geometry
