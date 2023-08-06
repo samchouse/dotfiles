@@ -3,7 +3,7 @@
 Managed by [dotter](https://github.com/SuperCuber/dotter)
 
 ```sh
-dotter deploy
+./install.sh
 ```
 
 ## Software
