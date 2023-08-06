@@ -4,12 +4,13 @@
   :focusable false
   :stacking "fg"
   :windowtype "dock"
+  :namespace "topbar"
   
   :geometry (geometry
     :x "0%"
     :y "20px"
     :width "98%"
-    :height "30px"
+    :height "40px"
     :anchor "top center"
   )
   
@@ -22,12 +23,13 @@
   :focusable false
   :stacking "fg"
   :windowtype "dock"
-  
+  :namespace "topbar"
+
   :geometry (geometry
     :x "0%"
     :y "20px"
     :width "98%"
-    :height "30px"
+    :height "40px"
     :anchor "top center"
   )
   

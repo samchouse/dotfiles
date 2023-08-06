@@ -11,4 +11,5 @@ depends = ["default"]
 eww = "~/.config/eww"
 hypr = "~/.config/hypr"
 rofi = "~/.config/rofi"
+"wallpaper.jpg" = "~/Pictures/wallpaper.jpg"
 "pacman/udf.hook" = { target = "/usr/share/libalpm/hooks/update-desktop-files.hook", type = "template", owner = "root" }
