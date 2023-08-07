@@ -15,6 +15,9 @@ confirm_prompt() {
 
 eval "$(sed <install.conf -r 's/ = /=/' | sed "s|\(.*=\[\)\(.*\)|\1(\2)|" | sed -E "s/\[|\]|,//g")"
 
+sudo -v
+paru -Syu --noconfirm
+
 if ! which paru >/dev/null 2>&1; then
 	sudo pacman -S --needed base-devel git
 	git clone https://aur.archlinux.org/paru-bin.git
@@ -39,7 +42,9 @@ if ! which rustup >/dev/null 2>&1; then
 fi
 
 # Install dotfiles
-confirm_prompt Are you "done" editing .dotter/local.toml
+if [ ! -f .dotter/local.toml ]; then
+	confirm_prompt Have you created .dotter/local.toml
+fi
 dotter -qy --force
 
 # Install rtx and friends
@@ -64,18 +69,21 @@ if grep -q hypr .dotter/local.toml; then
 fi
 
 # GPG
-confirm_prompt Have you inserted your Yubikey
-gpg --fetch-keys https://keys.openpgp.org/vks/v1/by-fingerprint/96EC38186D96F32EA362081F18113BC4A3C7C7D0
-gpg --edit-key "18113BC4A3C7C7D0" trust
+KEY_ID="18113BC4A3C7C7D0"
+if ! gpg --list-keys "$KEY_ID" >/dev/null 2>&1; then
+	gpg --fetch-keys https://keys.openpgp.org/vks/v1/by-fingerprint/96EC38186D96F32EA362081F18113BC4A3C7C7D0
+	gpg --edit-key "$KEY_ID" trust
+fi
 
 # Git
 git config --global user.name "Samuel Corsi-House"
 git config --global user.email "chouse.samuel@gmail.com"
 git config --global commit.gpgsign true
-git config --global user.signingkey "18113BC4A3C7C7D0"
+git config --global user.signingkey "$KEY_ID"
 
 # Pacman
-paru -S --needed "${PACMAN_PKGS[@]}"
+paru -S --needed --noconfirm "${PACMAN_PKGS[@]}"
+paru -U --needed --noconfirm "${PACMAN_PKGS_UPGRADES[@]}"
 
 # Repos
 gh auth login
@@ -96,5 +104,5 @@ cd ..
 for pkg in "${PACMAN_PKGS_MANUAL[@]}"; do
 	# shellcheck disable=SC2001
 	clean_pkg=$(echo "$pkg" | sed 's/ .*//')
-	confirm_prompt "Have you installed $clean_pkg (paru -S $pkg)"
+	confirm_prompt "Have you installed $clean_pkg (paru -S --noconfirm $pkg)"
 done

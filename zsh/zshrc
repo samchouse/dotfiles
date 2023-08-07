@@ -29,7 +29,8 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias c="code-insiders --ozone-platform-hint=auto --enable-features=WaylandWindowDecorations"
+alias u="topgrade"
+alias c="code-insiders{{#if dotter.packages.hypr}} --ozone-platform-hint=auto --enable-features=WaylandWindowDecorations{{/if}}"
 
 eval "$(starship init zsh)"
 eval "$(~/.local/share/rtx/bin/rtx activate -s zsh)"

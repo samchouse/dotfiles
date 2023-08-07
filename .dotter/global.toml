@@ -2,6 +2,7 @@
 "zsh/zshrc" = "~/.zshrc"
 "zsh/zshenv" = "~/.zshenv"
 "rtx.toml" = "~/.config/rtx/config.toml"
+"topgrade.toml" = "~/.config/topgrade.toml"
 
 [desktop]
 depends = ["default"]
