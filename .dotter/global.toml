@@ -1,5 +1,4 @@
 [default.files]
-bin = "~/.bin"
 "zsh/zshrc" = "~/.zshrc"
 "zsh/zshenv" = "~/.zshenv"
 "rtx.toml" = "~/.config/rtx/config.toml"
@@ -8,8 +7,14 @@ bin = "~/.bin"
 depends = ["default"]
 
 [desktop.files]
+"wallpaper.jpg" = { target = "~/Pictures/wallpaper.jpg", type = "symbolic" }
+
+[hypr]
+depends = ["desktop"]
+
+[hypr.files]
 eww = "~/.config/eww"
 hypr = "~/.config/hypr"
 rofi = "~/.config/rofi"
-"wallpaper.jpg" = { target = "~/Pictures/wallpaper.jpg", type = "symbolic" }
+"bin/udf.sh" = "~/.bin/update-desktop-files.sh"
 "pacman/udf.hook" = { target = "/usr/share/libalpm/hooks/update-desktop-files.hook", type = "template", owner = "root" }
