@@ -2,7 +2,7 @@
 
 confirm_prompt() {
 	while true; do
-		read -p "$*? [y/N] " yn
+		read -rp "$*? [y/N] " yn
 
 		case $yn in
 		[yY])
@@ -13,18 +13,29 @@ confirm_prompt() {
 	done
 }
 
+eval "$(sed <install.conf -r 's/ = /=/' | sed "s|\(.*=\[\)\(.*\)|\1(\2)|" | sed -E "s/\[|\]|,//g")"
+
+if ! which paru >/dev/null 2>&1; then
+	sudo pacman -S --needed base-devel git
+	git clone https://aur.archlinux.org/paru-bin.git
+	cd paru-bin || exit
+	makepkg -si
+	cd .. && rm -rf paru-bin
+fi
+
 # Install omz
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
 	sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
 	sudo -k chsh -s "/usr/bin/zsh" "$USER"
-	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
 fi
 
 # Install Rust
 if ! which rustup >/dev/null 2>&1; then
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+	# shellcheck disable=SC1091
 	. "$HOME/.cargo/env"
-	cargo install bore-cli cargo-update cargo-edit cargo-watch tokei topgrade fd-find bunyan just dotter
+	cargo install "${CARGO_PKGS[@]}"
 fi
 
 # Install dotfiles
@@ -64,7 +75,7 @@ git config --global commit.gpgsign true
 git config --global user.signingkey "18113BC4A3C7C7D0"
 
 # Pacman
-paru -S starship yubikey-manager github-cli
+paru -S --needed "${PACMAN_PKGS[@]}"
 
 # Repos
 gh auth login
@@ -76,4 +87,14 @@ mkdir -p ~/Documents/projects/work/aheeva
 gh repo clone aheeva/aheeva-msg-center ~/Documents/projects/work/aheeva/msg-center
 
 cd ~/Documents/projects/personal || exit 1
-gh repo clone Xenfo/adrastos
+for repo in "${PERSONAL_REPOS[@]}"; do
+	gh repo clone "Xenfo/$repo"
+done
+cd ..
+
+# Manual
+for pkg in "${PACMAN_PKGS_MANUAL[@]}"; do
+	# shellcheck disable=SC2001
+	clean_pkg=$(echo "$pkg" | sed 's/ .*//')
+	confirm_prompt "Have you installed $clean_pkg (paru -S $pkg)"
+done
