@@ -84,6 +84,7 @@ git config --global user.email "chouse.samuel@gmail.com"
 git config --global init.defaultBranch main
 git config --global commit.gpgsign true
 git config --global user.signingkey "$KEY_ID"
+git config --global pull.rebase false
 
 # Pacman
 paru -S --needed --noconfirm "${PACMAN_PKGS[@]}"
