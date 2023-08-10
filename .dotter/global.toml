@@ -15,7 +15,9 @@ depends = ["desktop"]
 
 [hypr.files]
 eww = "~/.config/eww"
-hypr = "~/.config/hypr"
 rofi = "~/.config/rofi"
 "bin/udf.sh" = "~/.bin/update-desktop-files.sh"
+"hypr/land.conf" = "~/.config/hypr/hyprland.conf"
+"hypr/paper.conf" = "~/.config/hypr/hyprpaper.conf"
+"hypr/hyprfocus/hyprfocus.so" = { target = "~/.config/hypr/plugins/hyprfocus.so", type = "symbolic" }
 "pacman/udf.hook" = { target = "/usr/share/libalpm/hooks/update-desktop-files.hook", type = "template", owner = "root" }

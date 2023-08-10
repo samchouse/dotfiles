@@ -22,7 +22,7 @@
   :focusable false
   :stacking "fg"
   :namespace "topbar"
-
+  
   :geometry (geometry
     :x "0%"
     :y "20px"
@@ -38,7 +38,7 @@
   (centerbox :class "topbar" :orientation "h"
     (window)
     (clock)
-    ""
+    (tray)
   )
 )
 
@@ -66,4 +66,10 @@
 
 (defpoll year :interval "10s"
   "date '+%Y'"
+)
+
+(defwidget tray []
+  (box :orientation "h" :halign "end"
+    (systray :pack-direction "ltr")
+  )
 )

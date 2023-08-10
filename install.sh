@@ -41,10 +41,25 @@ if ! which rustup >/dev/null 2>&1; then
 	cargo install "${CARGO_PKGS[@]}"
 fi
 
-# Install dotfiles
 if [ ! -f .dotter/local.toml ]; then
 	confirm_prompt Have you created .dotter/local.toml
 fi
+
+# Hyprland
+if grep -q hypr .dotter/local.toml; then
+	git submodule update --init
+
+	# hyprfocus
+	if ! hyprctl plugin list | grep -q hyprfocus; then
+		cd hypr/hyprfocus || exit 1
+		git clone --recursive https://github.com/hyprwm/Hyprland && cd Hyprland || exit 1
+		git checkout tags/"$(hyprctl version | grep Tag: | sed 's/\(Tag:\)//' | sed 's/-.*//')"
+		sudo make pluginenv
+		cd .. && make all
+	fi
+fi
+
+# Install dotfiles
 dotter -qy --force
 
 # Install rtx and friends
@@ -54,18 +69,6 @@ if ! which rtx >/dev/null 2>&1; then
 	rtx install
 	rtx x node -- npm i -g taze yarn pnpm npm@latest
 	rtx x go -- go install github.com/cosmtrek/air@latest
-fi
-
-# Desktop package related stuff
-if grep -q hypr .dotter/local.toml; then
-	git submodule update --init
-
-	# hyprfocus
-	cd hypr/hyprfocus || exit 1
-	git clone --recursive https://github.com/hyprwm/Hyprland && cd Hyprland || exit 1
-	git checkout tags/"$(hyprctl version | grep Tag: | sed 's/\(Tag:\)//' | sed 's/-.*//')"
-	sudo make pluginenv
-	cd .. && make all
 fi
 
 # GPG
@@ -100,10 +103,3 @@ for repo in "${PERSONAL_REPOS[@]}"; do
 	gh repo clone "Xenfo/$repo"
 done
 cd ..
-
-# Manual
-for pkg in "${PACMAN_PKGS_MANUAL[@]}"; do
-	# shellcheck disable=SC2001
-	clean_pkg=$(echo "$pkg" | sed 's/ .*//')
-	confirm_prompt "Have you installed $clean_pkg (paru -S --noconfirm $pkg)"
-done
