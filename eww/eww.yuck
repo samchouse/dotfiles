@@ -4,6 +4,7 @@
 
 (defvar previous_volume 0)
 (defvar volume_revealed false)
+(defvar power_revealed false)
 (defpoll volume_percentage :interval "1s" "~/.config/eww/scripts/volume.sh -g")
 (defpoll volume_icon :interval "1s" "~/.config/eww/scripts/volume.sh -i")
 (defpoll wifi_name :interval "1m" "iwctl station wlan0 show | grep \"Connected network\" | awk '{ print $3}'")
@@ -23,7 +24,7 @@
 )
 
 (defwidget volume []
-  (box :tooltip "${volume_percentage}%"
+  (box :tooltip "Volume: ${volume_percentage}%"
     (eventbox :onhover "~/.bin/eww update volume_revealed=true" :onhoverlost "~/.bin/eww update volume_revealed=false"
       (box :space-evenly false :spacing 6
         (revealer :transition "slideleft" :reveal volume_revealed
@@ -42,10 +43,27 @@
   )
 )
 
+(defwidget power []
+  (eventbox :onhover "~/.bin/eww update power_revealed=true" :onhoverlost "~/.bin/eww update power_revealed=false"
+    (box :space-evenly false :spacing 6
+      (revealer :transition "slideleft" :reveal power_revealed
+        (box :orientation "h" :spacing 6
+          (button :class "icon" :onclick "hyprctl dispatch exit" :tooltip "Logout" "")
+          (button :class "icon" :onclick "systemctl reboot" :tooltip "Restart" "")
+          (button :class "icon" :onclick "systemctl poweroff" :tooltip "Shutdown" "")
+        )
+      )
+      
+      (button :class "icon" :onclick "systemctl suspend" :tooltip "Sleep" "")
+    )
+  )
+)
+
 (defwidget sys_utils []
   (box :orientation "h" :spacing 10 :space-evenly false
     (volume)
     (wifi)
+    (power)
   )
 )
 
@@ -71,9 +89,9 @@
 
 (defwidget end []
   (box :orientation "h" :halign "end" :space-evenly false :spacing 0
-    (sys_utils)
-    (separator)
     (tray)
+    (separator)
+    (sys_utils)
   )
 )
 
