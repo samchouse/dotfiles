@@ -16,6 +16,7 @@ depends = ["desktop"]
 [hypr.files]
 eww = "~/.config/eww"
 rofi = "~/.config/rofi"
+"hypr/shaders" = "~/.config/hypr/shaders"
 "bin/udf.sh" = "~/.bin/update-desktop-files.sh"
 "hypr/land.conf" = "~/.config/hypr/hyprland.conf"
 "hypr/paper.conf" = "~/.config/hypr/hyprpaper.conf"
