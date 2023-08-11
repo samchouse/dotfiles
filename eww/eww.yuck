@@ -1,3 +1,24 @@
+(defvar wifi_rev false)
+
+(defvar eww "$HOME/.bin/eww -c $HOME/.config/eww")
+
+(defpoll COL_WLAN :interval "1m" "~/.config/eww/scripts/wifi.sh --COL")
+(defpoll ESSID_WLAN :interval "1m" "~/.config/eww/scripts/wifi.sh --ESSID")
+(defpoll WLAN_ICON :interval "1m" "~/.config/eww/scripts/wifi.sh --ICON")
+
+(defwidget wifi []
+  (eventbox :onhover "${eww} update wifi_rev=true"
+    :onhoverlost "${eww} update wifi_rev=false"
+    (box :vexpand "false" :hexpand "false" :space-evenly "false"
+      (button :class "module-wif" :onclick "networkmanager_dmenu" :wrap "false" :limit-width 12 :style "color: ${COL_WLAN};" WLAN_ICON)
+      (revealer :transition "slideleft"
+        :reveal wifi_rev
+        :duration "350ms"
+        (label    :class "module_essid"
+          :text ESSID_WLAN
+          :orientation "h"
+        )))))
+
 (defwindow topbar-left
   :monitor 0
   :exclusive true
@@ -38,7 +59,7 @@
   (centerbox :class "topbar" :orientation "h"
     (window)
     (clock)
-    (tray)
+    (wifi)
   )
 )
 
