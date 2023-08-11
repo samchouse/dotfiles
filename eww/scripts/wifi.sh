@@ -1,27 +1,15 @@
 #!/bin/bash
 
-# status=$(nmcli g | grep -oE "disconnected")
-# essid=$(nmcli c | grep wlp2s0 | awk '{print ($1)}')
+strength=$(iwctl station wlan0 show | grep -w RSSI | awk '{ print $2 }')
 
-status=1
-
-if [ $status ] ; then
-    icon=""
-    text=""
-    col="#575268"
-
+if [ "$strength" -ge -55 ]; then
+		echo ""
+elif [ "$strength" -ge -63 ]; then
+		echo ""
+elif [ "$strength" -ge -70 ]; then
+		echo ""
+elif [ "$strength" -ge -75 ]; then
+		echo ""
 else
-    icon=""
-    text="${essid}"
-    col="#a1bdce"
-fi
-
-
-
-if [[ "$1" == "--COL" ]]; then
-    echo $col	
-elif [[ "$1" == "--ESSID" ]]; then
-	echo $text
-elif [[ "$1" == "--ICON" ]]; then
-	echo $icon
+		echo ""
 fi

@@ -1,23 +1,93 @@
-(defvar wifi_rev false)
+; -------------------------
+; ------- Variables -------
+; -------------------------
 
-(defvar eww "$HOME/.bin/eww -c $HOME/.config/eww")
+(defvar previous_volume 0)
+(defvar volume_revealed false)
+(defpoll volume_percentage :interval "1s" "~/.config/eww/scripts/volume.sh -g")
+(defpoll volume_icon :interval "1s" "~/.config/eww/scripts/volume.sh -i")
+(defpoll wifi_name :interval "1m" "iwctl station wlan0 show | grep \"Connected network\" | awk '{ print $3}'")
+(defpoll wifi_icon :interval "5s" "sh ~/.config/eww/scripts/wifi.sh")
+(defpoll clock :interval "3s"
+  "date \"+%_I:%M %p | %B $(date '+%_d' | xargs), %Y\" | xargs"
+)
 
-(defpoll COL_WLAN :interval "1m" "~/.config/eww/scripts/wifi.sh --COL")
-(defpoll ESSID_WLAN :interval "1m" "~/.config/eww/scripts/wifi.sh --ESSID")
-(defpoll WLAN_ICON :interval "1m" "~/.config/eww/scripts/wifi.sh --ICON")
+(deflisten window :initial "" "sh ~/.config/eww/scripts/window.sh")
+
+; -------------------------
+; -------- Widgets --------
+; -------------------------
+
+(defwidget separator []
+  (label :class "separator" :text "|")
+)
+
+(defwidget volume []
+  (box :tooltip "${volume_percentage}%"
+    (eventbox :onhover "~/.bin/eww update volume_revealed=true" :onhoverlost "~/.bin/eww update volume_revealed=false"
+      (box :space-evenly false :spacing 6
+        (revealer :transition "slideleft" :reveal volume_revealed
+          (scale :min 0 :max 101 :value volume_percentage :onchange "~/.config/eww/scripts/volume.sh -s {}")
+        )
+        
+        (button :class "icon" :onclick "~/.config/eww/scripts/volume.sh -m" volume_icon)
+      )
+    )
+  )
+)
 
 (defwidget wifi []
-  (eventbox :onhover "${eww} update wifi_rev=true"
-    :onhoverlost "${eww} update wifi_rev=false"
-    (box :vexpand "false" :hexpand "false" :space-evenly "false"
-      (button :class "module-wif" :onclick "networkmanager_dmenu" :wrap "false" :limit-width 12 :style "color: ${COL_WLAN};" WLAN_ICON)
-      (revealer :transition "slideleft"
-        :reveal wifi_rev
-        :duration "350ms"
-        (label    :class "module_essid"
-          :text ESSID_WLAN
-          :orientation "h"
-        )))))
+  (box :tooltip "Connected to ${wifi_name}"
+    (label :class "icon" :text wifi_icon)
+  )
+)
+
+(defwidget sys_utils []
+  (box :orientation "h" :spacing 10 :space-evenly false
+    (volume)
+    (wifi)
+  )
+)
+
+(defwidget tray []
+  (systray :pack-direction "ltr")
+)
+
+; -------------------------
+; ------- Templates -------
+; -------------------------
+
+(defwidget start []
+  (box :orientation "h" :halign "start"
+    {window}
+  )
+)
+
+(defwidget center []
+  (box :orientation "h" :halign "center"
+    {clock}
+  )
+)
+
+(defwidget end []
+  (box :orientation "h" :halign "end" :space-evenly false :spacing 0
+    (sys_utils)
+    (separator)
+    (tray)
+  )
+)
+
+(defwidget topbar []
+  (centerbox :class "topbar" :orientation "h"
+    (start)
+    (center)
+    (end)
+  )
+)
+
+; -------------------------
+; --------- Bars ----------
+; -------------------------
 
 (defwindow topbar-left
   :monitor 0
@@ -53,44 +123,4 @@
   )
   
   (topbar)
-)
-
-(defwidget topbar []
-  (centerbox :class "topbar" :orientation "h"
-    (window)
-    (clock)
-    (wifi)
-  )
-)
-
-(defwidget window []
-  (box :orientation "h" :halign "start"
-    "${window_name}"
-  )
-)
-
-(deflisten window_name :initial "" "sh ~/.config/eww/scripts/get-window-title.sh")
-
-(defwidget clock []
-  (box :orientation "h" :halign "center"
-    "${time} ${day}, ${year}"
-  )
-)
-
-(defpoll time :interval "1s"
-  "date '+%_I:%M %p | %B'"
-)
-
-(defpoll day :interval "10s"
-  "date '+%_d' | xargs"
-)
-
-(defpoll year :interval "10s"
-  "date '+%Y'"
-)
-
-(defwidget tray []
-  (box :orientation "h" :halign "end"
-    (systray :pack-direction "ltr")
-  )
 )

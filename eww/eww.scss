@@ -4,10 +4,9 @@
 
 .topbar {
   color: white;
-  font-size: 15px;
-  padding-left: 15px;
-  padding-right: 15px;
+  font-size: 16px;
   border-radius: 20px;
+  padding: 0 12px 0 15px;
   background: rgba(5, 5, 5, 0.6);
 }
 
@@ -18,4 +17,36 @@ menu {
     margin-top: 3px;
     margin-bottom: 3px;
   }
+}
+
+scale {
+  trough {
+    background-color: rgba(255, 255, 255, 0.08);
+    min-height: 10px;
+    min-width: 115px;
+    border-radius: 10px;
+
+    highlight {
+      background-color: rgba(96, 165, 250, 0.85);
+      border-radius: 10px;
+      min-height: 10px;
+      min-width: 15px;
+    }
+  }
+}
+
+.icon {
+  font-family: "Material Icons Round";
+  font-size: x-large;
+}
+
+.slider-button {
+  margin-left: 5px;
+}
+
+.separator {
+  color: #3f3f46;
+  font-weight: bold;
+  font-size: 24px;
+  margin: 0px 11px 0px 11px;
 }
