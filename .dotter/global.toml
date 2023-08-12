@@ -16,11 +16,7 @@ depends = ["desktop"]
 [hypr.files]
 eww = "~/.config/eww"
 rofi = "~/.config/rofi"
+"hypr" = "~/.config/hypr"
 "flight" = "~/Desktop/flight-themes"
-"hypr/scripts" = "~/.config/hypr/scripts"
-"hypr/shaders" = "~/.config/hypr/shaders"
 "bin/udf.sh" = "~/.bin/update-desktop-files.sh"
-"hypr/land.conf" = "~/.config/hypr/hyprland.conf"
-"hypr/paper.conf" = "~/.config/hypr/hyprpaper.conf"
-"hypr/hyprfocus/hyprfocus.so" = { target = "~/.config/hypr/plugins/hyprfocus.so", type = "symbolic" }
 "pacman/udf.hook" = { target = "/usr/share/libalpm/hooks/update-desktop-files.hook", type = "template", owner = "root" }
