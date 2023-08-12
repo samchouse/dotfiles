@@ -4,3 +4,6 @@
 [submodule "flight"]
 	path = flight
 	url = https://github.com/L4ki/Flight-Plasma-Themes.git
+[submodule "chili"]
+	path = chili
+	url = https://github.com/MarianArlt/sddm-chili.git
