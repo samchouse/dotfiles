@@ -1,9 +1,9 @@
-[submodule "hypr/hyprfocus"]
-	path = hypr/hyprfocus
-	url = https://github.com/VortexCoyote/hyprfocus.git
-[submodule "flight"]
-	path = flight
-	url = https://github.com/L4ki/Flight-Plasma-Themes.git
-[submodule "chili"]
-	path = chili
+[submodule "external/chili"]
+	path = external/chili
 	url = https://github.com/MarianArlt/sddm-chili.git
+[submodule "external/flight"]
+	path = external/flight
+	url = https://github.com/L4ki/Flight-Plasma-Themes.git
+[submodule "external/hyprfocus"]
+	path = external/hyprfocus
+	url = https://github.com/VortexCoyote/hyprfocus.git
