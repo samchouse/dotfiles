@@ -15,8 +15,15 @@ confirm_prompt() {
 
 eval "$(sed <install.conf -r 's/ = /=/' | sed "s|\(.*=\[\)\(.*\)|\1(\2)|" | sed -E "s/\[|\]|,//g")"
 
+INSTALLED_PKGS=$(pacman -Qq)
+for index in "${!PACMAN_PKGS[@]}"; do
+	if echo "$INSTALLED_PKGS" | grep -q "${PACMAN_PKGS[$index]}"; then
+		unset "PACMAN_PKGS[$index]"
+	fi
+done
+PACMAN_PKGS=("${PACMAN_PKGS[@]}")
+
 sudo -v
-paru -Syu --noconfirm
 
 if ! which paru >/dev/null 2>&1; then
 	sudo pacman -S --needed base-devel git
@@ -25,6 +32,13 @@ if ! which paru >/dev/null 2>&1; then
 	makepkg -si
 	cd .. && rm -rf paru-bin
 fi
+
+# Pacman
+paru -Syu --noconfirm
+if [ ${#PACMAN_PKGS[@]} -ne 0 ]; then
+	paru -S --needed --noconfirm "${PACMAN_PKGS[@]}"
+fi
+paru -U --needed --noconfirm "${PACMAN_PKGS_UPGRADES[@]}"
 
 # Install omz
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
@@ -51,11 +65,15 @@ if grep -q hypr .dotter/local.toml; then
 
 	# hyprfocus
 	if ! hyprctl plugin list | grep -q hyprfocus; then
-		cd hypr/hyprfocus || exit 1
+		cd external/hyprfocus || exit 1
 		git clone --recursive https://github.com/hyprwm/Hyprland && cd Hyprland || exit 1
 		git checkout tags/"$(hyprctl version | grep Tag: | sed 's/\(Tag:\)//' | sed 's/-.*//')"
 		sudo make pluginenv
 		cd .. && make all
+		mkdir -p ~/.config/hypr/plugins
+		mv hyprfocus.so ~/.config/hypr/plugins/hyprfocus.so
+		sudo rm -rf Hyprland
+		cd ../..
 	fi
 fi
 
@@ -86,21 +104,19 @@ git config --global commit.gpgsign true
 git config --global user.signingkey "$KEY_ID"
 git config --global pull.rebase false
 
-# Pacman
-paru -S --needed --noconfirm "${PACMAN_PKGS[@]}"
-paru -U --needed --noconfirm "${PACMAN_PKGS_UPGRADES[@]}"
-
 # Repos
-gh auth login
+if gh auth status 2>&1 | grep -q "You are not logged into any GitHub hosts"; then
+	gh auth login
+fi
 
 mkdir -p ~/Documents/projects
 mkdir -p ~/Documents/projects/personal
 mkdir -p ~/Documents/projects/work/aheeva
 
-gh repo clone aheeva/aheeva-msg-center ~/Documents/projects/work/aheeva/msg-center
+gh repo clone aheeva/aheeva-msg-center ~/Documents/projects/work/aheeva/msg-center >/dev/null 2>&1
 
 cd ~/Documents/projects/personal || exit 1
 for repo in "${PERSONAL_REPOS[@]}"; do
-	gh repo clone "Xenfo/$repo"
+	gh repo clone "Xenfo/$repo" >/dev/null 2>&1
 done
 cd ..
