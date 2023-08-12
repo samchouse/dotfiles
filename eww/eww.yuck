@@ -30,7 +30,7 @@
         (scale :min 0 :max 101 :value volume_percentage :onchange "~/.config/eww/scripts/volume.sh -s {}")
       )
       
-      (button :class "icon" :onclick "~/.config/eww/scripts/volume.sh -m" volume_icon)
+      (button :class "icon" :onclick "~/.config/eww/scripts/volume.sh -m" :onrightclick "~/.bin/audio.sh toggle-output" volume_icon)
     )
   )
 )
