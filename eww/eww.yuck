@@ -24,28 +24,26 @@
 )
 
 (defwidget volume []
-  (box :tooltip "Volume: ${volume_percentage}%"
-    (eventbox :onhover "~/.bin/eww update volume_revealed=true" :onhoverlost "~/.bin/eww update volume_revealed=false"
-      (box :space-evenly false :spacing 6
-        (revealer :transition "slideleft" :reveal volume_revealed
-          (scale :min 0 :max 101 :value volume_percentage :onchange "~/.config/eww/scripts/volume.sh -s {}")
-        )
-        
-        (button :class "icon" :onclick "~/.config/eww/scripts/volume.sh -m" volume_icon)
+  (eventbox :onhover "~/.bin/eww update volume_revealed=true" :onhoverlost "~/.bin/eww update volume_revealed=false"
+    (box :space-evenly false :spacing 6 :tooltip "Volume: ${volume_percentage}%" :class "volume_is_${volume_revealed}"
+      (revealer :transition "slideleft" :reveal volume_revealed
+        (scale :min 0 :max 101 :value volume_percentage :onchange "~/.config/eww/scripts/volume.sh -s {}")
       )
+      
+      (button :class "icon" :onclick "~/.config/eww/scripts/volume.sh -m" volume_icon)
     )
   )
 )
 
 (defwidget wifi []
-  (box :tooltip "Connected to ${wifi_name}"
+  (box :tooltip "Connected to ${wifi_name}" :class "wifi"
     (label :class "icon" :text wifi_icon)
   )
 )
 
 (defwidget power []
   (eventbox :onhover "~/.bin/eww update power_revealed=true" :onhoverlost "~/.bin/eww update power_revealed=false"
-    (box :space-evenly false :spacing 6
+    (box :space-evenly false :spacing 6 :class "power_is_${power_revealed}"
       (revealer :transition "slideleft" :reveal power_revealed
         (box :orientation "h" :spacing 6
           (button :class "icon" :onclick "hyprctl dispatch exit" :tooltip "Logout" "")

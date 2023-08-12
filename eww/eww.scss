@@ -10,24 +10,15 @@
   background: rgba(5, 5, 5, 0.6);
 }
 
-menu {
-  background-color: rgba(5, 5, 5, 0.6);
-
-  > menuitem {
-    margin-top: 3px;
-    margin-bottom: 3px;
-  }
-}
-
 scale {
   trough {
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(5, 5, 5, 0.2);
     min-height: 10px;
     min-width: 115px;
     border-radius: 10px;
 
     highlight {
-      background-color: rgba(96, 165, 250, 0.85);
+      background-color: rgba(5, 5, 5, 0.6);
       border-radius: 10px;
       min-height: 10px;
       min-width: 15px;
@@ -36,7 +27,7 @@ scale {
 }
 
 .icon {
-  font-family: "Material Icons Round";
+  font-family: "Material Icons Outlined";
   font-size: x-large;
 }
 
@@ -49,4 +40,32 @@ scale {
   font-weight: bold;
   font-size: 24px;
   margin: 0px 11px 0px 11px;
+}
+
+.volume_is_false {
+  color: #7dd3fc;
+}
+
+.volume_is_true {
+  background-color: #7dd3fc;
+  margin: 5px 0 5px 0;
+  padding: 0 6px 0 8px;
+  border-radius: 16px;
+  color: black;
+}
+
+.power_is_false {
+  color: #a7f3d0;
+}
+
+.power_is_true {
+  background-color: #a7f3d0;
+  margin: 5px 0 5px 0;
+  padding: 0 6px 0 8px;
+  border-radius: 16px;
+  color: black;
+}
+
+.wifi {
+  color: #fde68a;
 }
