@@ -7,7 +7,7 @@
 (defvar power_revealed false)
 (defpoll volume_percentage :interval "1s" "~/.config/eww/scripts/volume.sh -g")
 (defpoll volume_icon :interval "1s" "~/.config/eww/scripts/volume.sh -i")
-(defpoll wifi_name :interval "1m" "iwctl station wlan0 show | grep \"Connected network\" | awk '{ print $3}'")
+(defpoll wifi_name :interval "1m" "iwctl station wlan1 show | grep \"Connected network\" | awk '{ print $3 }'")
 (defpoll wifi_icon :interval "5s" "sh ~/.config/eww/scripts/wifi.sh")
 (defpoll clock :interval "3s"
   "date \"+%_I:%M %p | %B $(date '+%_d' | xargs), %Y\" | xargs"
