@@ -1,13 +1,13 @@
 #!/bin/bash
 
 format() {
-	case "$@" in
-	null | "") echo "Desktop" ;;
-	firefox) echo "Mozilla Firefox" ;;
-	org.kde.dolphin) echo "Dolphin" ;;
-	"Code - Insiders" | "code-insiders-url-handler") echo "VSCode Insiders" ;;
-	*) echo "${@^}" ;;
-	esac
+  case "$@" in
+  null | "") echo "Desktop" ;;
+  firefox) echo "Mozilla Firefox" ;;
+  org.kde.dolphin) echo "Dolphin" ;;
+  "Code - Insiders" | "code-insiders-url-handler") echo "VSCode Insiders" ;;
+  *) echo "${@^}" ;;
+  esac
 }
 
 export -f format

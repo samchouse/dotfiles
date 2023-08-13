@@ -3,13 +3,13 @@
 strength=$(iwctl station wlan1 show | grep -w RSSI | awk '{ print $2 }')
 
 if [ "$strength" -ge -55 ]; then
-		echo ""
+    echo ""
 elif [ "$strength" -ge -63 ]; then
-		echo ""
+    echo ""
 elif [ "$strength" -ge -70 ]; then
-		echo ""
+    echo ""
 elif [ "$strength" -ge -81 ]; then
-		echo ""
+    echo ""
 else
-		echo ""
+    echo ""
 fi
