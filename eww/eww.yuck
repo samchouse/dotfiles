@@ -22,6 +22,19 @@
   (box :class "separator")
 )
 
+(defwidget clock []
+  (button :onclick "~/.config/eww/scripts/calendar.sh" :tooltip "Open calendar" {formattime(EWW_TIME, "%-l:%M %p | %B %-e, %Y")})
+)
+
+; (defwidget cal []
+  ;   (calendar :width 300 :height 150)
+; )
+
+(defwidget cal []
+  (box :class "cal" :orientation "v"
+    (box :class "cal-in"
+      (calendar :class "cal" :width 300))))
+
 (defwidget volume []
   (eventbox :onhover "${EWW_CMD} update volume_revealed=true" :onhoverlost "${EWW_CMD} update volume_revealed=false"
     (box :space-evenly false :spacing 6 :tooltip "Volume: ${volume_percentage}% (${volume_ouput})" :class "volume ${volume_revealed ? 'revealed' : ''}"
@@ -80,7 +93,7 @@
 
 (defwidget center []
   (box :orientation "h" :halign "center"
-    {formattime(EWW_TIME, "%-l:%M %p | %B %-e, %Y")}
+    (clock)
   )
 )
 
@@ -138,4 +151,36 @@
   )
   
   (topbar)
+)
+
+(defwindow calendar-left
+  :monitor 0
+  :focusable false
+  :stacking "fg"
+  
+  :geometry (geometry
+    :x "50%"
+    :y "10px"
+    :width "10%"
+    :height "50px"
+    :anchor "top center"
+  )
+  
+  (cal)
+)
+
+(defwindow calendar-right
+  :monitor 1
+  :focusable false
+  :stacking "fg"
+  
+  :geometry (geometry
+    :x "50%"
+    :y "10px"
+    :width "8%"
+    :height "50px"
+    :anchor "top center"
+  )
+  
+  (cal)
 )
