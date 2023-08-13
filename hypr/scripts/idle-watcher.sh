@@ -13,4 +13,4 @@ SWAYLOCK_CMD="swaylock \
 
 swayidle -w \
 	timeout 180 "$SWAYLOCK_CMD" \
-	timeout 300 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on'
+	timeout 300 'openrgb -p Black && hyprctl dispatch dpms off' resume 'openrgb -p Blue && hyprctl dispatch dpms on'
