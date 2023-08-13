@@ -11,3 +11,7 @@ fi
 if ! grep -q ozone /usr/share/applications/discord.desktop; then
   sed -i 's/Exec=.*/\0 --enable-features=UseOzonePlatform --ozone-platform=wayland/' /usr/share/applications/discord.desktop
 fi
+
+if ! grep -q ozone /usr/share/applications/obsidian.desktop; then
+  sed -i 's/\(Exec=[^%]*\)\(%U\)/\1--ozone-platform=wayland --enable-features=UseOzonePlatform,WaylandWindowDecorations --disable-gpu \2/' /usr/share/applications/obsidian.desktop
+fi
