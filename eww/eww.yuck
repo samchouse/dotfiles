@@ -5,32 +5,31 @@
 (defvar previous_volume 0)
 (defvar volume_revealed false)
 (defvar power_revealed false)
-(defpoll volume_percentage :interval "1s" "~/.config/eww/scripts/volume.sh -g")
-(defpoll volume_icon :interval "1s" "~/.config/eww/scripts/volume.sh -i")
-(defpoll wifi_name :interval "1m" "iwctl station wlan1 show | grep \"Connected network\" | awk '{ print $3 }'")
-(defpoll wifi_icon :interval "5s" "sh ~/.config/eww/scripts/wifi.sh")
-(defpoll clock :interval "3s"
-  "date \"+%_I:%M %p | %B $(date '+%_d' | xargs), %Y\" | xargs"
-)
 
-(deflisten window :initial "" "sh ~/.config/eww/scripts/window.sh")
+(defpoll volume_ouput :interval "10s" "~/.bin/audio.sh get-output")
+(defpoll volume_icon :interval "0.5s" "~/.config/eww/scripts/volume.sh -i")
+(defpoll volume_percentage :interval "3s" "~/.config/eww/scripts/volume.sh -g")
+(defpoll wifi_name :interval "1m" "~/.config/eww/scripts/wifi.sh -n")
+(defpoll wifi_icon :interval "5s" "~/.config/eww/scripts/wifi.sh -i")
+
+(deflisten window :initial "" "~/.config/eww/scripts/window.sh")
 
 ; -------------------------
 ; -------- Widgets --------
 ; -------------------------
 
 (defwidget separator []
-  (label :class "separator" :text "|")
+  (box :class "separator")
 )
 
 (defwidget volume []
-  (eventbox :onhover "~/.bin/eww update volume_revealed=true" :onhoverlost "~/.bin/eww update volume_revealed=false"
-    (box :space-evenly false :spacing 6 :tooltip "Volume: ${volume_percentage}%" :class "volume_is_${volume_revealed}"
+  (eventbox :onhover "${EWW_CMD} update volume_revealed=true" :onhoverlost "${EWW_CMD} update volume_revealed=false"
+    (box :space-evenly false :spacing 6 :tooltip "Volume: ${volume_percentage}% (${volume_ouput})" :class "volume ${volume_revealed ? 'revealed' : ''}"
       (revealer :transition "slideleft" :reveal volume_revealed
         (scale :min 0 :max 101 :value volume_percentage :onchange "~/.config/eww/scripts/volume.sh -s {}")
       )
       
-      (button :class "icon" :onclick "~/.config/eww/scripts/volume.sh -m" :onrightclick "~/.bin/audio.sh toggle-output" volume_icon)
+      (button :class "icon" :onclick "~/.config/eww/scripts/volume.sh -m" :onrightclick "~/.bin/audio.sh toggle-output && ${EWW_CMD} update volume_ouput=$(~/.bin/audio.sh get-output)" volume_icon)
     )
   )
 )
@@ -42,8 +41,8 @@
 )
 
 (defwidget power []
-  (eventbox :onhover "~/.bin/eww update power_revealed=true" :onhoverlost "~/.bin/eww update power_revealed=false"
-    (box :space-evenly false :spacing 6 :class "power_is_${power_revealed}"
+  (eventbox :onhover "${EWW_CMD} update power_revealed=true" :onhoverlost "${EWW_CMD} update power_revealed=false"
+    (box :space-evenly false :spacing 6 :class "power ${power_revealed ? 'revealed' : ''}"
       (revealer :transition "slideleft" :reveal power_revealed
         (box :orientation "h" :spacing 6
           (button :class "icon" :onclick "hyprctl dispatch exit" :tooltip "Logout" "")
@@ -58,7 +57,7 @@
 )
 
 (defwidget sys_utils []
-  (box :orientation "h" :spacing 10 :space-evenly false
+  (box :orientation "h" :space-evenly false
     (volume)
     (wifi)
     (power)
@@ -81,7 +80,7 @@
 
 (defwidget center []
   (box :orientation "h" :halign "center"
-    {clock}
+    {formattime(EWW_TIME, "%-l:%M %p | %B %-e, %Y")}
   )
 )
 
@@ -116,7 +115,7 @@
     :x "0%"
     :y "20px"
     :width "98%"
-    :height "40px"
+    :height "50px"
     :anchor "top center"
   )
   
@@ -134,7 +133,7 @@
     :x "0%"
     :y "20px"
     :width "98%"
-    :height "40px"
+    :height "50px"
     :anchor "top center"
   )
   

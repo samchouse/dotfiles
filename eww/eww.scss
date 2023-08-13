@@ -5,67 +5,99 @@
 .topbar {
   color: white;
   font-size: 16px;
-  border-radius: 20px;
-  padding: 0 12px 0 15px;
-  background: rgba(5, 5, 5, 0.6);
+  padding: 0 10px;
+  border-radius: 25px;
+  background-color: rgba(5, 5, 5, 0.6);
 }
 
-scale {
-  trough {
-    background-color: rgba(5, 5, 5, 0.2);
-    min-height: 10px;
-    min-width: 115px;
-    border-radius: 10px;
+tooltip {
+  color: black;
+  border-radius: 10px;
+  background-color: rgba(147, 197, 253, 0.8);
+}
 
-    highlight {
-      background-color: rgba(5, 5, 5, 0.6);
+.icon {
+  font-size: 28px;
+  font-family: "Material Icons Outlined";
+}
+
+.separator {
+  min-width: 4px;
+  margin: 8px 2px;
+  border-radius: 99px;
+  background-color: rgba(156, 163, 175, 0.25);
+}
+
+menubar {
+  margin-right: 8px;
+
+  > menuitem {
+    margin: 0 5px;
+
+    menu {
+      padding: 5px 10px;
       border-radius: 10px;
-      min-height: 10px;
-      min-width: 15px;
+      background-color: rgba(15, 118, 109, 0.9);
+
+      menuitem {
+        margin: 1px 0;
+      }
+
+      separator {
+        margin: 6px 0;
+        min-height: 3px;
+        border-radius: 99px;
+        background-color: rgba(5, 5, 5, 0.35);
+      }
     }
   }
 }
 
-.icon {
-  font-family: "Material Icons Outlined";
-  font-size: x-large;
-}
-
-.slider-button {
-  margin-left: 5px;
-}
-
-.separator {
-  color: #3f3f46;
-  font-weight: bold;
-  font-size: 24px;
-  margin: 0px 11px 0px 11px;
-}
-
-.volume_is_false {
+.volume {
   color: #7dd3fc;
-}
+  margin-left: 2px;
 
-.volume_is_true {
-  background-color: #7dd3fc;
-  margin: 5px 0 5px 0;
-  padding: 0 6px 0 8px;
-  border-radius: 16px;
-  color: black;
-}
+  &.revealed {
+    color: black;
+    margin: 10px 0;
+    margin-left: 12px;
+    border-radius: 16px;
+    padding: 0 6px 0 10px;
+    background-color: #7dd3fc;
+  }
 
-.power_is_false {
-  color: #a7f3d0;
-}
+  scale {
+    trough {
+      min-height: 10px;
+      min-width: 115px;
+      border-radius: 10px;
+      background-color: rgba(5, 5, 5, 0.2);
 
-.power_is_true {
-  background-color: #a7f3d0;
-  margin: 5px 0 5px 0;
-  padding: 0 6px 0 8px;
-  border-radius: 16px;
-  color: black;
+      highlight {
+        min-width: 15px;
+        min-height: 10px;
+        border-radius: 10px;
+        background-color: rgba(5, 5, 5, 0.6);
+      }
+    }
+  }
 }
 
 .wifi {
   color: #fde68a;
+  margin-left: 10px;
+}
+
+.power {
+  color: #a7f3d0;
+  margin-left: 6px;
+
+  &.revealed {
+    color: black;
+    margin: 10px 0;
+    margin-left: 13px;
+    border-radius: 16px;
+    padding: 0 6px 0 10px;
+    background-color: #a7f3d0;
+  }
 }

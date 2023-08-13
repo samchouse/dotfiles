@@ -1,6 +1,20 @@
 #!/bin/bash
 
 case $1 in
+"get-output")
+  device=$(pactl list sinks | grep "device.profile.name" | sed 's/device.profile.name = "//' | sed 's/"//' | xargs)
+  case $device in
+  "hdmi-stereo")
+    echo "speakers"
+    ;;
+  "hdmi-stereo-extra1")
+    echo "headphones"
+    ;;
+  *)
+    echo "unknown"
+    ;;
+  esac
+  ;;
 "toggle-output")
   device=$(pactl list sinks | grep "device.profile.name" | sed 's/device.profile.name = "//' | sed 's/"//' | xargs)
   case $device in
