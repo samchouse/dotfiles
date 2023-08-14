@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+rm -rf ~/.local/share/applications/chrome-*.desktop
+
 if ! grep -q ozone /usr/share/applications/visual-studio-code-insiders.desktop; then
   sed -i 's/\(Exec=[^%]*\)\(%F\)/\1--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations \2/' /usr/share/applications/visual-studio-code-insiders.desktop
 fi
