@@ -5,10 +5,10 @@ case $1 in
   device=$(pactl list sinks | grep "device.profile.name" | sed 's/device.profile.name = "//' | sed 's/"//' | xargs)
   case $device in
   "hdmi-stereo")
-    echo "speakers"
+    echo "headphones"
     ;;
   "hdmi-stereo-extra1")
-    echo "headphones"
+    echo "speakers"
     ;;
   *)
     echo "unknown"
