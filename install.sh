@@ -97,12 +97,13 @@ if ! gpg --list-keys "$KEY_ID" >/dev/null 2>&1; then
 fi
 
 # Git
+git config --global tag.gpgSign true
+git config --global pull.rebase false
+git config --global commit.gpgsign true
+git config --global init.defaultBranch main
+git config --global user.signingkey "$KEY_ID"
 git config --global user.name "Samuel Corsi-House"
 git config --global user.email "chouse.samuel@gmail.com"
-git config --global init.defaultBranch main
-git config --global commit.gpgsign true
-git config --global user.signingkey "$KEY_ID"
-git config --global pull.rebase false
 
 # Repos
 if gh auth status 2>&1 | grep -q "You are not logged into any GitHub hosts"; then
