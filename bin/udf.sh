@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 
+rm -rf ~/.gnome
 rm -rf ~/.local/share/applications/chrome-*.desktop
 
 if ! grep -q ozone /usr/share/applications/visual-studio-code-insiders.desktop; then
