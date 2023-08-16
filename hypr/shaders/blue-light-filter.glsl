@@ -5,10 +5,6 @@ varying vec2 v_texcoord;
 uniform sampler2D tex;
 
 const float temperature = 4000.0;
-const float temperatureStrength = 1.0;
-
-#define WithQuickAndDirtyLuminancePreservation
-const float LuminancePreservationFactor = 1.0;
 
 // function from https://www.shadertoy.com/view/4sc3D7
 // valid from 1000 to 40000 K (and additionally 0 for pure full white)
@@ -38,15 +34,7 @@ void main() {
   // RGB
   vec3 color = vec3(pixColor[0], pixColor[1], pixColor[2]);
 
-#ifdef WithQuickAndDirtyLuminancePreservation
-  color *= mix(1.0,
-               dot(color, vec3(0.2126, 0.7152, 0.0722)) /
-                   max(dot(color, vec3(0.2126, 0.7152, 0.0722)), 1e-5),
-               LuminancePreservationFactor);
-#endif
-
-  color = mix(color, color * colorTemperatureToRGB(temperature),
-              temperatureStrength);
+  color = color * colorTemperatureToRGB(temperature);
 
   vec4 outCol = vec4(color, pixColor[3]);
 
