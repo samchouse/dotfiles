@@ -26,10 +26,6 @@
   (button :onclick "~/.config/eww/scripts/calendar.sh" :tooltip "Open calendar" {formattime(EWW_TIME, "%-l:%M %p | %B %-e, %Y")})
 )
 
-; (defwidget cal []
-  ;   (calendar :width 300 :height 150)
-; )
-
 (defwidget cal []
   (box :class "cal" :orientation "v"
     (box :class "cal-in"
