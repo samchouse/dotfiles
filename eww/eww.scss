@@ -53,6 +53,17 @@ menubar {
   }
 }
 
+.media {
+  .cover-art {
+    margin: 10px;
+    min-width: 30px;
+    min-height: 30px;
+    border-radius: 99px;
+    background-size: cover;
+    background-position: center;
+  }
+}
+
 .volume {
   color: #7dd3fc;
   margin-left: 2px;
@@ -89,8 +100,8 @@ menubar {
 }
 
 .power {
+  margin: 0 7px 0 6px;
   color: #a7f3d0;
-  margin-left: 6px;
 
   &.revealed {
     color: black;
@@ -102,10 +113,28 @@ menubar {
   }
 }
 
+.clock {
+  color: #fed7aa;
+  margin-left: 6px;
+
+  &.revealed {
+    color: black;
+    margin: 8px 0;
+    margin-left: 12px;
+    border-radius: 16px;
+    padding: 0 6px 0 10px;
+    background-color: #fed7aa;
+  }
+
+  .time {
+    font-weight: bold;
+  }
+}
+
 calendar {
   padding: 7px;
   border-radius: 10px;
-  background-color: rgba(5, 5, 5, 0.8);
+  background-color: rgba(5, 5, 5, 0.9);
 
   .header {
     color: #bae6fd;

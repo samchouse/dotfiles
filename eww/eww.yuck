@@ -3,9 +3,11 @@
 ; -------------------------
 
 (defvar previous_volume 0)
+(defvar clock_revealed false)
 (defvar volume_revealed false)
 (defvar power_revealed false)
 
+(defpoll media_metadata :interval "1s" "~/.config/eww/scripts/media.sh metadata")
 (defpoll volume_ouput :interval "10s" "~/.bin/audio.sh get-output")
 (defpoll volume_icon :interval "0.5s" "~/.config/eww/scripts/volume.sh -i")
 (defpoll volume_percentage :interval "3s" "~/.config/eww/scripts/volume.sh -g")
@@ -22,30 +24,32 @@
   (box :class "separator")
 )
 
-(defwidget clock []
-  (button :onclick "~/.config/eww/scripts/calendar.sh" :tooltip "Open calendar" {formattime(EWW_TIME, "%-l:%M %p | %B %-e, %Y")})
+(defwidget media []
+  (box :class "media" :orientation "h" :space-evenly false :vexpand false :hexpand false :visible {media_metadata == "" ? false : true}
+    (box :class "cover-art" :vexpand false :hexpand false :style "background-image: url('${media_metadata == "" ? media_metadata : media_metadata.path}');")
+    (label :class "title" :text "${media_metadata == "" ? media_metadata : media_metadata.title}")
+  )
 )
 
-(defwidget cal []
-  (box :class "cal" :orientation "v"
-    (box :class "cal-in"
-      (calendar :class "cal" :width 300))))
-
-(defwidget volume []
-  (eventbox :onhover "${EWW_CMD} update volume_revealed=true" :onhoverlost "${EWW_CMD} update volume_revealed=false"
-    (box :space-evenly false :spacing 6 :tooltip "Volume: ${volume_percentage}% (${volume_ouput})" :class "volume ${volume_revealed ? 'revealed' : ''}"
-      (revealer :transition "slideleft" :reveal volume_revealed
-        (scale :min 0 :max 101 :value volume_percentage :onchange "~/.config/eww/scripts/volume.sh -s {}")
-      )
-      
-      (button :class "icon" :onclick "~/.config/eww/scripts/volume.sh -m" :onrightclick "~/.bin/audio.sh toggle-output && ${EWW_CMD} update volume_ouput=$(~/.bin/audio.sh get-output)" volume_icon)
-    )
-  )
+(defwidget tray []
+  (systray :pack-direction "ltr")
 )
 
 (defwidget wifi []
   (box :tooltip "Connected to ${wifi_name}" :class "wifi"
     (label :class "icon" :text wifi_icon)
+  )
+)
+
+(defwidget volume []
+  (eventbox :onhover "${EWW_CMD} update volume_revealed=true" :onhoverlost "${EWW_CMD} update volume_revealed=false"
+    (box :space-evenly false :spacing 6 :tooltip "Volume: ${volume_percentage}% (${volume_ouput})" :class "volume ${volume_revealed ? 'revealed' : ''}"
+      (revealer :transition "slideleft" :reveal volume_revealed
+        (scale :min 0 :max 101 :value {volume_percentage == "" ? 100 : volume_percentage} :onchange "~/.config/eww/scripts/volume.sh -s {}")
+      )
+      
+      (button :class "icon" :onclick "~/.config/eww/scripts/volume.sh -m" :onrightclick "~/.bin/audio.sh toggle-output && ${EWW_CMD} update volume_ouput=$(~/.bin/audio.sh get-output)" volume_icon)
+    )
   )
 )
 
@@ -66,16 +70,22 @@
   )
 )
 
-(defwidget sys_utils []
-  (box :orientation "h" :space-evenly false
-    (volume)
-    (wifi)
-    (power)
+(defwidget clock []
+  (eventbox :onhover "${EWW_CMD} update clock_revealed=true" :onhoverlost "${EWW_CMD} update clock_revealed=false"
+    (button :tooltip "Open calendar" :onclick "~/.config/eww/scripts/toggle.sh calendar"
+      (box :class "clock ${clock_revealed ? 'revealed' : ''}" :space-evenly false :spacing 8
+        (revealer :transition "slideleft" :reveal clock_revealed
+          (label :class "date" :text {formattime(EWW_TIME, "%B %-e, %Y")})
+        )
+        
+        (label :class "time" :text {formattime(EWW_TIME, "%-l:%M %p")})
+      )
+    )
   )
 )
 
-(defwidget tray []
-  (systray :pack-direction "ltr")
+(defwidget cal []
+  (calendar :width 300)
 )
 
 ; -------------------------
@@ -90,7 +100,7 @@
 
 (defwidget center []
   (box :orientation "h" :halign "center"
-    (clock)
+    (media)
   )
 )
 
@@ -98,7 +108,11 @@
   (box :orientation "h" :halign "end" :space-evenly false :spacing 0
     (tray)
     (separator)
-    (sys_utils)
+    (volume)
+    (wifi)
+    (power)
+    (separator)
+    (clock)
   )
 )
 
@@ -122,7 +136,6 @@
   :namespace "topbar"
   
   :geometry (geometry
-    :x "0%"
     :y "20px"
     :width "98%"
     :height "50px"
@@ -140,7 +153,6 @@
   :namespace "topbar"
   
   :geometry (geometry
-    :x "0%"
     :y "20px"
     :width "98%"
     :height "50px"
@@ -156,11 +168,11 @@
   :stacking "fg"
   
   :geometry (geometry
-    :x "50%"
+    :x "1%"
     :y "10px"
     :width "10%"
     :height "50px"
-    :anchor "top center"
+    :anchor "top right"
   )
   
   (cal)
@@ -172,11 +184,11 @@
   :stacking "fg"
   
   :geometry (geometry
-    :x "50%"
+    :x "1%"
     :y "10px"
-    :width "8%"
+    :width "10%"
     :height "50px"
-    :anchor "top center"
+    :anchor "top right"
   )
   
   (cal)
