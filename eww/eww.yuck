@@ -19,7 +19,6 @@
 
 (deflisten workspaces_left :initial "" "~/.config/eww/scripts/hypr.sh workspaces left")
 (deflisten workspaces_right :initial "" "~/.config/eww/scripts/hypr.sh workspaces right")
-(deflisten window :initial "" "~/.config/eww/scripts/window.sh")
 
 ; -------------------------
 ; -------- Widgets --------
@@ -133,7 +132,6 @@
 (defwidget start [position]
   (box :orientation "h" :halign "start"
     (workspaces :statuses {position == "left" ? workspaces_left : workspaces_right})
-    ; {window}
   )
 )
 
