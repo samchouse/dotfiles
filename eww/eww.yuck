@@ -3,13 +3,16 @@
 ; -------------------------
 
 (defvar previous_volume 0)
-(defvar clock_revealed false)
 (defvar volume_revealed false)
+(defvar media_revealed false)
 (defvar power_revealed false)
+(defvar clock_revealed false)
 
-(defpoll media_metadata :interval "1s" "~/.config/eww/scripts/media.sh metadata")
+(defpoll media_title :interval "0.5s" "playerctl --player playerctld metadata xesam:title")
+(defpoll media_path :interval "0.5s" "~/.config/eww/scripts/media.sh -p metadata")
+(defpoll media_isplaying :interval "3s" "~/.config/eww/scripts/media.sh -s metadata")
 (defpoll volume_ouput :interval "10s" "~/.bin/audio.sh get-output")
-(defpoll volume_icon :interval "0.5s" "~/.config/eww/scripts/volume.sh -i")
+(defpoll volume_icon :interval "0.2s" "~/.config/eww/scripts/volume.sh -i")
 (defpoll volume_percentage :interval "3s" "~/.config/eww/scripts/volume.sh -g")
 (defpoll wifi_name :interval "1m" "~/.config/eww/scripts/wifi.sh -n")
 (defpoll wifi_icon :interval "5s" "~/.config/eww/scripts/wifi.sh -i")
@@ -25,9 +28,24 @@
 )
 
 (defwidget media []
-  (box :class "media" :orientation "h" :space-evenly false :vexpand false :hexpand false :visible {media_metadata == "" ? false : true}
-    (box :class "cover-art" :vexpand false :hexpand false :style "background-image: url('${media_metadata == "" ? media_metadata : media_metadata.path}');")
-    (label :class "title" :text "${media_metadata == "" ? media_metadata : media_metadata.title}")
+  (eventbox :onhover "${EWW_CMD} update media_revealed=true" :onhoverlost "${EWW_CMD} update media_revealed=false"
+    (box :class "media ${media_revealed ? 'revealed' : ''}" :space-evenly false
+      (revealer :transition "slideleft" :reveal media_revealed
+        (button :class "icon" :onclick "playerctl --player playerctld previous" "")
+      )
+      
+      (box :space-evenly false :vexpand false :hexpand false :visible {media_title != ""} :class "media-info"
+        (box :class "cover-art" :vexpand false :hexpand false :style "background-image: url('${media_path}');")
+        (label :class "title" :text "${media_title}")
+      )
+      
+      (revealer :transition "slideright" :reveal media_revealed
+        (box :space-evenly false
+          (button :class "icon rounded-icon" :onclick "~/.config/eww/scripts/media.sh toggle" {media_isplaying == "true" ? "" : ""})
+          (button :class "icon" :onclick "playerctl --player playerctld next" "")
+        )
+      )
+    )
   )
 )
 
