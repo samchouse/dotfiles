@@ -31,7 +31,7 @@
   (eventbox :onhover "${EWW_CMD} update media_revealed=true" :onhoverlost "${EWW_CMD} update media_revealed=false"
     (box :class "media ${media_revealed ? 'revealed' : ''}" :space-evenly false
       (revealer :transition "slideleft" :reveal media_revealed
-        (button :class "icon" :onclick "playerctl --player playerctld previous" "")
+        (button :class "icon" :tooltip "Previous" :onclick "playerctl --player playerctld previous" "")
       )
       
       (box :space-evenly false :vexpand false :hexpand false :visible {media_title != ""} :class "media-info"
@@ -41,8 +41,8 @@
       
       (revealer :transition "slideright" :reveal media_revealed
         (box :space-evenly false
-          (button :class "icon rounded-icon" :onclick "~/.config/eww/scripts/media.sh toggle" {media_isplaying == "true" ? "" : ""})
-          (button :class "icon" :onclick "playerctl --player playerctld next" "")
+          (button :class "icon rounded-icon" :tooltip {media_isplaying == "true" ? "Pause" : "Play"} :onclick "~/.config/eww/scripts/media.sh toggle" {media_isplaying == "true" ? "" : ""})
+          (button :class "icon" :tooltip "Next" :onclick "playerctl --player playerctld next" "")
         )
       )
     )
