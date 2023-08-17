@@ -41,8 +41,9 @@ workspaces)
         # shellcheck disable=SC2001
         new_id=$(echo "$1" | sed "s|.*>>$monitor,||")
         active_workspace=$(hyprctl workspaces -j | jq -r ".[] | select(.id==$new_id)")
-        get_workspaces_statuses
       fi
+
+      get_workspaces_statuses
       ;;
     workspace*)
       new_id=${1//workspace>>/}
@@ -50,8 +51,9 @@ workspaces)
 
       if echo "$workspace" | grep -q "$monitor"; then
         active_workspace=$workspace
-        get_workspaces_statuses
       fi
+
+      get_workspaces_statuses
       ;;
     esac
   }
