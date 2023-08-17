@@ -17,6 +17,8 @@
 (defpoll wifi_name :interval "1m" "~/.config/eww/scripts/wifi.sh -n")
 (defpoll wifi_icon :interval "5s" "~/.config/eww/scripts/wifi.sh -i")
 
+(deflisten workspaces_left :initial "" "~/.config/eww/scripts/hypr.sh workspaces left")
+(deflisten workspaces_right :initial "" "~/.config/eww/scripts/hypr.sh workspaces right")
 (deflisten window :initial "" "~/.config/eww/scripts/window.sh")
 
 ; -------------------------
@@ -25,6 +27,24 @@
 
 (defwidget separator []
   (box :class "separator")
+)
+
+(defwidget workspace [info]
+  (button :class "icon ${info.created ? "created" : ""} ${info.focused ? "focused" : ""}" :tooltip "Switch to workspace ${info.id}" "")
+)
+
+(defwidget workspaces [statuses]
+  (box :class "workspaces" :orientation "h" :spacing 6 :space-evenly false :vexpand false :hexpand false
+    (workspace :info {statuses[0]})
+    (workspace :info {statuses[1]})
+    (workspace :info {statuses[2]})
+    (workspace :info {statuses[3]})
+    (workspace :info {statuses[4]})
+    (workspace :info {statuses[5]})
+    (workspace :info {statuses[6]})
+    (workspace :info {statuses[7]})
+    (workspace :info {statuses[8]})
+  )
 )
 
 (defwidget media []
@@ -110,9 +130,10 @@
 ; ------- Templates -------
 ; -------------------------
 
-(defwidget start []
+(defwidget start [position]
   (box :orientation "h" :halign "start"
-    {window}
+    (workspaces :statuses {position == "left" ? workspaces_left : workspaces_right})
+    ; {window}
   )
 )
 
@@ -134,9 +155,9 @@
   )
 )
 
-(defwidget topbar []
+(defwidget topbar [position]
   (centerbox :class "topbar" :orientation "h"
-    (start)
+    (start :position position)
     (center)
     (end)
   )
@@ -147,23 +168,6 @@
 ; -------------------------
 
 (defwindow topbar-left
-  :monitor 0
-  :exclusive true
-  :focusable false
-  :stacking "fg"
-  :namespace "topbar"
-  
-  :geometry (geometry
-    :y "20px"
-    :width "98%"
-    :height "50px"
-    :anchor "top center"
-  )
-  
-  (topbar)
-)
-
-(defwindow topbar-right
   :monitor 1
   :exclusive true
   :focusable false
@@ -177,11 +181,28 @@
     :anchor "top center"
   )
   
-  (topbar)
+  (topbar :position "left")
+)
+
+(defwindow topbar-right
+  :monitor 0
+  :exclusive true
+  :focusable false
+  :stacking "fg"
+  :namespace "topbar"
+  
+  :geometry (geometry
+    :y "20px"
+    :width "98%"
+    :height "50px"
+    :anchor "top center"
+  )
+  
+  (topbar :position "right")
 )
 
 (defwindow calendar-left
-  :monitor 0
+  :monitor 1
   :focusable false
   :stacking "fg"
   
@@ -197,7 +218,7 @@
 )
 
 (defwindow calendar-right
-  :monitor 1
+  :monitor 0
   :focusable false
   :stacking "fg"
   
