@@ -17,8 +17,8 @@ depends = ["desktop"]
 eww = "~/.config/eww"
 rofi = "~/.config/rofi"
 hypr = "~/.config/hypr"
-dunst = "~/.config/dunst"
 "bin/audio.sh" = "~/.bin/audio.sh"
+dunstrc = "~/.config/dunst/dunstrc"
 "bin/udf.sh" = "~/.bin/update-desktop-files.sh"
 "external/flight" = { target = "~/Desktop/flight-themes", type = "symbolic" }
 "pacman/udf.hook" = { target = "/usr/share/libalpm/hooks/update-desktop-files.hook", type = "template", owner = "root" }
