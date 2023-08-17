@@ -5,8 +5,8 @@
 .topbar {
   color: white;
   font-size: 17px;
-  padding: 0 10px 0 15px;
   border-radius: 25px;
+  padding: 0 10px 0 15px;
   background-color: rgba(5, 5, 5, 0.6);
 }
 
@@ -64,22 +64,30 @@ menubar {
   font-weight: bold;
 
   &.revealed {
+    margin: 6px 0;
     color: black;
     border-radius: 99px;
     padding: 0 10px 0 10px;
     background-color: #a5f3fc;
+
+    .media-info {
+      .cover-art {
+        border: 0;
+        margin: 4px 10px;
+      }
+    }
   }
 
   .media-info {
     margin-right: 10px;
 
     .cover-art {
-      margin: 10px;
+      margin: 8px;
       min-width: 30px;
       min-height: 30px;
       border-radius: 99px;
-      border: 2px solid #a5f3fc;
       background-size: cover;
+      border: 2px solid #a5f3fc;
       background-position: center;
     }
   }
@@ -90,10 +98,10 @@ menubar {
   margin-left: 2px;
 
   &.revealed {
-    color: black;
     margin: 8px 0;
+    color: black;
     margin-left: 12px;
-    border-radius: 16px;
+    border-radius: 99px;
     padding: 0 6px 0 10px;
     background-color: #7dd3fc;
   }
@@ -121,13 +129,13 @@ menubar {
 }
 
 .power {
-  margin: 0 7px 0 6px;
   color: #a7f3d0;
+  margin: 0 7px 0 6px;
 
   &.revealed {
     color: black;
     margin: 8px 12px;
-    border-radius: 16px;
+    border-radius: 99px;
     padding: 0 6px 0 10px;
     background-color: #a7f3d0;
   }
@@ -135,14 +143,14 @@ menubar {
 
 .clock {
   color: #fed7aa;
-  margin-left: 6px;
+  margin: 0 6px;
 
   &.revealed {
-    color: black;
     margin: 8px 0;
-    margin-left: 12px;
-    border-radius: 16px;
+    color: black;
     padding: 0 10px;
+    margin-left: 12px;
+    border-radius: 99px;
     background-color: #fed7aa;
   }
 
