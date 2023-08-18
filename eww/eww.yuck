@@ -112,7 +112,7 @@
     (button :tooltip "Open calendar" :onclick "~/.config/eww/scripts/toggle.sh calendar"
       (box :class "clock ${clock_revealed ? 'revealed' : ''}" :space-evenly false :spacing 8
         (revealer :transition "slideleft" :reveal clock_revealed
-          (label :class "date" :text {formattime(EWW_TIME, "%B %-e, %Y")})
+          (label :class "date" :text {formattime(EWW_TIME, "%a, %B %-e, %Y")})
         )
         
         (label :class "time" :text {formattime(EWW_TIME, "%-l:%M %p")})
