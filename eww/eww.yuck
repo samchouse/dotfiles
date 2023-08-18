@@ -2,15 +2,15 @@
 ; ------- Variables -------
 ; -------------------------
 
+(defvar media_revealed false)
 (defvar previous_volume 0)
 (defvar volume_revealed false)
-(defvar media_revealed false)
 (defvar power_revealed false)
 (defvar clock_revealed false)
 
-(defpoll media_title :interval "0.5s" "playerctl --player playerctld metadata xesam:title")
 (defpoll media_path :interval "0.5s" "~/.config/eww/scripts/media.sh -p metadata")
 (defpoll media_isplaying :interval "3s" "~/.config/eww/scripts/media.sh -s metadata")
+(defpoll media_title :interval "0.5s" "~/.config/eww/scripts/media.sh -t metadata")
 (defpoll volume_ouput :interval "10s" "~/.bin/audio.sh get-output")
 (defpoll volume_icon :interval "0.2s" "~/.config/eww/scripts/volume.sh -i")
 (defpoll volume_percentage :interval "3s" "~/.config/eww/scripts/volume.sh -g")
@@ -72,12 +72,6 @@
   (systray :pack-direction "ltr")
 )
 
-(defwidget wifi []
-  (box :tooltip "Connected to ${wifi_name}" :class "wifi"
-    (label :class "icon" :text wifi_icon)
-  )
-)
-
 (defwidget volume []
   (eventbox :onhover "${EWW_CMD} update volume_revealed=true" :onhoverlost "${EWW_CMD} update volume_revealed=false"
     (box :space-evenly false :spacing 6 :tooltip "Volume: ${volume_percentage}% (${volume_ouput})" :class "volume ${volume_revealed ? 'revealed' : ''}"
@@ -87,6 +81,12 @@
       
       (button :class "icon" :onclick "~/.config/eww/scripts/volume.sh -m" :onrightclick "~/.bin/audio.sh toggle-output && ${EWW_CMD} update volume_ouput=$(~/.bin/audio.sh get-output)" volume_icon)
     )
+  )
+)
+
+(defwidget wifi []
+  (box :tooltip "Connected to ${wifi_name}" :class "wifi"
+    (label :class "icon" :text wifi_icon)
   )
 )
 

@@ -18,10 +18,13 @@ esac
 
 case $2 in
 "metadata")
-  while getopts "sp" opt; do
+  while getopts "stp" opt; do
     case $opt in
+    t)
+      playerctl --player playerctld metadata xesam:title 2>/dev/null
+      ;;
     s)
-      status=$(playerctl --player playerctld status)
+      status=$(playerctl --player playerctld status 2>/dev/null)
       if [[ $status == "Playing" ]]; then
         echo "true"
         exit
@@ -30,7 +33,7 @@ case $2 in
       echo "false"
       ;;
     p)
-      url=$(playerctl --player playerctld metadata mpris:artUrl)
+      url=$(playerctl --player playerctld metadata mpris:artUrl 2>/dev/null)
       if [[ $url == "https://"* ]]; then
         ext="${url##*.}"
 
@@ -52,3 +55,5 @@ case $2 in
   echo "Invalid command"
   ;;
 esac
+
+echo ""
