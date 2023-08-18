@@ -2,18 +2,27 @@
 
 case $1 in
 "get-output")
-  device=$(pactl list sinks | grep "device.profile.name" | sed 's/device.profile.name = "//' | sed 's/"//' | xargs)
-  case $device in
-  "hdmi-stereo")
-    echo "headphones"
-    ;;
-  "hdmi-stereo-extra1")
-    echo "speakers"
-    ;;
-  *)
-    echo "unknown"
-    ;;
-  esac
+  handle() {
+    if [[ "$1" != "" ]] && ! echo "$1" | grep -q card; then
+      return
+    fi
+
+    device=$(pactl list sinks | grep "device.profile.name" | sed 's/device.profile.name = "//' | sed 's/"//' | xargs)
+    case $device in
+    "hdmi-stereo")
+      echo "headphones"
+      ;;
+    "hdmi-stereo-extra1")
+      echo "speakers"
+      ;;
+    *)
+      echo "unknown"
+      ;;
+    esac
+  }
+
+  handle
+  pactl subscribe | while read -r line; do handle "$line"; done
   ;;
 "toggle-output")
   device=$(pactl list sinks | grep "device.profile.name" | sed 's/device.profile.name = "//' | sed 's/"//' | xargs)

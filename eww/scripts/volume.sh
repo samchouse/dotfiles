@@ -1,34 +1,41 @@
 #!/bin/bash
 
-while getopts "gsmi" opt; do
+while getopts "mi" opt; do
   case $opt in
-  g)
-    pactl get-sink-volume @DEFAULT_SINK@ | grep -oP "[\d]*%" | head -n1 | sed 's/%//'
-    ;;
-  s)
-    pactl set-sink-volume @DEFAULT_SINK@ "$2%"
-    ~/.bin/eww update "volume_percentage=$2"
+  i)
+    handle() {
+      if [[ "$1" != "" ]] && ! echo "$1" | grep -q sink; then
+        return
+      fi
+
+      volume=$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP "[\d]*%" | head -n1 | sed 's/%//')
+      if [ "$volume" -eq 0 ]; then
+        icon=""
+      elif [ "$volume" -lt 50 ]; then
+        icon=""
+      else
+        icon=""
+      fi
+
+      muted=$(pactl get-sink-mute @DEFAULT_SINK@ | sed 's/Mute: //')
+      if [ "$muted" = "yes" ]; then
+        icon=""
+      fi
+
+      echo "{ \"icon\": \"$icon\", \"volume\": \"$volume\" }"
+    }
+
+    handle
+    pactl subscribe | while read -r line; do handle "$line"; done
     ;;
   m)
-    VOLUME=$(~/.bin/eww get volume_percentage)
-    PREV_VOLUME=$(~/.bin/eww get previous_volume)
-    if [ "$VOLUME" -eq 0 ]; then
-      pactl set-sink-volume @DEFAULT_SINK@ "$PREV_VOLUME%"
-      ~/.bin/eww update "volume_percentage=$PREV_VOLUME"
+    volume=$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP "[\d]*%" | head -n1 | sed 's/%//')
+    prev_volume=$(~/.bin/eww get previous_volume)
+    if [ "$volume" -eq 0 ]; then
+      pactl set-sink-volume @DEFAULT_SINK@ "$prev_volume%"
     else
       pactl set-sink-volume @DEFAULT_SINK@ 0%
-      ~/.bin/eww update "volume_percentage=0"
-      ~/.bin/eww update "previous_volume=$VOLUME"
-    fi
-    ;;
-  i)
-    VOLUME=$(~/.bin/eww get volume_percentage)
-    if [ "$VOLUME" -eq 0 ]; then
-      echo 
-    elif [ "$VOLUME" -le 40 ]; then
-      echo 
-    else
-      echo 
+      ~/.bin/eww update "previous_volume=$volume"
     fi
     ;;
   \?)
