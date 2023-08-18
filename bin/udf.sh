@@ -24,3 +24,7 @@ fi
 if ! grep -q ozone /usr/share/applications/redis-insight.desktop; then
   sed -i 's|Exec=.*|Exec=/opt/redis-insight-bin/redisinsight --enable-features=UseOzonePlatform --ozone-platform=wayland|' /usr/share/applications/redis-insight.desktop
 fi
+
+if ! grep -q ozone /usr/share/applications/postman.desktop; then
+  sed -i 's|\(Exec=[^%]*\)\(%U\)|\1--enable-features=UseOzonePlatform --ozone-platform=wayland \2|' /usr/share/applications/postman.desktop
+fi
