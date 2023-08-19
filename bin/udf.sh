@@ -3,10 +3,10 @@
 rm -rf ~/.gnome
 rm -rf ~/.local/share/applications/chrome-*.desktop
 
-if ! grep -q ozone /usr/share/applications/visual-studio-code-insiders.desktop; then
+if ! grep -q ozone /usr/share/applications/code-insiders.desktop; then
   replacement="s|\(Exec=[^%]*\)\(%F\)|\1--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations \2|"
-  sed -i "$replacement" /usr/share/applications/visual-studio-code-insiders.desktop
-  sed -i "$replacement" /usr/share/applications/visual-studio-code-insiders-url-handler.desktop
+  sed -i "$replacement" /usr/share/applications/code-insiders.desktop
+  sed -i "$replacement" /usr/share/applications/code-insiders-url-handler.desktop
 fi
 
 if ! grep -q ozone /usr/share/applications/discord.desktop; then

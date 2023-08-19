@@ -8,4 +8,4 @@ skip_notify = true
 arch_package_manager = "paru"
 
 [commands]
-{{#if dotter.packages.desktop}}"VSCode Insiders" = "paru -S visual-studio-code-insiders-bin --rebuild --noconfirm"{{/if}}
+{{#if dotter.packages.desktop}}"VSCode Insiders" = "paru -S code-insiders-bin --rebuild --noconfirm"{{/if}}
