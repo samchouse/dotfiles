@@ -99,8 +99,7 @@
         )
       )
       
-      ; (button :class "icon" :onclick "systemctl suspend" :tooltip "Sleep" "")
-      (button :class "icon" :onclick "swaylock -fSle --indicator --indicator-radius 110 --indicator-idle-visible --clock --timestr \"%-l:%M %p\" --datestr \"%a, %B %-e, %Y\" --effect-blur 5x5" :tooltip "Sleep" "")
+      (button :class "icon" :onclick "systemctl suspend" :tooltip "Sleep" "")
     )
   )
 )

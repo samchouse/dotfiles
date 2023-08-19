@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: Set media to nothing after 3 minutes of it being paused
+
 case $1 in
 "toggle")
   playerctl --player playerctld play-pause
