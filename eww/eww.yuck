@@ -58,7 +58,7 @@
       
       (revealer :transition "slideright" :reveal media_revealed
         (box :space-evenly false
-          (button :class "icon rounded-icon" :tooltip {media_isplaying == "true" ? "Pause" : "Play"} :onclick "~/.config/eww/scripts/media.sh toggle" {media_isplaying == "true" ? "" : ""})
+          (button :class "icon rounded-icon" :tooltip {media_isplaying == "true" ? "Pause" : "Play"} :onclick "playerctl --player playerctld play-pause" {media_isplaying == "true" ? "" : ""})
           (button :class "icon" :tooltip "Next" :onclick "playerctl --player playerctld next" "")
         )
       )
