@@ -10,13 +10,13 @@
 (defpoll wifi_name :interval "1m" "~/.config/eww/scripts/wifi.sh -n")
 (defpoll wifi_icon :interval "5s" "~/.config/eww/scripts/wifi.sh -i")
 
-(deflisten workspaces_left "~/.config/eww/scripts/hypr.sh workspaces left")
-(deflisten workspaces_right "~/.config/eww/scripts/hypr.sh workspaces right")
+(deflisten workspaces_left :initial "[{}, {}, {}, {}, {}, {}, {}, {}, {}]" "~/.config/eww/scripts/hypr.sh workspaces left")
+(deflisten workspaces_right :initial "[{}, {}, {}, {}, {}, {}, {}, {}, {}]" "~/.config/eww/scripts/hypr.sh workspaces right")
 (deflisten media_title "~/.config/eww/scripts/media.sh -t metadata")
 (deflisten media_isplaying "~/.config/eww/scripts/media.sh -s metadata")
 (deflisten media_path "~/.config/eww/scripts/media.sh -p metadata")
 (deflisten volume_ouput "~/.bin/audio.sh get-output")
-(deflisten volume_info "~/.config/eww/scripts/volume.sh -i")
+(deflisten volume_info :initial "{}" "~/.config/eww/scripts/volume.sh -i")
 
 ; -------------------------
 ; -------- Widgets --------
@@ -27,7 +27,7 @@
 )
 
 (defwidget workspace [info]
-  (button :class "icon ${info.created ? "created" : ""} ${!info.mine ? "not-mine" : ""} ${info.focused ? "focused" : ""}" :tooltip "Switch to workspace ${info.id}" :onclick "hyprctl dispatch workspace ${info.id}" "")
+  (button :class "icon ${info.created?:false ? "created" : ""} ${info.mine?:false ? "" : "not-mine"} ${info.focused?:false ? "focused" : ""}" :tooltip "Switch to workspace ${info.id}" :onclick "hyprctl dispatch workspace ${info.id}" "")
 )
 
 (defwidget workspaces [statuses]
@@ -74,7 +74,7 @@
   (eventbox :onhover "${EWW_CMD} update volume_revealed=true" :onhoverlost "${EWW_CMD} update volume_revealed=false"
     (box :space-evenly false :spacing 6 :tooltip "Volume: ${volume_info.volume}% (${volume_ouput})" :class "volume ${volume_revealed ? 'revealed' : ''}"
       (revealer :transition "slideleft" :reveal volume_revealed
-        (scale :min 0 :max 101 :value {volume_info.volume == "" ? 100 : volume_info.volume} :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%")
+        (scale :min 0 :max 101 :value {volume_info.volume?:100} :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%")
       )
       
       (button :class "icon" :onclick "pactl set-sink-mute @DEFAULT_SINK@ toggle" :onrightclick "~/.bin/audio.sh toggle-output" {volume_info.icon})
