@@ -14,11 +14,11 @@ depends = ["default"]
 depends = ["desktop"]
 
 [hypr.files]
-eww = "~/.config/eww"
 rofi = "~/.config/rofi"
 hypr = "~/.config/hypr"
 "bin/audio.sh" = "~/.bin/audio.sh"
 dunstrc = "~/.config/dunst/dunstrc"
 "bin/udf.sh" = "~/.bin/update-desktop-files.sh"
+eww = { target = "~/.config/eww", type = "symbolic", recurse = false }
 "external/flight" = { target = "~/Desktop/flight-themes", type = "symbolic" }
 "pacman/udf.hook" = { target = "/usr/share/libalpm/hooks/update-desktop-files.hook", type = "template", owner = "root" }
