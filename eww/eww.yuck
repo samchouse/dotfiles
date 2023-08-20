@@ -27,7 +27,7 @@
 )
 
 (defwidget workspace [info]
-  (button :class "icon ${info.created ? "created" : ""} ${info.focused ? "focused" : ""}" :tooltip "Switch to workspace ${info.id}" :onclick "hyprctl dispatch workspace ${info.id}" "")
+  (button :class "icon ${info.created ? "created" : ""} ${!info.mine ? "not-mine" : ""} ${info.focused ? "focused" : ""}" :tooltip "Switch to workspace ${info.id}" :onclick "hyprctl dispatch workspace ${info.id}" "")
 )
 
 (defwidget workspaces [statuses]

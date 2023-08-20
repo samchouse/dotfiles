@@ -64,6 +64,10 @@ menubar {
 
   .created {
     color: #fff;
+
+    &.not-mine {
+      color: #a5b4fc;
+    }
   }
 
   .focused {

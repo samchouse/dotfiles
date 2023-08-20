@@ -25,8 +25,9 @@ workspaces)
     workspaces=()
     for i in {1..9}; do
       active_id=$(echo "$active_workspace" | jq -r .id)
+      monitor=$(hyprctl workspaces -j | jq -r ".[] | select(.id==$i) | .monitor")
       created=$(hyprctl workspaces | grep "workspace ID" | awk '{ print $3 }' | grep -q "$i" && echo true || echo false)
-      workspaces+=("{ \"id\": \"$i\", \"created\": $created, \"focused\": $([ "$active_id" -eq "$i" ] && echo true || echo false) }")
+      workspaces+=("{ \"id\": \"$i\", \"created\": $created, \"mine\": $([ "$monitor" = "$(echo "$active_workspace" | jq -r .monitor)" ] && echo true || echo false), \"focused\": $([ "$active_id" -eq "$i" ] && echo true || echo false) }")
     done
 
     echo "[ $(join_by , "${workspaces[@]}") ]"
