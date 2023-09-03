@@ -97,6 +97,7 @@ if ! gpg --list-keys "$KEY_ID" >/dev/null 2>&1; then
 fi
 
 # Git
+git config --global core.editor nano
 git config --global tag.gpgSign true
 git config --global pull.rebase false
 git config --global commit.gpgsign true
