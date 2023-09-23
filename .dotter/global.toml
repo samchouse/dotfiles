@@ -9,6 +9,7 @@ depends = ["default"]
 
 [desktop.files]
 "wallpaper.jpg" = { target = "~/Pictures/wallpaper.jpg", type = "symbolic" }
+"logid.cfg" = { target = "/etc/logid.cfg", type = "symbolic", owner = "root" }
 
 [hypr]
 depends = ["desktop"]
