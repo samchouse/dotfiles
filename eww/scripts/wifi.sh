@@ -1,22 +1,20 @@
 #!/bin/bash
 
-NAME=$(ip -o l | awk -F '[ :]' '/f0:b6:1e:93:7f:10/{ print $3 }')
-
 while getopts "ni" opt; do
   case $opt in
   n)
-    iwctl station "$NAME" show | grep "Connected network" | awk '{ print $3 }'
+    nmcli device wifi list | grep "\*" | awk '{ print $3 }'
     ;;
   i)
-    strength=$(iwctl station "$NAME" show | grep -w RSSI | awk '{ print $2 }')
+    strength=$(nmcli device wifi list | grep "\*" | awk '{ print $9 }' | grep -o _ | wc -l)
 
-    if [ "$strength" -ge -55 ]; then
+    if [[ $strength -eq 0 ]]; then
       echo ""
-    elif [ "$strength" -ge -63 ]; then
+    elif [[ $strength -eq 1 ]]; then
       echo ""
-    elif [ "$strength" -ge -70 ]; then
+    elif [[ $strength -eq 2 ]]; then
       echo ""
-    elif [ "$strength" -ge -81 ]; then
+    elif [[ $strength -eq 3 ]]; then
       echo ""
     else
       echo ""
