@@ -14,7 +14,7 @@ OPENRGB_ON_CMD="openrgb -p Blue"
 OPENRGB_OFF_CMD="openrgb -p Black"
 
 swayidle -w \
-  timeout 180 "$OPENRGB_OFF_CMD && hyprctl dispatch dpms off" resume "$OPENRGB_ON_CMD && hyprctl dispatch dpms on" \
+  timeout 180 "playerctl --player playerctld pause && $OPENRGB_OFF_CMD && hyprctl dispatch dpms off" resume "$OPENRGB_ON_CMD && hyprctl dispatch dpms on" \
   timeout 300 "hyprctl dispatch dpms on && systemctl suspend" \
   before-sleep "$OPENRGB_OFF_CMD && $SWAYLOCK_CMD" \
   after-resume "$OPENRGB_ON_CMD"
