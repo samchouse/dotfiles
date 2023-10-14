@@ -1,6 +1,3 @@
-[submodule "external/chili"]
-path = external/chili
-url = https://github.com/MarianArlt/sddm-chili.git
 [submodule "external/flight"]
 path = external/flight
 url = https://github.com/L4ki/Flight-Plasma-Themes.git
