@@ -7,13 +7,13 @@ case $1 in
       return
     fi
 
-    device=$(pactl list sinks | grep "device.profile.name" | sed 's/device.profile.name = "//' | sed 's/"//' | xargs)
+    device=$(pactl list sinks | grep "alsa.id" | sed 's/alsa.id = "//' | sed 's/"//' | xargs)
     case $device in
-    "hdmi-stereo")
-      echo "headphones"
-      ;;
-    "hdmi-stereo-extra1")
+    "HDMI 0")
       echo "speakers"
+      ;;
+    "HDMI 1")
+      echo "headphones"
       ;;
     *)
       echo "unknown"
@@ -25,13 +25,13 @@ case $1 in
   pactl subscribe | while read -r line; do handle "$line"; done
   ;;
 "toggle-output")
-  device=$(pactl list sinks | grep "device.profile.name" | sed 's/device.profile.name = "//' | sed 's/"//' | xargs)
+  device=$(pactl list sinks | grep "alsa.id" | sed 's/alsa.id = "//' | sed 's/"//' | xargs)
   case $device in
-  "hdmi-stereo")
-    $0 set-output speakers
-    ;;
-  "hdmi-stereo-extra1")
+  "HDMI 0")
     $0 set-output headphones
+    ;;
+  "HDMI 1")
+    $0 set-output speakers
     ;;
   *)
     echo "Unknown device: $device"
@@ -42,10 +42,12 @@ case $1 in
   sink=$(pactl list sinks | grep -E "^\s*device.name" | sed 's/device.name = "//' | sed 's/"//' | xargs)
   case $2 in
   "headphones")
-    pactl set-card-profile "$sink" output:hdmi-stereo
+    output=$(pactl list cards | grep "output:hdmi-stereo" | grep "(HDMI 2)" | xargs | grep -oP "output:hdmi-stereo(-extra\d)*")
+    pactl set-card-profile "$sink" "$output"
     ;;
   "speakers")
-    pactl set-card-profile "$sink" output:hdmi-stereo-extra1
+    output=$(pactl list cards | grep "output:hdmi-stereo" | grep "(HDMI)" | xargs | grep -oP "output:hdmi-stereo(-extra\d)*")
+    pactl set-card-profile "$sink" "$output"
     ;;
   *)
     echo "Usage: $0 set-output <headphones|speakers>"

@@ -3,3 +3,6 @@ node = "latest"
 go = "latest"
 python = "3.10"
 java = "11"
+
+[settings]
+experimental = true

@@ -99,7 +99,7 @@
         )
       )
       
-      (button :class "icon" :onclick "systemctl suspend" :tooltip "Sleep" "")
+      (button :class "icon" :onclick "~/.config/eww/scripts/lock.sh" :tooltip "Lock" "")
     )
   )
 )

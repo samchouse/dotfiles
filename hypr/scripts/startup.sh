@@ -10,3 +10,5 @@ slack --enable-features=UseOzonePlatform --enable-features=WebRTCPipeWireCapture
 sleep 1
 openrgb -p Blue >> /dev/null 2>&1 &
 xwaylandvideobridge >> /dev/null 2>&1 &
+
+disown

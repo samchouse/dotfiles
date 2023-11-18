@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: support monitorremoved
+
 handle() {
   case $1 in monitoradded*)
     monitor="${1//monitoradded>>DP-/}"

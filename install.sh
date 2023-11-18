@@ -67,8 +67,7 @@ if grep -q hypr .dotter/local.toml; then
   if ! hyprctl plugin list | grep -q hyprfocus; then
     cd external/hyprfocus || exit 1
     git clone --recursive https://github.com/hyprwm/Hyprland && cd Hyprland || exit 1
-    git checkout tags/"$(hyprctl version | grep Tag: | sed 's/\(Tag:\)//' | sed 's/-.*//')"
-    sudo make pluginenv
+    make all && sudo make installheaders
     cd .. && make all
     mkdir -p ~/.config/hypr/plugins
     mv hyprfocus.so ~/.config/hypr/plugins/hyprfocus.so
