@@ -10,5 +10,7 @@ SWAYLOCK_CMD="swaylock \
   --datestr \"%a, %b %-e, %Y\" \
   --effect-blur 5x5"
 
-playerctl --player playerctld pause || true
-eval "$SWAYLOCK_CMD"
+if ! pgrep -x "swaylock" > /dev/null; then
+  playerctl --player playerctld pause || true
+  eval "$SWAYLOCK_CMD"
+fi
