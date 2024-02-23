@@ -15,8 +15,9 @@ export ZSH="$HOME/.oh-my-zsh"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting)
+plugins=(git fast-syntax-highlighting)
 
+DISABLE_AUTO_UPDATE=true
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -30,7 +31,15 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias u="topgrade"
+alias neofetch="neowofetch"
 alias c="code-insiders{{#if dotter.packages.hypr}} --ozone-platform-hint=auto --enable-features=WaylandWindowDecorations{{/if}}"
 
 eval "$(starship init zsh)"
-eval "$(~/.local/share/rtx/bin/rtx activate -s zsh)"
+eval "$(/home/sam/.local/bin/mise activate zsh)"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# bun completions
+[ -s "/home/sam/.bun/_bun" ] && source "/home/sam/.bun/_bun"

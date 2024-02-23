@@ -6,6 +6,8 @@
 (defvar volume_revealed false)
 (defvar power_revealed false)
 (defvar clock_revealed false)
+(defvar inhibitor_enabled false)
+(defvar inhibitor_icon "")
 
 (defpoll wifi_name :interval "1m" "~/.config/eww/scripts/wifi.sh -n")
 (defpoll wifi_icon :interval "5s" "~/.config/eww/scripts/wifi.sh -i")
@@ -68,6 +70,12 @@
 
 (defwidget tray []
   (systray :pack-direction "ltr")
+)
+
+(defwidget inhibitor []
+  (box :class "inhibitor" :tooltip {inhibitor_enabled ? "Stop inhibiting idle" : "Inhibit idle"}
+    (button :class "smaller-icon" :onclick "~/.config/eww/scripts/inhibitor.sh toggle" {inhibitor_icon})
+  )
 )
 
 (defwidget volume []
@@ -142,6 +150,7 @@
   (box :orientation "h" :halign "end" :space-evenly false :spacing 0
     (tray)
     (separator)
+    (inhibitor)
     (volume)
     (wifi)
     (power)

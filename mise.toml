@@ -1,7 +1,7 @@
 [tools]
 node = "latest"
 go = "latest"
-python = "3.10"
+python = "system"
 java = "11"
 
 [settings]
