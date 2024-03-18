@@ -9,8 +9,8 @@ if ! grep -q ozone /usr/share/applications/code-insiders.desktop; then
   sed -i "$replacement" /usr/share/applications/code-insiders-url-handler.desktop
 fi
 
-if ! grep -q ozone /usr/share/applications/discord.desktop; then
-  sed -i 's|Exec=.*|\0 --enable-features=UseOzonePlatform --ozone-platform=wayland|' /usr/share/applications/discord.desktop
+if ! grep -q ozone /usr/share/applications/vesktop.desktop; then
+  sed -i 's|Exec=.*|\0 --enable-features=UseOzonePlatform --ozone-platform=wayland|' /usr/share/applications/vesktop.desktop
 fi
 
 if ! grep -q ozone /usr/share/applications/obsidian.desktop; then

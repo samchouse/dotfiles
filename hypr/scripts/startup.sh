@@ -4,7 +4,7 @@
 
 sleep 3
 openrgb --startminimized --server >> /dev/null 2>&1 &
-discord --start-minimized --enable-features=UseOzonePlatform --ozone-platform=wayland >> /dev/null 2>&1 &
+vesktop --start-minimized --enable-features=UseOzonePlatform --ozone-platform=wayland >> /dev/null 2>&1 &
 slack --enable-features=UseOzonePlatform,WaylandWindowDecorations --enable-features=WebRTCPipeWireCapturer --ozone-platform=wayland -u >> /dev/null 2>&1 &
 
 sleep 1

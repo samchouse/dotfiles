@@ -3,6 +3,9 @@ node = "latest"
 go = "latest"
 python = "system"
 java = "11"
+"npm:taze" = "latest"
+"npm:@withgraphite/graphite-cli" = "latest"
+"go:github.com/cosmtrek/air" = "latest"
 
 [settings]
 experimental = true
