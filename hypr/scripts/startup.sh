@@ -1,6 +1,6 @@
 #!/bin/bash
 
-"$HOME/.bin/eww" open-many topbar-left topbar-right >> /dev/null 2>&1 &
+eww open-many topbar-left topbar-right >> /dev/null 2>&1 &
 
 sleep 3
 openrgb --startminimized --server >> /dev/null 2>&1 &

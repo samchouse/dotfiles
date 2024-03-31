@@ -30,12 +30,12 @@ while getopts "mi" opt; do
     ;;
   m)
     volume=$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP "[\d]*%" | head -n1 | sed 's/%//')
-    prev_volume=$(~/.bin/eww get previous_volume)
+    prev_volume=$(eww get previous_volume)
     if [ "$volume" -eq 0 ]; then
       pactl set-sink-volume @DEFAULT_SINK@ "$prev_volume%"
     else
       pactl set-sink-volume @DEFAULT_SINK@ 0%
-      ~/.bin/eww update "previous_volume=$volume"
+      eww update "previous_volume=$volume"
     fi
     ;;
   \?)

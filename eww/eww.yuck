@@ -69,7 +69,7 @@
 )
 
 (defwidget tray []
-  (systray :pack-direction "ltr")
+  (systray :class "systray" :spacing "12")
 )
 
 (defwidget inhibitor []

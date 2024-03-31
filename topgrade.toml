@@ -12,5 +12,4 @@ arch_package_manager = "paru"
 upgrade = true
 
 [commands]
-{{#if dotter.packages.desktop}}"VSCode Insiders" = "paru -S code-insiders-bin --noconfirm"
-"HyprStatus" = "paru -Qi hyprland hyprpaper hyprcursor hypridle hyprlock hyprpicker hyprlang xdg-desktop-portal-hyprland"{{/if}}
+{{#if dotter.packages.desktop}}"VSCode Insiders" = "paru -S code-insiders-bin --noconfirm"{{/if}}
