@@ -107,7 +107,7 @@
         )
       )
       
-      (button :class "icon" :onclick "~/.config/eww/scripts/lock.sh" :tooltip "Lock" "")
+      (button :class "icon" :onclick "~/.config/eww/scripts/lock.sh eww" :tooltip "Lock" "")
     )
   )
 )
