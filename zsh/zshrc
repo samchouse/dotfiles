@@ -31,7 +31,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias u="topgrade"
-alias neofetch="neowofetch"
 alias c="code-insiders{{#if dotter.packages.hypr}} --ozone-platform-hint=auto --enable-features=WaylandWindowDecorations{{/if}}"
 
 eval "$(starship init zsh)"
@@ -50,3 +49,5 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 # Turso
 export PATH="$PATH:/home/sam/.turso"
+
+[ -z "$SSH_TTY" ] && [ -n "$SSH_CONNECTION" ] && export SSH_TTY="/dev/pts/9999"
