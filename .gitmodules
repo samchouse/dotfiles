@@ -1,6 +1,0 @@
-[submodule "external/flight"]
-path = external/flight
-url = https://github.com/L4ki/Flight-Plasma-Themes.git
-[submodule "external/hyprfocus"]
-path = external/hyprfocus
-url = https://github.com/VortexCoyote/hyprfocus.git

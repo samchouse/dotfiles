@@ -1,9 +1,0 @@
-# rust
-. "$HOME/.cargo/env"
-
-# go
-export PATH="$PATH:$("$HOME/.local/share/mise/shims/go" env GOPATH)/bin"
-
-# other
-export PATH="$PATH:$HOME/.bin{{#if dotter.packages.desktop}}:/opt/cuda/bin{{/if}}"
-export NODE_OPTIONS="--dns-result-order=ipv4first"
