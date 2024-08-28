@@ -14,12 +14,13 @@
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [ 
-        ./configuration.nix
+        ./hosts/desktop/default.nix
         home-manager.nixosModules.home-manager
         {
+          home-manager.backupFileExtension = "bak";
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.users.sam = import ./home;
+          home-manager.users.sam = import ./home/default.nix;
 
           # Optionally, use home-manager.extraSpecialArgs to pass
           # arguments to home.nix

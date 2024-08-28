@@ -10,6 +10,8 @@
     ./hardware-configuration.nix
   ];
 
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
   nix.settings = {
     substituters = ["https://hyprland.cachix.org"];
     trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
@@ -32,13 +34,6 @@
 
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
-  programs.zsh.ohMyZsh = {
-    enable = true;
-    plugins = [
-      "git"
-      "fast-syntax-highlighting"
-    ];
-  };
 
   nix.settings.experimental-features = [
     "nix-command"
@@ -100,14 +95,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    #  wget
-    kitty
-    firefox
-    gammastep
-    zsh-fast-syntax-highlighting
-    gh
-    vscode.fhs
     git
   ];
 
