@@ -2,11 +2,11 @@
 
 {
   imports = [
+    ./desktop
     ./zsh.nix
-    ./hypr/hyprland.nix
+    ./git.nix
   ];
 
-  # TODO please change the username & home directory to your own
   home.username = "sam";
   home.homeDirectory = "/home/sam";
 
@@ -17,6 +17,7 @@
     gammastep
     gh
     vscode.fhs
+    zsh-fast-syntax-highlighting
   ];
 
   # This value determines the Home Manager release that your

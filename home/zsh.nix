@@ -1,9 +1,4 @@
-{
-  inputs,
-  pkgs,
-  ...
-}:
-{
+{ ... }: {
   programs.zsh = {
     enable = true;
 
@@ -17,8 +12,12 @@
 
       plugins = [
         "git"
-        "fast-syntax-highlighting"
+        "zsh-fast-syntax-highlighting"
       ];
     };
+  };
+
+  programs.starship = {
+    enable = true;
   };
 }

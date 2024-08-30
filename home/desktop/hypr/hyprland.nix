@@ -4,7 +4,6 @@
   ...
 }:
 {
-  # enable hyprland
   wayland.windowManager.hyprland = {
     enable = true;
 
@@ -160,6 +159,10 @@
         ", XF86AudioMute, exec, swayosd-client --output-volume mute-toggle"
         ", XF86AudioRaiseVolume, exec, swayosd-client --output-volume raise"
         ", XF86AudioLowerVolume, exec, swayosd-client --output-volume lower"
+      ];
+
+      exec-once = [
+        "gammastep -O 4000 >>/dev/null 2>&1"
       ];
     };
   };

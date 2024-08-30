@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    catppuccin.url = "github:catppuccin/nix";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -20,7 +21,10 @@
           home-manager.backupFileExtension = "bak";
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.users.sam = import ./home/default.nix;
+          home-manager.users.sam.imports = [
+            ./home/default.nix
+            catppuccin.homeManagerModules.catppuccin
+          ];
 
           # Optionally, use home-manager.extraSpecialArgs to pass
           # arguments to home.nix
