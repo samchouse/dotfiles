@@ -15,6 +15,25 @@
         "type": "github"
       }
     },
+    "custom-fonts": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1725122258,
+        "narHash": "sha256-IpQifexhSxNDMbpZYar1bmbh69j9j+eVF0TQpcrsVtI=",
+        "ref": "main",
+        "rev": "bc54b9e3148a4836d8e87093b825bcc88e63da4c",
+        "revCount": 1,
+        "type": "git",
+        "url": "ssh://git@github.com/samchouse/fonts.git"
+      },
+      "original": {
+        "ref": "main",
+        "type": "git",
+        "url": "ssh://git@github.com/samchouse/fonts.git"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -37,6 +56,22 @@
     },
     "nixpkgs": {
       "locked": {
+        "lastModified": 1724819573,
+        "narHash": "sha256-GnR7/ibgIH1vhoy8cYdmXE6iyZqKqFxQSVkFgosBh6w=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "71e91c409d1e654808b2621f28a327acfdad8dc2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
         "lastModified": 1724479785,
         "narHash": "sha256-pP3Azj5d6M5nmG68Fu4JqZmdGt4S4vqI5f8te+E/FTw=",
         "owner": "nixos",
@@ -54,8 +89,9 @@
     "root": {
       "inputs": {
         "catppuccin": "catppuccin",
+        "custom-fonts": "custom-fonts",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs_2"
       }
     }
   },

@@ -1,4 +1,4 @@
-{ ... }: {
+{ lib, pkgs, ... }: {
   programs.git = {
     enable = true;
 
@@ -12,7 +12,7 @@
 
     extraConfig = {
       gpg.format = "ssh";
-      gpg.ssh.program = "/opt/1Password/op-ssh-sign";
+      gpg.ssh.program = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
       pull.rebase = false;
       core.editor = "nano";
       init.defaultBranch = "main";

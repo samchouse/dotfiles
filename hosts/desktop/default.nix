@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, custom-fonts, ... }:
+{ config, pkgs, ... }@attrs:
 
 {
   imports = [
@@ -46,21 +46,44 @@ services.pipewire = {
   pulse.enable = true;
 };
 
-  services.tailscale.enable = true;
+  services.tailscale = {
+    enable = true;
+    extraSetFlags = [
+        "--advertise-exit-node"
+        "--ssh"
+      ];
+    useRoutingFeatures = "both";
+  };
 
+security.polkit.enable = true;
   programs._1password.enable = true;
   programs._1password-gui = {
     enable = true;
+    polkitPolicyOwners = ["sam"];
   };
+
+  systemd = {
+  user.services.polkit-gnome-authentication-agent-1 = {
+    description = "polkit-gnome-authentication-agent-1";
+    wantedBy = [ "graphical-session.target" ];
+    wants = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+        Restart = "on-failure";
+        RestartSec = 1;
+        TimeoutStopSec = 10;
+      };
+  };
+};
 
 virtualisation.docker.rootless = {
   enable = true;
   setSocketVariable = true;
 };
 
-# fonts.packages = [
-#   custom-fonts.packages.x86_64-linux.default
-# ];
+fonts.packages = (if attrs ? custom-fonts then [attrs.custom-fonts.packages.x86_64-linux.default] else []);
 
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
@@ -129,6 +152,7 @@ virtualisation.docker.rootless = {
     zip
     unzip
     nvidia-vaapi-driver
+    polkit_gnome
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -149,6 +173,19 @@ virtualisation.docker.rootless = {
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
+  networking.firewall = {
+    # enable the firewall
+    enable = true;
+
+    # always allow traffic from your Tailscale network
+    trustedInterfaces = [ "tailscale0" ];
+
+    # allow the Tailscale UDP port through the firewall
+    allowedUDPPorts = [ config.services.tailscale.port ];
+
+    # allow you to SSH in over the public internet
+    # allowedTCPPorts = [ 22 ];
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
