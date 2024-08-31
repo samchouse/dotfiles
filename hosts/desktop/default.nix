@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, custom-fonts, ... }:
 
 {
   imports = [
@@ -20,10 +20,31 @@
   programs.hyprland.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia.modesetting.enable = true;
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
+  hardware.graphics.extraPackages = [ pkgs.nvidia-vaapi-driver ];
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
 
-  boot.kernelParams = [ "nvidia_drm.fbdev=1" ];
+  boot.kernelParams = [ "quiet" "loglevel=3" "nvidia_drm.fbdev=1" "nvidia_uvm" ];
+
+boot.initrd.systemd.enable = true;
+boot.loader.systemd-boot.enable = false;
+  boot.loader.grub = {
+    enable = true;
+    device = "nodev";
+    gfxmodeEfi = "2560x1440x32,auto";
+    gfxmodeBios = "2560x1440x32,auto";
+    gfxpayloadEfi = "keep";
+    gfxpayloadBios = "keep";
+    efiSupport = true;
+};
+
+security.rtkit.enable = true;
+services.pipewire = {
+  enable = true;
+  alsa.enable = true;
+  alsa.support32Bit = true;
+  pulse.enable = true;
+};
 
   services.tailscale.enable = true;
 
@@ -31,6 +52,15 @@
   programs._1password-gui = {
     enable = true;
   };
+
+virtualisation.docker.rootless = {
+  enable = true;
+  setSocketVariable = true;
+};
+
+# fonts.packages = [
+#   custom-fonts.packages.x86_64-linux.default
+# ];
 
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
@@ -41,7 +71,7 @@
   ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
+  # boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "desktop"; # Define your hostname.
@@ -96,6 +126,9 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     git
+    zip
+    unzip
+    nvidia-vaapi-driver
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -126,8 +159,8 @@
   system.stateVersion = "24.05"; # Did you read the comment?
 
   # Limit the number of generations to keep
-  boot.loader.systemd-boot.configurationLimit = 10;
-  # boot.loader.grub.configurationLimit = 10;
+  # boot.loader.systemd-boot.configurationLimit = 10;
+  boot.loader.grub.configurationLimit = 10;
 
   # Perform garbage collection weekly to maintain low disk usage
   nix.gc = {

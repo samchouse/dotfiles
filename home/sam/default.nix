@@ -5,6 +5,7 @@
     ./desktop
     ./zsh.nix
     ./git.nix
+    ../ssh.nix
   ];
 
   home.username = "sam";
@@ -12,12 +13,10 @@
 
   # Packages that should be installed to the user profile.
   home.packages = with pkgs; [
-    kitty
     firefox
     gammastep
     gh
     vscode.fhs
-    zsh-fast-syntax-highlighting
   ];
 
   # This value determines the Home Manager release that your

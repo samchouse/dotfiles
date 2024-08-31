@@ -8,28 +8,33 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # custom-fonts.url = "git+ssh://git@github.com/samchouse/fonts.git?ref=main";
   };
 
-  outputs = { self, nixpkgs, home-manager }: {
+  outputs = { self, nixpkgs, catppuccin, home-manager }: {
 
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [ 
-        ./hosts/desktop/default.nix
+        ./hosts/desktop
         home-manager.nixosModules.home-manager
         {
           home-manager.backupFileExtension = "bak";
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.sam.imports = [
-            ./home/default.nix
+            ./home/sam
             catppuccin.homeManagerModules.catppuccin
+          ];
+          home-manager.users.root.imports = [
+            ./home/root
           ];
 
           # Optionally, use home-manager.extraSpecialArgs to pass
           # arguments to home.nix
         }
       ];
+      # specialArgs = { inherit custom-fonts; };
     };
 
   };

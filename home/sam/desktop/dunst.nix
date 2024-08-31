@@ -2,9 +2,9 @@
   services.dunst =  {
     enable = true;
 
-    iconTheme = "Adwaita";
+    # iconTheme = "Adwaita";
 
-    catpuccin = {
+    catppuccin = {
       enable = true;
       flavor = "macchiato";
     };
