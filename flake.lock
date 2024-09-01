@@ -20,10 +20,10 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1725122258,
+        "lastModified": 1725143885,
         "narHash": "sha256-IpQifexhSxNDMbpZYar1bmbh69j9j+eVF0TQpcrsVtI=",
         "ref": "main",
-        "rev": "bc54b9e3148a4836d8e87093b825bcc88e63da4c",
+        "rev": "d60b884c0316a0d620969768c7187f7ad5c6b4d1",
         "revCount": 1,
         "type": "git",
         "url": "ssh://git@github.com/samchouse/fonts.git"

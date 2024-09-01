@@ -1,5 +1,6 @@
-{ ... }: {
-  services.dunst =  {
+{ ... }:
+{
+  services.dunst = {
     enable = true;
 
     # iconTheme = "Adwaita";
@@ -13,7 +14,7 @@
       global = {
         offset = "(30, 50)";
         dmenu = "/usr/bin/rofi -dmenu -p dunst:";
-        
+
         icon_corner_radius = 10;
         progress_bar_corner_radius = 20;
 

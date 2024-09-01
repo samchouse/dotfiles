@@ -1,9 +1,11 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, pkgs, ... }@attrs:
-
+{
+  config,
+  pkgs,
+  ...
+}@attrs:
 {
   imports = [
     # Include the results of the hardware scan.
@@ -13,8 +15,8 @@
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   nix.settings = {
-    substituters = ["https://hyprland.cachix.org"];
-    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+    substituters = [ "https://hyprland.cachix.org" ];
+    trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
   };
 
   programs.hyprland.enable = true;
@@ -24,10 +26,15 @@
   hardware.graphics.extraPackages = [ pkgs.nvidia-vaapi-driver ];
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
 
-  boot.kernelParams = [ "quiet" "loglevel=3" "nvidia_drm.fbdev=1" "nvidia_uvm" ];
+  boot.kernelParams = [
+    "quiet"
+    "loglevel=3"
+    "nvidia_drm.fbdev=1"
+    "nvidia_uvm"
+  ];
 
-boot.initrd.systemd.enable = true;
-boot.loader.systemd-boot.enable = false;
+  boot.initrd.systemd.enable = true;
+  boot.loader.systemd-boot.enable = false;
   boot.loader.grub = {
     enable = true;
     device = "nodev";
@@ -36,54 +43,55 @@ boot.loader.systemd-boot.enable = false;
     gfxpayloadEfi = "keep";
     gfxpayloadBios = "keep";
     efiSupport = true;
-};
+  };
 
-security.rtkit.enable = true;
-services.pipewire = {
-  enable = true;
-  alsa.enable = true;
-  alsa.support32Bit = true;
-  pulse.enable = true;
-};
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
 
   services.tailscale = {
     enable = true;
     extraSetFlags = [
-        "--advertise-exit-node"
-        "--ssh"
-      ];
+      "--advertise-exit-node"
+      "--ssh"
+    ];
     useRoutingFeatures = "both";
   };
 
-security.polkit.enable = true;
+  security.polkit.enable = true;
   programs._1password.enable = true;
   programs._1password-gui = {
     enable = true;
-    polkitPolicyOwners = ["sam"];
+    polkitPolicyOwners = [ "sam" ];
   };
 
   systemd = {
-  user.services.polkit-gnome-authentication-agent-1 = {
-    description = "polkit-gnome-authentication-agent-1";
-    wantedBy = [ "graphical-session.target" ];
-    wants = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" ];
-    serviceConfig = {
+    user.services.polkit-gnome-authentication-agent-1 = {
+      description = "polkit-gnome-authentication-agent-1";
+      wantedBy = [ "graphical-session.target" ];
+      wants = [ "graphical-session.target" ];
+      after = [ "graphical-session.target" ];
+      serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
         Restart = "on-failure";
         RestartSec = 1;
         TimeoutStopSec = 10;
       };
+    };
   };
-};
 
-virtualisation.docker.rootless = {
-  enable = true;
-  setSocketVariable = true;
-};
+  virtualisation.docker.rootless = {
+    enable = true;
+    setSocketVariable = true;
+  };
 
-fonts.packages = (if attrs ? custom-fonts then [attrs.custom-fonts.packages.x86_64-linux.default] else []);
+  fonts.packages =
+    if attrs ? custom-fonts then [ attrs.custom-fonts.packages.x86_64-linux.default ] else [ ];
 
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
@@ -212,5 +220,4 @@ fonts.packages = (if attrs ? custom-fonts then [attrs.custom-fonts.packages.x86_
   # Refer to the following link for more details:
   # https://nixos.org/manual/nix/stable/command-ref/conf-file.html#conf-auto-optimise-store
   nix.settings.auto-optimise-store = true;
-
 }

@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   xdg.configFile."rofi/squared-nord.rasi" = {
     enable = true;
     source = ./squared-nord.rasi;

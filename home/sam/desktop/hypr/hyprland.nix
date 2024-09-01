@@ -162,9 +162,7 @@
         ", XF86AudioLowerVolume, exec, swayosd-client --output-volume lower"
       ];
 
-      exec-once = [
-        "gammastep -O 4000 >>/dev/null 2>&1"
-      ];
+      exec-once = [ "gammastep -O 4000 >>/dev/null 2>&1" ];
     };
   };
 }
