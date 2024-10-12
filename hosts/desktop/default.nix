@@ -19,9 +19,27 @@
     trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
   };
 
-  programs.hyprland.enable = true;
+  # xdg.portal = {
+  #     enable = true;
+  #     xdgOpenUsePortal = true;
+  #     config = {
+  #       common.default = ["gtk"];
+  #       hyprland.default = ["gtk" "hyprland"];
+  #     };
+
+  #     extraPortals = [
+  #       pkgs.xdg-desktop-portal-gtk
+  #     ];
+  #   };
+
+  services.gnome.gnome-keyring.enable = true;
+
+  programs.hyprland = {
+    enable = true;
+  };
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia.modesetting.enable = true;
+  hardware.nvidia.open = false;
   hardware.graphics.enable = true;
   hardware.graphics.extraPackages = [ pkgs.nvidia-vaapi-driver ];
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
@@ -89,6 +107,8 @@
     enable = true;
     setSocketVariable = true;
   };
+
+  services.hardware.openrgb.enable = true;
 
   fonts.packages =
     if attrs ? custom-fonts then [ attrs.custom-fonts.packages.x86_64-linux.default ] else [ ];
@@ -161,6 +181,7 @@
     unzip
     nvidia-vaapi-driver
     polkit_gnome
+    xdg-desktop-portal-gtk
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

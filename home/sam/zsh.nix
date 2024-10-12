@@ -17,7 +17,7 @@
 
     shellAliases = {
       u = "topgrade";
-      c = "code-insiders --ozone-platform-hint=auto --enable-features=WaylandWindowDecorations";
+      c = "code-insiders";
     };
 
     oh-my-zsh = {

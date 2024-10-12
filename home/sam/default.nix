@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  niqspkgs,
   ...
 }:
 {
@@ -19,7 +20,9 @@
     firefox
     gammastep
     gh
-    vscode.fhs
+    prismlauncher
+    bibata-cursors
+    niqspkgs.packages.${pkgs.stdenv.hostPlatform.system}.bibata-hyprcursor
   ];
 
   # This value determines the Home Manager release that your

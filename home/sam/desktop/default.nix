@@ -1,10 +1,11 @@
 { ... }:
 {
   imports = [
-    ./hypr/hyprland.nix
+    ./hypr
     ./rofi
     ./eww
     ./dunst.nix
     ./kitty.nix
+    ./vscode.nix
   ];
 }

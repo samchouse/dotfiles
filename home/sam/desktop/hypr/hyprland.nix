@@ -1,9 +1,24 @@
 {
   inputs,
   pkgs,
+  niqspkgs,
   ...
 }:
 {
+  gtk = {
+    enable = true;
+    cursorTheme.name = "Bibata-Modern-Classic";
+    cursorTheme.size = 24;
+  };
+
+  home.pointerCursor = {
+    gtk.enable = false;
+    x11.enable = true;
+    package = niqspkgs.packages.${pkgs.stdenv.hostPlatform.system}.bibata-hyprcursor;
+    name = "Bibata-modern";
+    size = 24;
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
 
@@ -14,6 +29,10 @@
         "GBM_BACKEND,nvidia-drm"
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
         "NVD_BACKEND,direct"
+        "XCURSOR_THEME,Bibata-Modern-Classic"
+        "XCURSOR_SIZE,24"
+        "HYPRCURSOR_THEME,Bitbata-modern"
+        "HYPRCURSOR_SIZE,24"
       ];
 
       cursor = {
@@ -89,6 +108,8 @@
       ];
 
       windowrulev2 = [
+        "fullscreen, class:^(Minecraft 1.8.9)$"
+
         # Screenshotting
         "move -2560 0,title:^(flameshot)"
         "suppressevent fullscreen,title:^(flameshot)"
