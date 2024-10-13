@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 PIPE="/tmp/eww-media-$(
   echo $RANDOM | md5sum | head -c 10

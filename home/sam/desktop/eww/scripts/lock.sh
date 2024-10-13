@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 case $1 in
 "work")
@@ -10,7 +10,7 @@ case $1 in
 *)
   if ! pgrep -x "hyprlock" >/dev/null; then
     playerctl --player playerctld pause || true
-    
+
     if [ "$1" == "eww" ]; then
       $0 work &
     else

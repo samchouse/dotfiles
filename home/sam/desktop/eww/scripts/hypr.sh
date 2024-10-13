@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 join_by() {
   local d=${1-} f=${2-}

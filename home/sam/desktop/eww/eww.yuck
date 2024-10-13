@@ -17,8 +17,8 @@
 (deflisten media_title "~/.config/eww/scripts/media.sh -t metadata")
 (deflisten media_isplaying "~/.config/eww/scripts/media.sh -s metadata")
 (deflisten media_path "~/.config/eww/scripts/media.sh -p metadata")
-(deflisten volume_ouput "~/.bin/audio.sh get-output")
-(deflisten volume_info :initial "{}" "~/.config/eww/scripts/volume.sh -i")
+(deflisten volume_ouput "~/.config/eww/scripts/audio.sh -g")
+(deflisten volume_info :initial "{}" "~/.config/eww/scripts/audio.sh -i")
 
 ; -------------------------
 ; -------- Widgets --------
@@ -82,10 +82,10 @@
   (eventbox :onhover "${EWW_CMD} update volume_revealed=true" :onhoverlost "${EWW_CMD} update volume_revealed=false"
     (box :space-evenly false :spacing 6 :tooltip "Volume: ${volume_info.volume}% (${volume_ouput})" :class "volume ${volume_revealed ? 'revealed' : ''}"
       (revealer :transition "slideleft" :reveal volume_revealed
-        (scale :min 0 :max 101 :value {volume_info.volume?:100} :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%")
+        (scale :min 0 :max 101 :value {volume_info.volume?:100} :onchange "wpctl set-volume @DEFAULT_SINK@ {}%")
       )
       
-      (button :class "icon" :onclick "pactl set-sink-mute @DEFAULT_SINK@ toggle" :onrightclick "~/.bin/audio.sh toggle-output" {volume_info.icon})
+      (button :class "icon" :onclick "wpctl set-mute @DEFAULT_SINK@ toggle" :onrightclick "~/.config/eww/scripts/audio.sh -t" {volume_info.icon})
     )
   )
 )

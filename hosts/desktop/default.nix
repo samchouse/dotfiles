@@ -111,7 +111,13 @@
   services.hardware.openrgb.enable = true;
 
   fonts.packages =
-    if attrs ? custom-fonts then [ attrs.custom-fonts.packages.x86_64-linux.default ] else [ ];
+    if attrs ? custom-fonts then
+      [
+        attrs.custom-fonts.packages.x86_64-linux.default
+        pkgs.material-symbols
+      ]
+    else
+      [ pkgs.material-symbols ];
 
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
@@ -182,6 +188,8 @@
     nvidia-vaapi-driver
     polkit_gnome
     xdg-desktop-portal-gtk
+    socat
+    jq
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
