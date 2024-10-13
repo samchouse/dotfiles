@@ -39,7 +39,7 @@
           font_size = 100;
           font_family = "Noto Sans";
 
-          position = "0, -120";
+          position = "0, -140";
           halign = "center";
           valign = "top";
         }

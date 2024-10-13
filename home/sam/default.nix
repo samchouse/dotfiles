@@ -25,6 +25,7 @@
     vesktop
     playerctl
     xwaylandvideobridge
+    grim
     niqspkgs.packages.${pkgs.stdenv.hostPlatform.system}.bibata-hyprcursor
   ];
 
