@@ -10,7 +10,7 @@
 (defvar inhibitor_icon "")
 
 (defpoll wifi_name :interval "1m" "~/.config/eww/scripts/wifi.sh -n")
-(defpoll wifi_icon :interval "5s" "~/.config/eww/scripts/wifi.sh -i")
+(defpoll wifi_icon :interval "3s" "~/.config/eww/scripts/wifi.sh -i")
 
 (deflisten workspaces_left :initial "[{}, {}, {}, {}, {}, {}, {}, {}, {}]" "~/.config/eww/scripts/hypr.sh workspaces left")
 (deflisten workspaces_right :initial "[{}, {}, {}, {}, {}, {}, {}, {}, {}]" "~/.config/eww/scripts/hypr.sh workspaces right")
@@ -60,7 +60,7 @@
       
       (revealer :transition "slideright" :reveal media_revealed
         (box :space-evenly false
-          (button :class "icon rounded-icon" :tooltip {media_isplaying == "true" ? "Pause" : "Play"} :onclick "playerctl --player playerctld play-pause" {media_isplaying == "true" ? "" : ""})
+          (button :class "icon" :tooltip {media_isplaying == "true" ? "Pause" : "Play"} :onclick "playerctl --player playerctld play-pause" {media_isplaying == "true" ? "" : ""})
           (button :class "icon" :tooltip "Next" :onclick "playerctl --player playerctld next" "")
         )
       )
@@ -74,7 +74,7 @@
 
 (defwidget inhibitor []
   (box :class "inhibitor" :tooltip {inhibitor_enabled ? "Stop inhibiting idle" : "Inhibit idle"}
-    (button :class "smaller-icon" :onclick "~/.config/eww/scripts/inhibitor.sh toggle" {inhibitor_icon})
+    (button :class "icon" :onclick "~/.config/eww/scripts/inhibitor.sh toggle" {inhibitor_icon})
   )
 )
 

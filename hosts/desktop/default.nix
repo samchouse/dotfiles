@@ -6,6 +6,27 @@
   pkgs,
   ...
 }@attrs:
+let
+  no-kb = pkgs.writeScriptBin "no-kb" ''
+    #!/bin/sh
+
+    mv /var/lib/OpenRGB/OpenRGB.json /var/lib/OpenRGB/OpenRGB.json.bak
+    ${pkgs.jq}/bin/jq '.Detectors.detectors."Genesis Thor 300" = false | .' /var/lib/OpenRGB/OpenRGB.json.bak > /var/lib/OpenRGB/OpenRGB.json
+  '';
+
+  logiops = pkgs.logiops.overrideAttrs (oldAttrs: rec {
+    version = "git";
+    src = (
+      pkgs.fetchFromGitHub {
+        owner = "samchouse";
+        repo = "logiops";
+        rev = "b81261c2f675e8213cede299c9c0f9105ac1ac17";
+        hash = "sha256-W3HGXtVXr0hmN9aED47yOmwzjjkDjeVrte4069Ry51o=";
+        fetchSubmodules = true;
+      }
+    );
+  });
+in
 {
   imports = [
     # Include the results of the hardware scan.
@@ -109,6 +130,50 @@
   };
 
   services.hardware.openrgb.enable = true;
+  systemd.services.no-kb = {
+    description = "no-kb";
+    serviceConfig = {
+      ExecStart = "${no-kb}/bin/no-kb";
+      Type = "oneshot";
+      After = "openrgb.service";
+    };
+    wantedBy = [ "multi-user.target" ];
+  };
+
+  environment.etc."logid.cfg".source = ./logid.cfg;
+  systemd.services.logid = {
+    wantedBy = [ "multi-user.target" ];
+    description = "Logitech Configuration Daemon";
+    serviceConfig = {
+      User = "root";
+      Type = "simple";
+      ExecStart = "${pkgs.logiops}/bin/logid -c /etc/logid.cfg";
+      ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
+      Restart = "on-failure";
+    };
+  };
+
+  services.udev.packages = [ pkgs.swayosd ];
+  systemd.services.swayosd-libinput-backend = {
+    enable = true;
+
+    wantedBy = [ "graphical-session.target" ];
+
+    unitConfig = {
+      Description = "SwayOSD LibInput backend for listening to certain keys like CapsLock, ScrollLock, VolumeUp, etc...";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+      Documentation = "https://github.com/ErikReider/SwayOSD";
+    };
+
+    serviceConfig = {
+      Type = "dbus";
+      BusName = "org.erikreider.swayosd";
+      ExecStart = "${pkgs.swayosd}/bin/swayosd-libinput-backend";
+      Restart = "on-failure";
+    };
+
+  };
 
   fonts.packages =
     if attrs ? custom-fonts then
@@ -190,6 +255,9 @@
     xdg-desktop-portal-gtk
     socat
     jq
+    slack
+    logiops
+    swayosd
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

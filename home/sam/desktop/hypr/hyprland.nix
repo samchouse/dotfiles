@@ -5,6 +5,8 @@
   ...
 }:
 {
+  services.swayosd.enable = true;
+
   gtk = {
     enable = true;
     cursorTheme.name = "Bibata-Modern-Classic";
@@ -183,7 +185,11 @@
         ", XF86AudioLowerVolume, exec, swayosd-client --output-volume lower"
       ];
 
-      exec-once = [ "gammastep -O 4000 >>/dev/null 2>&1" ];
+      exec-once = [
+        "gammastep -O 4000 >>/dev/null 2>&1"
+        "$HOME/.config/hypr/scripts/startup.sh >>/dev/null 2>&1"
+        "$HOME/.config/hypr/scripts/monitor-watcher.sh >>/dev/null 2>&1"
+      ];
     };
   };
 }

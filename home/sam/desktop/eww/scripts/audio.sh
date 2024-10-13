@@ -29,7 +29,7 @@ while getopts "igt" opt; do
       raw_volume=$(echo "$(wpctl get-volume @DEFAULT_SINK@ | grep -oP "[\d|.]*")" 100 | awk '{printf "%0.0f\n",$1*$2}')
       volume=${raw_volume/\./}
       if [ "$volume" -eq 0 ]; then
-        icon=""
+        icon=""
       elif [ "$volume" -lt 50 ]; then
         icon=""
       else
@@ -37,7 +37,7 @@ while getopts "igt" opt; do
       fi
 
       if wpctl get-volume @DEFAULT_SINK@ | grep -q "[MUTED]"; then
-        icon=""
+        icon=""
       fi
 
       curr="{ \"icon\": \"$icon\", \"volume\": \"$volume\" }"

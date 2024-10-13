@@ -22,6 +22,9 @@
     gh
     prismlauncher
     bibata-cursors
+    vesktop
+    playerctl
+    xwaylandvideobridge
     niqspkgs.packages.${pkgs.stdenv.hostPlatform.system}.bibata-hyprcursor
   ];
 

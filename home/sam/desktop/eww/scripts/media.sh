@@ -19,9 +19,7 @@ case $1 in
     printed=false
 
     while true; do
-      sleep 0.5
-
-      if playerctl --player playerctld status 2>&1 | grep -q Playing; then
+      if playerctl --player playerctld status 2>&1 | grep -q Playing || [[ "$2" == "false" ]]; then
         target=$(date -d '3 min' +%s)
 
         if [[ $printed == false ]]; then
@@ -37,6 +35,8 @@ case $1 in
         echo ""
         continue
       fi
+
+      sleep 0.5
     done
   }
 
@@ -75,7 +75,6 @@ case $2 in
       playerctl -F --player playerctld metadata xesam:title 2>/dev/null | while read -r line; do handle_global "$line"; done
       ;;
     s)
-      echo true
       playerctl -F --player playerctld status 2>/dev/null | while read -r line; do handle_global "$([[ $line == "Playing" ]] && echo true || [[ $line != "" ]] && echo false || echo skip)"; done
       ;;
     p)

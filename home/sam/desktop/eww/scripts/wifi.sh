@@ -7,7 +7,7 @@ while getopts "ni" opt; do
     ;;
   i)
     is_connected=$(nmcli device wifi list | grep -c "^\*")
-    strength=$(nmcli device wifi list | grep -P "^\*" | awk '{ print $9 }' | grep -o "\*" | wc -l)
+    strength=$(TERM=linux nmcli device wifi list | grep -P "^\*" | awk '{ print $9 }' | grep -o "\*" | wc -l)
 
     if [[ $strength -eq 0 ]] && [[ $is_connected -ne 0 ]]; then
       echo ""
