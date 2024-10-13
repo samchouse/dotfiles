@@ -14,6 +14,16 @@ let
     ${pkgs.jq}/bin/jq '.Detectors.detectors."Genesis Thor 300" = false | .' /var/lib/OpenRGB/OpenRGB.json.bak > /var/lib/OpenRGB/OpenRGB.json
   '';
 
+  usb-lock = pkgs.writeScriptBin "usb-lock" ''
+    #!/bin/sh
+
+    PIPE="/tmp/usb-lock"
+
+    mkfifo "$PIPE"
+    chown sam "$PIPE"
+    while read -r line <"$PIPE"; do echo -n "0000:00:14.0" > /sys/bus/pci/drivers/xhci_hcd/unbind; done
+  '';
+
   logiops = pkgs.logiops.overrideAttrs (oldAttrs: rec {
     version = "git";
     src = (
@@ -172,7 +182,54 @@ in
       ExecStart = "${pkgs.swayosd}/bin/swayosd-libinput-backend";
       Restart = "on-failure";
     };
+  };
 
+  services.logind = {
+    powerKey = "ignore";
+    rebootKey = "ignore";
+    suspendKey = "ignore";
+    hibernateKey = "ignore";
+
+    extraConfig = ''
+      PowerKeyIgnoreInhibited=yes
+      SuspendKeyIgnoreInhibited=yes
+      HibernateKeyIgnoreInhibited=yes
+    '';
+  };
+  systemd.services.usb-lock = {
+    enable = true;
+
+    wantedBy = [ "graphical.target" ];
+
+    unitConfig = {
+      Description = "USB lock manager";
+    };
+
+    serviceConfig = {
+      User = "root";
+      Group = "root";
+      ExecStart = "${usb-lock}/bin/usb-lock";
+    };
+  };
+  services.acpid = {
+    enable = true;
+
+    handlers.power-button = {
+      event = "button/power.*";
+      action = ''
+        handle() {
+            echo -n "0000:00:14.0" > /sys/bus/pci/drivers/xhci_hcd/bind
+            ${pkgs.su}/bin/su - sam -c "openrgb -p Blue"
+            ${pkgs.su}/bin/su - sam -c "HYPRLAND_INSTANCE_SIGNATURE=$(ls -t /run/user/1000/hypr | head -n 1) hyprctl dispatch dpms on"
+        }
+
+        vals=($1)
+        case "''${vals[1]}" in
+            PBTN) handle ;;
+            *)    echo "ACPI action undefined: ''${vals[3]}" ;;
+        esac
+      '';
+    };
   };
 
   fonts.packages =
