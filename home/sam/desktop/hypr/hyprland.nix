@@ -7,18 +7,16 @@
 {
   services.swayosd.enable = true;
 
-  gtk = {
-    enable = true;
-    cursorTheme.name = "Bibata-Modern-Classic";
-    cursorTheme.size = 24;
-  };
-
   home.pointerCursor = {
     gtk.enable = false;
     x11.enable = true;
     package = niqspkgs.packages.${pkgs.stdenv.hostPlatform.system}.bibata-hyprcursor;
     name = "Bibata-modern";
     size = 24;
+  };
+
+  home.sessionVariables = {
+    QT_QPA_PLATFORM = "wayland";
   };
 
   wayland.windowManager.hyprland = {
@@ -136,7 +134,7 @@
           "$mod, P, pseudo, "
           "$mod, J, togglesplit, "
           "$mod, S, exec, ~/.config/hypr/scripts/screenshot.sh"
-          "$mod, space, exec, rofi -show drun -show-icons -icon-theme 'Kora' -sort -sorting-method fzf"
+          "$mod, space, exec, rofi -show drun -show-icons -icon-theme 'kora' -sort -sorting-method fzf"
           "$mod SHIFT, space, exec, rofi -show calc -modi calc -no-show-match -no-sort"
 
           "$mod, left, movefocus, l"

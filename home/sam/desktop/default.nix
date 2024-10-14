@@ -7,5 +7,6 @@
     ./dunst.nix
     ./kitty.nix
     ./vscode.nix
+    ./theme.nix
   ];
 }

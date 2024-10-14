@@ -16,8 +16,8 @@
     ];
 
     shellAliases = {
-      u = "topgrade";
       c = "code-insiders";
+      rb = "nh os switch";
     };
 
     oh-my-zsh = {

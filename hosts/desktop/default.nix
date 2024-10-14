@@ -7,6 +7,8 @@
   ...
 }@attrs:
 let
+  flake = "/home/sam/Documents/projects/dotfiles";
+
   no-kb = pkgs.writeScriptBin "no-kb" ''
     #!/bin/sh
 
@@ -44,24 +46,36 @@ in
   ];
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  environment.sessionVariables.FLAKE = flake;
 
   nix.settings = {
     substituters = [ "https://hyprland.cachix.org" ];
     trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
   };
 
-  # xdg.portal = {
-  #     enable = true;
-  #     xdgOpenUsePortal = true;
-  #     config = {
-  #       common.default = ["gtk"];
-  #       hyprland.default = ["gtk" "hyprland"];
-  #     };
+  programs.nh = {
+    inherit flake;
 
-  #     extraPortals = [
-  #       pkgs.xdg-desktop-portal-gtk
-  #     ];
-  #   };
+    enable = true;
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 4d --keep 3";
+  };
+
+  xdg.portal = {
+    enable = true;
+    xdgOpenUsePortal = true;
+    config = {
+      common.default = [ "gtk" ];
+      hyprland.default = [
+        "gtk"
+        "hyprland"
+      ];
+    };
+
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+    ];
+  };
 
   services.gnome.gnome-keyring.enable = true;
 
@@ -309,7 +323,6 @@ in
     unzip
     nvidia-vaapi-driver
     polkit_gnome
-    xdg-desktop-portal-gtk
     socat
     jq
     slack
@@ -360,13 +373,6 @@ in
   # Limit the number of generations to keep
   # boot.loader.systemd-boot.configurationLimit = 10;
   boot.loader.grub.configurationLimit = 10;
-
-  # Perform garbage collection weekly to maintain low disk usage
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 1w";
-  };
 
   # Optimize storage
   # You can also manually optimize the store via:
