@@ -53,15 +53,8 @@ in
     };
 
     theme = {
-      name = "Sweet-Ambar-Blue";
-      package = pkgs.sweet;
-    };
-
-    gtk3.extraConfig = {
-      gtk-application-prefer-dark-theme = 1;
-    };
-    gtk4.extraConfig = {
-      gtk-application-prefer-dark-theme = 1;
+      name = "Sweet-Ambar-Blue-Dark";
+      package = (pkgs.callPackage ../../../packages/sweet { });
     };
   };
 }

@@ -1,3 +1,4 @@
+# TODO: something broke with sudo
 {
   lib,
   pkgs,
@@ -16,7 +17,7 @@
           src = (
             builtins.fetchTarball {
               url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-              sha256 = "1pzi7a0s1yp7r4sb20d6qaic6nh63820q92x6fmga1fsgv8w01h6";
+              sha256 = "sha256:1pzi7a0s1yp7r4sb20d6qaic6nh63820q92x6fmga1fsgv8w01h6";
             }
           );
 
