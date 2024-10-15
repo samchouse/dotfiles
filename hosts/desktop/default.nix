@@ -45,6 +45,8 @@ in
     ./hardware-configuration.nix
   ];
 
+  programs.nix-ld.enable = true;
+
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
   environment.sessionVariables.FLAKE = flake;
 
