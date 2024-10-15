@@ -27,8 +27,13 @@
     xwaylandvideobridge
     grim
     niqspkgs.packages.${pkgs.stdenv.hostPlatform.system}.bibata-hyprcursor
-    dolphin
     kora-icon-theme
+    wayfreeze
+    slurp
+    wl-clipboard
+    yazi
+    qview
+    clipse
   ];
 
   # This value determines the Home Manager release that your

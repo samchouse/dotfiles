@@ -14,6 +14,7 @@ let
   qtctConfig = ''
     [Appearance]
     icon_theme=kora
+    style=kvantum-dark
     standard_dialogs=xdgdesktopportal
   '';
 in

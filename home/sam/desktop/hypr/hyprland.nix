@@ -33,6 +33,7 @@
         "XCURSOR_SIZE,24"
         "HYPRCURSOR_THEME,Bitbata-modern"
         "HYPRCURSOR_SIZE,24"
+        "QT_QPA_PLATFORMTHEME,qt5ct"
       ];
 
       cursor = {
@@ -110,18 +111,14 @@
       windowrulev2 = [
         "fullscreen, class:^(Minecraft 1.8.9)$"
 
-        # Screenshotting
-        "move -2560 0,title:^(flameshot)"
-        "suppressevent fullscreen,title:^(flameshot)"
-        "float,class:^(flameshot)$,title:^(flameshot)"
-        "monitor DP-1,class:^(flameshot)$,title:^(flameshot)"
-        "size 5120 1440,class:^(flameshot)$,title:^(flameshot)"
+        "opacity 0.0 override, class:^(xwaylandvideobridge)$"
+        "noanim, class:^(xwaylandvideobridge)$"
+        "noinitialfocus, class:^(xwaylandvideobridge)$"
+        "maxsize 1 1, class:^(xwaylandvideobridge)$"
+        "noblur, class:^(xwaylandvideobridge)$"
 
-        # Screensharing
-        "noanim,class:^(xwaylandvideobridge)$"
-        "nofocus,class:^(xwaylandvideobridge)$"
-        "noinitialfocus,class:^(xwaylandvideobridge)$"
-        "opacity 0.0 override 0.0 override,class:^(xwaylandvideobridge)$"
+        "float, class:(clipse)"
+        "size 622 652, class:(clipse)"
       ];
 
       "$mod" = "SUPER";
@@ -130,12 +127,13 @@
           "$mod, TAB, exec, kitty"
           "$mod, Q, killactive, "
           "$mod, M, exit, "
-          "$mod, V, togglefloating, "
+          "$mod SHIFT, V, togglefloating, "
           "$mod, P, pseudo, "
           "$mod, J, togglesplit, "
           "$mod, S, exec, ~/.config/hypr/scripts/screenshot.sh"
           "$mod, space, exec, rofi -show drun -show-icons -icon-theme 'kora' -sort -sorting-method fzf"
           "$mod SHIFT, space, exec, rofi -show calc -modi calc -no-show-match -no-sort"
+          "$mod, V, exec, kitty --class clipse -e clipse"
 
           "$mod, left, movefocus, l"
           "$mod, right, movefocus, r"
@@ -184,6 +182,7 @@
       ];
 
       exec-once = [
+        "clipse -listen"
         "gammastep -O 4000 >>/dev/null 2>&1"
         "$HOME/.config/hypr/scripts/startup.sh >>/dev/null 2>&1"
         "$HOME/.config/hypr/scripts/monitor-watcher.sh >>/dev/null 2>&1"
