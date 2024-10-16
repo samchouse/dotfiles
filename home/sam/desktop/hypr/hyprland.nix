@@ -34,6 +34,7 @@
         "HYPRCURSOR_THEME,Bitbata-modern"
         "HYPRCURSOR_SIZE,24"
         "QT_QPA_PLATFORMTHEME,qt5ct"
+        "PATH,$PATH:${pkgs.qt6Packages.qtstyleplugin-kvantum}/bin"
       ];
 
       cursor = {

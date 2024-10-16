@@ -25,6 +25,8 @@ in
     style.name = "kvantum";
   };
 
+  home.sessionPath = [ "${pkgs.qt6Packages.qtstyleplugin-kvantum}/bin" ];
+
   xdg.configFile = {
     "Kvantum" = {
       source = "${sweet}/kde/kvantum";
