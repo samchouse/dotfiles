@@ -34,6 +34,7 @@
     yazi
     qview
     clipse
+    devenv
   ];
 
   # This value determines the Home Manager release that your

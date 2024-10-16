@@ -51,8 +51,8 @@ in
   environment.sessionVariables.FLAKE = flake;
 
   nix.settings = {
-    substituters = [ "https://hyprland.cachix.org" ];
-    trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
+    substituters = [ "https://devenv.cachix.org" ];
+    trusted-public-keys = [ "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=" ];
   };
 
   services.greetd = {
@@ -89,6 +89,13 @@ in
   };
 
   services.gnome.gnome-keyring.enable = true;
+
+  services.fstrim.enable = true;
+  services.fwupd.enable = true;
+  boot.initrd.luks.devices."luks-68f12c7e-fc53-49de-9b3d-91ab69f6c2a4" = {
+    allowDiscards = true;
+    bypassWorkqueues = true;
+  };
 
   programs.hyprland = {
     enable = true;

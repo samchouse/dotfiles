@@ -182,7 +182,7 @@
       ];
 
       exec-once = [
-        "clipse -listen"
+        "clipse -listen >>/dev/null 2>&1"
         "gammastep -O 4000 >>/dev/null 2>&1"
         "$HOME/.config/hypr/scripts/startup.sh >>/dev/null 2>&1"
         "$HOME/.config/hypr/scripts/monitor-watcher.sh >>/dev/null 2>&1"
