@@ -9,6 +9,7 @@
     ./desktop
     ./zsh.nix
     ./git.nix
+    ./projects.nix
     ../ssh.nix
   ];
 
@@ -35,6 +36,7 @@
     qview
     clipse
     devenv
+    direnv
   ];
 
   # This value determines the Home Manager release that your
