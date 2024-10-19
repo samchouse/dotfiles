@@ -110,6 +110,7 @@
       ];
 
       windowrulev2 = [
+        "idleinhibit always, class:^Minecraft"
         "fullscreen, class:^(Minecraft 1.8.9)$"
 
         "opacity 0.0 override, class:^(xwaylandvideobridge)$"
