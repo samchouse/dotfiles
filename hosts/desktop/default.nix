@@ -51,8 +51,8 @@ in
   environment.sessionVariables.FLAKE = flake;
 
   nix.settings = {
-    substituters = [ "https://devenv.cachix.org" ];
-    trusted-public-keys = [ "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=" ];
+    substituters = [ "https://devenv.cachix.org" "https://nix-community.cachix.org" ];
+    trusted-public-keys = [ "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=" "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
   };
 
   services.greetd = {
@@ -141,6 +141,18 @@ in
       "--ssh"
     ];
     useRoutingFeatures = "both";
+  };
+  services.networkd-dispatcher = {
+    enable = true;
+
+    rules."50-tailscale" = {
+      onState = ["routable"];
+      script = ''
+        #!/bin/sh
+        NETDEV=$(ip -o route get 8.8.8.8 | cut -f 5 -d " ")
+        sudo ethtool -K $NETDEV rx-udp-gro-forwarding on rx-gro-list off
+      '';
+    };
   };
 
   security.polkit.enable = true;
@@ -347,6 +359,7 @@ in
     logiops
     swayosd
     btop
+    ethtool
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
