@@ -1,8 +1,0 @@
-[tools]
-node = "latest"
-go = "latest"
-python = "system"
-java = "11"
-
-[settings]
-experimental = true
