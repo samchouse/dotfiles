@@ -4,6 +4,7 @@
 {
   config,
   pkgs,
+  age-plugin-op,
   ...
 }@attrs:
 let
@@ -43,6 +44,7 @@ in
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ../../secrets
   ];
 
   programs.nix-ld.enable = true;
@@ -51,8 +53,104 @@ in
   environment.sessionVariables.FLAKE = flake;
 
   nix.settings = {
-    substituters = [ "https://devenv.cachix.org" "https://nix-community.cachix.org" ];
-    trusted-public-keys = [ "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=" "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
+    substituters = [ "https://devenv.cachix.org" "https://nix-community.cachix.org" "https://cuda-maintainers.cachix.org" ];
+    trusted-public-keys = [ "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=" "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=" ];
+  };
+
+  sops.defaultSopsFile = ../../secrets/secrets.yaml;
+  sops.age.keyFile = "/home/sam/.config/sops/age/keys.txt";
+  sops.environment = {
+    PATH = "/run/wrappers/bin:/run/current-system/sw/bin";
+  };
+
+  hardware.nvidia-container-toolkit.enable = true;
+  services.open-webui = {
+    enable = true;
+
+    host = "0.0.0.0";
+    environmentFile = config.sops.templates."open-webui.env".path;
+  };
+  virtualisation.oci-containers = {
+    backend = "docker";
+    containers = {
+      ollama = {
+        image = "ollama/ollama:0.4.0-rc6";
+        ports = [ "11434:11434" ];
+        autoStart = true;
+        volumes = [ "ollama:/root/.ollama" ];
+        extraOptions = [ "--device=nvidia.com/gpu=all" ];
+      };
+      open-webui-pipelines = {
+        image = "ghcr.io/open-webui/pipelines:main";
+        ports = [ "9099:9099" ];
+        autoStart = true;
+        volumes = [ "pipelines:/app/pipelines" ];
+        extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
+      };
+    };
+  };
+  services.searx = {
+    enable = true;
+    package = pkgs.searxng;
+    redisCreateLocally = true;
+    settings = {
+      use_default_settings = true;
+
+      server = {
+        secret_key = "super-secret-key";
+        limiter = false;
+        image_proxy = true;
+        port = 8888;
+        bind_address = "0.0.0.0";
+      };
+
+      ui = {
+        static_use_hash = true;
+      };
+
+      search = {
+        safe_search = 0;
+        autocomplete = "";
+        default_lang = "";
+        formats = [
+          "html"
+          "json"
+        ];
+      };
+    };
+    limiterSettings.botdetection.ip_limit.link_token = true;
+  };
+  services.tika = {
+    enable = true;
+    enableOcr = true;
+  };
+  services.cloudflared = {
+    enable = true;
+    user = "sam";
+    tunnels = {
+      "be8d8946-c30c-410d-81e1-ab345276f4e3" = {
+        default = "http_status:404";
+        credentialsFile = "/home/sam/.cloudflared/be8d8946-c30c-410d-81e1-ab345276f4e3.json";
+        ingress = {
+          "ai.xenfo.dev" = {
+            service = "http://localhost:8080";
+          };
+        };
+      };
+    };
+  };
+
+  # services.printing = {
+  #   enable = true;
+  #   drivers = [ 
+  #     pkgs.hplip # — Drivers for HP printers.
+  #     pkgs.hplipWithPlugin # — Drivers for HP printers, with the proprietary plugin. Use NIXPKGS_ALLOW_UNFREE=1 nix-shell -p hplipWithPlugin --run 'sudo -E hp-setup' to add the printer, regular CUPS UI doesn't seem to work.
+  #   ];
+  # };
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
   };
 
   services.greetd = {
@@ -360,6 +458,22 @@ in
     swayosd
     btop
     ethtool
+    cudatoolkit
+    age
+    ollama
+    cloudflared
+    (pkgs.sops.overrideAttrs
+        (oldAttrs: rec {
+          version = "git";
+          src = fetchFromGitHub {
+    owner = "samchouse";
+    repo = "sops";
+    rev = "21878be7fdbc13617ae48f3b63952c10df624d8b";
+    hash = "sha256-nAULMxP6IPNyYn4UhhX6X+8nzYwOcPPgLv0RuXOp1WY=";
+  };
+  vendorHash = "sha256-NS0b25NQEJle///iRHAG3uTC5p6rlGSyHVwEESki3p4=";
+        }))
+    age-plugin-op.defaultPackage."x86_64-linux"
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

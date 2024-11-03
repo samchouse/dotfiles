@@ -13,6 +13,8 @@
     ../ssh.nix
   ];
 
+  xdg.configFile."sops/age/keys.txt".source = ./age-identity.txt;
+
   home.username = "sam";
   home.homeDirectory = "/home/sam";
 
@@ -32,7 +34,7 @@
     wayfreeze
     slurp
     wl-clipboard
-    yazi
+    # yazi
     qview
     clipse
     devenv

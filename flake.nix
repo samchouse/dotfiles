@@ -2,7 +2,6 @@
   description = "Sam's NixOS flake";
 
   inputs = {
-    # revert back to nixos-unstable soon
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     catppuccin.url = "github:catppuccin/nix";
     home-manager = {
@@ -11,6 +10,11 @@
     };
     custom-fonts.url = "git+ssh://git@github.com/samchouse/fonts.git?ref=main";
     niqspkgs.url = "github:diniamo/niqspkgs";
+    sops-nix.url = "github:samchouse/sops-nix";
+    age-plugin-op = {
+      url = "github:samchouse/age-plugin-op";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -21,6 +25,8 @@
       home-manager,
       custom-fonts,
       niqspkgs,
+      sops-nix,
+      age-plugin-op
     }:
     let
       system = "x86_64-linux";
@@ -33,6 +39,7 @@
         system = "x86_64-linux";
         modules = [
           ./hosts/desktop
+          sops-nix.nixosModules.sops
           home-manager.nixosModules.home-manager
           {
             home-manager.backupFileExtension = "bak";
@@ -48,12 +55,16 @@
             };
           }
         ];
+        specialArgs = {
+          inherit age-plugin-op;
+        };
       };
 
       nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           ./hosts/desktop
+          sops-nix.nixosModules.sops
           home-manager.nixosModules.home-manager
           {
             home-manager.backupFileExtension = "bak";
@@ -71,6 +82,7 @@
         ];
         specialArgs = {
           inherit custom-fonts;
+          inherit age-plugin-op;
         };
       };
     };
