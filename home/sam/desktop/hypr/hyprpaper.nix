@@ -9,11 +9,11 @@
 
     settings = {
       splash = false;
-      preload = builtins.toString ./wallpaper.jpg;
+      preload = "${./wallpaper.jpg}";
 
       wallpaper = [
-        "DP-1,${builtins.toString ./wallpaper.jpg}"
-        "DP-2,${builtins.toString ./wallpaper.jpg}"
+        "DP-1,${./wallpaper.jpg}"
+        "DP-2,${./wallpaper.jpg}"
       ];
     };
   };
