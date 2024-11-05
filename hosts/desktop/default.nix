@@ -5,10 +5,11 @@
   config,
   pkgs,
   age-plugin-op,
+  caddy-nixos,
   ...
 }@attrs:
 let
-  flake = "/home/sam/Documents/projects/dotfiles";
+  flake = "/home/sam/Documents/projects/personal/dotfiles";
 
   no-kb = pkgs.writeScriptBin "no-kb" ''
     #!/bin/sh
@@ -39,6 +40,12 @@ let
       }
     );
   });
+
+  tlsConf = ''
+    tls {
+      dns cloudflare {env.CF_API_TOKEN}
+    }
+  '';
 in
 {
   imports = [
@@ -53,8 +60,162 @@ in
   environment.sessionVariables.FLAKE = flake;
 
   nix.settings = {
-    substituters = [ "https://devenv.cachix.org" "https://nix-community.cachix.org" "https://cuda-maintainers.cachix.org" ];
-    trusted-public-keys = [ "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=" "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=" ];
+    substituters = [
+      "https://devenv.cachix.org"
+      "https://nix-community.cachix.org"
+      "https://cuda-maintainers.cachix.org"
+    ];
+    trusted-public-keys = [
+      "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+    ];
+  };
+
+  services.caddy = {
+    enable = true;
+    package = caddy-nixos.packages.x86_64-linux.caddy;
+    email = "sam@chouse.dev";
+    virtualHosts = {
+      "ai.xenfo.dev" = {
+        extraConfig = ''
+          ${tlsConf}
+          reverse_proxy :8080
+        '';
+      };
+    };
+  };
+
+  services.homepage-dashboard = {
+    enable = true;
+    settings = {
+      title = "Homelab";
+      # favicon = "https://chouse.dev/favicon.ico";
+      theme = "dark";
+      color = "stone";
+      headerStyle = "clean";
+      background = {
+        image = "https://raw.githubusercontent.com/samchouse/dotfiles/refs/heads/main/home/sam/desktop/hypr/wallpaper.jpg";
+        blur = "xl";
+        opacity = 35;
+      };
+      layout = [
+        {
+          "System Monitor" = {
+            style = "row";
+            columns = 3;
+          };
+        }
+      ];
+    };
+    widgets = [
+      {
+        search = {
+          provider = "google";
+          target = "_blank";
+        };
+      }
+    ];
+    services = [
+        {
+          "System Monitor" = [
+            {
+              "Info" = {
+                widget = {
+                  type =  "glances";
+                  url = "http://127.0.0.1:61208";
+                  version = 4;
+                  metric = "info";
+                };
+              };
+            }
+            {
+              "CPU Usage" = {
+                widget = {
+                  type =  "glances";
+                  url = "http://127.0.0.1:61208";
+                  version = 4;
+                  metric = "cpu";
+                };
+              };
+            }
+            {
+              "CPU Temperature" = {
+                widget = {
+                  type =  "glances";
+                  url = "http://127.0.0.1:61208";
+                  version = 4;
+                  metric = "sensor:Package id 0";
+                };
+              };
+            }
+            {
+              "Memory Usage" = {
+                widget = {
+                  type =  "glances";
+                  url = "http://127.0.0.1:61208";
+                  version = 4;
+                  metric = "memory";
+                };
+              };
+            }
+            {
+              "Network Usage" = {
+                widget = {
+                  type =  "glances";
+                  url = "http://127.0.0.1:61208";
+                  version = 4;
+                  metric = "network:wlp6s0";
+                };
+              };
+            }
+            {
+              "Disk I/O" = {
+                widget = {
+                  type =  "glances";
+                  url = "http://127.0.0.1:61208";
+                  version = 4;
+                  metric = "disk:nvme0n1";
+                };
+              };
+            }
+          ];
+        }
+    ];
+  };
+  systemd.services.glances = {
+    enable = true;
+
+    wantedBy = [ "multi-user.target" ];
+
+    unitConfig = {
+      Description = "Glances resource monitor";
+    };
+
+    serviceConfig = {
+      ExecStart = "${pkgs.glances}/bin/glances -w";
+      Restart = "on-failure";
+    };
+  };
+  services.glance = {
+    enable = true;
+    package = (pkgs.glance.overrideAttrs
+        (oldAttrs: rec {
+          version = "latest";
+          src = (pkgs.fetchFromGitHub {
+    owner = "glanceapp";
+    repo = "glance";
+    rev = "bacb607d902cd125c1e97d56d4b51ad56474cc54";
+    hash = "sha256-LzrnbjljbJ8eCFsZwMp5ylx88IPSx5l3Vsy+2LeIFts=";
+  });
+
+  vendorHash = "sha256-i26RD3dIN0pEnfcLAyra2prLhvd/w1Qf1A44rt7L6sc=";
+        }));
+
+    settings.server = {
+      host = "0.0.0.0";
+      port = 8090;
+    };
   };
 
   sops.defaultSopsFile = ../../secrets/secrets.yaml;
@@ -74,7 +235,7 @@ in
     backend = "docker";
     containers = {
       ollama = {
-        image = "ollama/ollama:0.4.0-rc6";
+        image = "ollama/ollama:0.4.0-rc8";
         ports = [ "11434:11434" ];
         autoStart = true;
         volumes = [ "ollama:/root/.ollama" ];
@@ -128,12 +289,16 @@ in
     enable = true;
     user = "sam";
     tunnels = {
-      "be8d8946-c30c-410d-81e1-ab345276f4e3" = {
+      "f9331601-f962-4b2a-9bbf-0d140f17afbe" = {
         default = "http_status:404";
-        credentialsFile = "/home/sam/.cloudflared/be8d8946-c30c-410d-81e1-ab345276f4e3.json";
+        credentialsFile = "/home/sam/.cloudflared/f9331601-f962-4b2a-9bbf-0d140f17afbe.json";
         ingress = {
           "ai.xenfo.dev" = {
-            service = "http://localhost:8080";
+            service = "https://localhost";
+            originRequest = {
+              originServerName = "ai.xenfo.dev";
+              httpHostHeader = "ai.xenfo.dev";
+            };
           };
         };
       };
@@ -244,7 +409,7 @@ in
     enable = true;
 
     rules."50-tailscale" = {
-      onState = ["routable"];
+      onState = [ "routable" ];
       script = ''
         #!/bin/sh
         NETDEV=$(ip -o route get 8.8.8.8 | cut -f 5 -d " ")
@@ -462,17 +627,16 @@ in
     age
     ollama
     cloudflared
-    (pkgs.sops.overrideAttrs
-        (oldAttrs: rec {
-          version = "git";
-          src = fetchFromGitHub {
-    owner = "samchouse";
-    repo = "sops";
-    rev = "21878be7fdbc13617ae48f3b63952c10df624d8b";
-    hash = "sha256-nAULMxP6IPNyYn4UhhX6X+8nzYwOcPPgLv0RuXOp1WY=";
-  };
-  vendorHash = "sha256-NS0b25NQEJle///iRHAG3uTC5p6rlGSyHVwEESki3p4=";
-        }))
+    (pkgs.sops.overrideAttrs (oldAttrs: rec {
+      version = "git";
+      src = fetchFromGitHub {
+        owner = "samchouse";
+        repo = "sops";
+        rev = "21878be7fdbc13617ae48f3b63952c10df624d8b";
+        hash = "sha256-nAULMxP6IPNyYn4UhhX6X+8nzYwOcPPgLv0RuXOp1WY=";
+      };
+      vendorHash = "sha256-NS0b25NQEJle///iRHAG3uTC5p6rlGSyHVwEESki3p4=";
+    }))
     age-plugin-op.defaultPackage."x86_64-linux"
   ];
 

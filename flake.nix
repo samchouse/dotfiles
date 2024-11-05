@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixpkgs-small.url = "github:nixos/nixpkgs?ref=nixos-unstable-small";
     catppuccin.url = "github:catppuccin/nix";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -13,6 +14,10 @@
     sops-nix.url = "github:samchouse/sops-nix";
     age-plugin-op = {
       url = "github:samchouse/age-plugin-op";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    caddy-nixos = {
+      url = "github:samchouse/caddy-nixos";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -26,11 +31,16 @@
       custom-fonts,
       niqspkgs,
       sops-nix,
-      age-plugin-op
+      age-plugin-op,
+      caddy-nixos,
+      nixpkgs-small,
     }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      overlay-small = final: prev: {
+        small = nixpkgs-small.legacyPackages.${prev.system};
+      };
     in
     {
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
@@ -40,6 +50,7 @@
         modules = [
           ./hosts/desktop
           sops-nix.nixosModules.sops
+          ({ config, pkgs, ... }: { nixpkgs.overlays = [ overlay-small ]; })
           home-manager.nixosModules.home-manager
           {
             home-manager.backupFileExtension = "bak";
@@ -57,6 +68,7 @@
         ];
         specialArgs = {
           inherit age-plugin-op;
+          inherit caddy-nixos;
         };
       };
 
@@ -65,6 +77,7 @@
         modules = [
           ./hosts/desktop
           sops-nix.nixosModules.sops
+          ({ config, pkgs, ... }: { nixpkgs.overlays = [ overlay-small ]; })
           home-manager.nixosModules.home-manager
           {
             home-manager.backupFileExtension = "bak";
@@ -83,6 +96,7 @@
         specialArgs = {
           inherit custom-fonts;
           inherit age-plugin-op;
+          inherit caddy-nixos;
         };
       };
     };

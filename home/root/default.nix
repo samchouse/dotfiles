@@ -4,7 +4,10 @@
   ...
 }:
 {
-  imports = [ ../ssh.nix ./zsh.nix ];
+  imports = [
+    ../ssh.nix
+    ./zsh.nix
+  ];
 
   home.username = "root";
   home.homeDirectory = "/root";
