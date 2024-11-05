@@ -1,7 +1,8 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   systemd.user.services.gerry-bot = {
     Unit = {
-      After = ["network.target"];
+      After = [ "network.target" ];
     };
 
     Install = {

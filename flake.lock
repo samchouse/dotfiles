@@ -20,6 +20,26 @@
         "type": "github"
       }
     },
+    "caddy-nixos": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1730658261,
+        "narHash": "sha256-FyY7GeqCLd37MEav7pwIaeqCii8SpSPaaPhRmpT+eGs=",
+        "owner": "samchouse",
+        "repo": "caddy-nixos",
+        "rev": "67985993e4d824cd4705446452354c9605d3744f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "samchouse",
+        "repo": "caddy-nixos",
+        "type": "github"
+      }
+    },
     "catppuccin": {
       "locked": {
         "lastModified": 1730458408,
@@ -205,6 +225,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-small": {
+      "locked": {
+        "lastModified": 1730729172,
+        "narHash": "sha256-RE6Fgw2FbVzWzRf5FD6LSIqSHTXq/hEm+GIqy7zcoe8=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "eb36bf249929bfd7a94c5f9ee0f1972ded7b6931",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable-small",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1729973466,
@@ -288,11 +324,13 @@
     "root": {
       "inputs": {
         "age-plugin-op": "age-plugin-op",
+        "caddy-nixos": "caddy-nixos",
         "catppuccin": "catppuccin",
         "custom-fonts": "custom-fonts",
         "home-manager": "home-manager",
         "niqspkgs": "niqspkgs",
         "nixpkgs": "nixpkgs_3",
+        "nixpkgs-small": "nixpkgs-small",
         "sops-nix": "sops-nix"
       }
     },

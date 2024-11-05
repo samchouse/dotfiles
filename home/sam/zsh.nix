@@ -47,7 +47,10 @@ in
     oh-my-zsh = {
       enable = true;
 
-      plugins = [ "git" "direnv" ];
+      plugins = [
+        "git"
+        "direnv"
+      ];
     };
 
     initExtra = ''
