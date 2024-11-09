@@ -34,11 +34,12 @@
     wayfreeze
     slurp
     wl-clipboard
-    # yazi
+    yazi
     qview
     clipse
     devenv
     direnv
+    rainfrog
   ];
 
   # This value determines the Home Manager release that your

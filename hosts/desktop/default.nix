@@ -83,138 +83,151 @@ in
           reverse_proxy :8080
         '';
       };
+      "home.xenfo.dev" = {
+        extraConfig = ''
+          ${tlsConf}
+          reverse_proxy :8090
+        '';
+      };
     };
   };
 
-  services.homepage-dashboard = {
+  services.glance = {
     enable = true;
+    package = (
+      pkgs.glance.overrideAttrs (oldAttrs: rec {
+        version = "latest";
+        src = (
+          pkgs.fetchFromGitHub {
+            owner = "glanceapp";
+            repo = "glance";
+            rev = "bacb607d902cd125c1e97d56d4b51ad56474cc54";
+            hash = "sha256-LzrnbjljbJ8eCFsZwMp5ylx88IPSx5l3Vsy+2LeIFts=";
+          }
+        );
+
+        vendorHash = "sha256-i26RD3dIN0pEnfcLAyra2prLhvd/w1Qf1A44rt7L6sc=";
+      })
+    );
+
     settings = {
-      title = "Homelab";
-      # favicon = "https://chouse.dev/favicon.ico";
-      theme = "dark";
-      color = "stone";
-      headerStyle = "clean";
-      background = {
-        image = "https://raw.githubusercontent.com/samchouse/dotfiles/refs/heads/main/home/sam/desktop/hypr/wallpaper.jpg";
-        blur = "xl";
-        opacity = 35;
+      server = {
+        host = "0.0.0.0";
+        port = 8090;
       };
-      layout = [
+      pages = [
         {
-          "System Monitor" = {
-            style = "row";
-            columns = 3;
-          };
-        }
-      ];
-    };
-    widgets = [
-      {
-        search = {
-          provider = "google";
-          target = "_blank";
-        };
-      }
-    ];
-    services = [
-        {
-          "System Monitor" = [
+          name = "Home";
+          columns = [
             {
-              "Info" = {
-                widget = {
-                  type =  "glances";
-                  url = "http://127.0.0.1:61208";
-                  version = 4;
-                  metric = "info";
-                };
-              };
+              size = "small";
+              widgets = [
+                {
+                  type = "calendar";
+                }
+                {
+                  type = "group";
+                  widgets = [
+                    {
+                      title = "ace";
+                      type = "repository";
+                      repository = "samchouse/ace";
+                      token = "\${GLANCE_GH_TOKEN}";
+                    }
+                    {
+                      title = "adrastos";
+                      type = "repository";
+                      repository = "samchouse/adrastos";
+                      token = "\${GLANCE_GH_TOKEN}";
+                    }
+                  ];
+                }
+                {
+                  type = "markets";
+                  markets = [
+                    {
+                      symbol = "SPY";
+                      name = "S&P 500";
+                    }
+                    {
+                      symbol = "NVDA";
+                      name = "NVIDIA";
+                    }
+                    {
+                      symbol = "AAPL";
+                      name = "Apple";
+                    }
+                    {
+                      symbol = "MSFT";
+                      name = "Microsoft";
+                    }
+                    {
+                      symbol = "GOOGL";
+                      name = "Google";
+                    }
+                  ];
+                }
+              ];
             }
             {
-              "CPU Usage" = {
-                widget = {
-                  type =  "glances";
-                  url = "http://127.0.0.1:61208";
-                  version = 4;
-                  metric = "cpu";
-                };
-              };
+              size = "full";
+              widgets = [
+                {
+                  type = "search";
+                  search-engine = "google";
+                  new-tab = true;
+                }
+                {
+                  type = "hacker-news";
+                }
+                {
+                  type = "reddit";
+                  subreddit = "unixporn";
+                }
+              ];
             }
             {
-              "CPU Temperature" = {
-                widget = {
-                  type =  "glances";
-                  url = "http://127.0.0.1:61208";
-                  version = 4;
-                  metric = "sensor:Package id 0";
-                };
-              };
-            }
-            {
-              "Memory Usage" = {
-                widget = {
-                  type =  "glances";
-                  url = "http://127.0.0.1:61208";
-                  version = 4;
-                  metric = "memory";
-                };
-              };
-            }
-            {
-              "Network Usage" = {
-                widget = {
-                  type =  "glances";
-                  url = "http://127.0.0.1:61208";
-                  version = 4;
-                  metric = "network:wlp6s0";
-                };
-              };
-            }
-            {
-              "Disk I/O" = {
-                widget = {
-                  type =  "glances";
-                  url = "http://127.0.0.1:61208";
-                  version = 4;
-                  metric = "disk:nvme0n1";
-                };
-              };
+              size = "small";
+              widgets = [
+                {
+                  type = "weather";
+                  location = "Montreal, Canada";
+                }
+                {
+                  type = "monitor";
+                  cache = "1m";
+                  title = "Services";
+                  sites = [
+                    {
+                      title = "Open WebUI";
+                      url = "https://ai.xenfo.dev";
+                      icon = "si:openai";
+                    }
+                  ];
+                }
+                {
+                  type = "bookmarks";
+                  groups = [
+                    {
+                      title = "AI";
+                      links = [
+                        {
+                          title = "OpenAI";
+                          url = "https://platform.openai.com/usage";
+                        }
+                        {
+                          title = "Anthropic";
+                          url = "https://console.anthropic.com/settings/usage";
+                        }
+                      ];
+                    }
+                  ];
+                }
+              ];
             }
           ];
         }
-    ];
-  };
-  systemd.services.glances = {
-    enable = true;
-
-    wantedBy = [ "multi-user.target" ];
-
-    unitConfig = {
-      Description = "Glances resource monitor";
-    };
-
-    serviceConfig = {
-      ExecStart = "${pkgs.glances}/bin/glances -w";
-      Restart = "on-failure";
-    };
-  };
-  services.glance = {
-    enable = true;
-    package = (pkgs.glance.overrideAttrs
-        (oldAttrs: rec {
-          version = "latest";
-          src = (pkgs.fetchFromGitHub {
-    owner = "glanceapp";
-    repo = "glance";
-    rev = "bacb607d902cd125c1e97d56d4b51ad56474cc54";
-    hash = "sha256-LzrnbjljbJ8eCFsZwMp5ylx88IPSx5l3Vsy+2LeIFts=";
-  });
-
-  vendorHash = "sha256-i26RD3dIN0pEnfcLAyra2prLhvd/w1Qf1A44rt7L6sc=";
-        }));
-
-    settings.server = {
-      host = "0.0.0.0";
-      port = 8090;
+      ];
     };
   };
 
@@ -235,7 +248,7 @@ in
     backend = "docker";
     containers = {
       ollama = {
-        image = "ollama/ollama:0.4.0-rc8";
+        image = "ollama/ollama:latest";
         ports = [ "11434:11434" ];
         autoStart = true;
         volumes = [ "ollama:/root/.ollama" ];
@@ -300,22 +313,16 @@ in
               httpHostHeader = "ai.xenfo.dev";
             };
           };
+          "home.xenfo.dev" = {
+            service = "https://localhost";
+            originRequest = {
+              originServerName = "home.xenfo.dev";
+              httpHostHeader = "home.xenfo.dev";
+            };
+          };
         };
       };
     };
-  };
-
-  # services.printing = {
-  #   enable = true;
-  #   drivers = [ 
-  #     pkgs.hplip # — Drivers for HP printers.
-  #     pkgs.hplipWithPlugin # — Drivers for HP printers, with the proprietary plugin. Use NIXPKGS_ALLOW_UNFREE=1 nix-shell -p hplipWithPlugin --run 'sudo -E hp-setup' to add the printer, regular CUPS UI doesn't seem to work.
-  #   ];
-  # };
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = true;
   };
 
   services.greetd = {

@@ -50,7 +50,12 @@
         modules = [
           ./hosts/desktop
           sops-nix.nixosModules.sops
-          ({ config, pkgs, ... }: { nixpkgs.overlays = [ overlay-small ]; })
+          (
+            { config, pkgs, ... }:
+            {
+              nixpkgs.overlays = [ overlay-small ];
+            }
+          )
           home-manager.nixosModules.home-manager
           {
             home-manager.backupFileExtension = "bak";
@@ -77,7 +82,12 @@
         modules = [
           ./hosts/desktop
           sops-nix.nixosModules.sops
-          ({ config, pkgs, ... }: { nixpkgs.overlays = [ overlay-small ]; })
+          (
+            { config, pkgs, ... }:
+            {
+              nixpkgs.overlays = [ overlay-small ];
+            }
+          )
           home-manager.nixosModules.home-manager
           {
             home-manager.backupFileExtension = "bak";
