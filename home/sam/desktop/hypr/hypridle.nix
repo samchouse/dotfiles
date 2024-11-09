@@ -6,7 +6,6 @@
 {
   services.hypridle = {
     enable = true;
-    package = pkgs.small.hypridle;
 
     settings = {
       listener = [
