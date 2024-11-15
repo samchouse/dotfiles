@@ -40,6 +40,7 @@
     devenv
     direnv
     rainfrog
+    cider-2
   ];
 
   # This value determines the Home Manager release that your
