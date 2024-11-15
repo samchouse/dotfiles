@@ -18,14 +18,27 @@ let
     ${pkgs.jq}/bin/jq '.Detectors.detectors."Genesis Thor 300" = false | .' /var/lib/OpenRGB/OpenRGB.json.bak > /var/lib/OpenRGB/OpenRGB.json
   '';
 
-  usb-lock = pkgs.writeScriptBin "usb-lock" ''
+  usb-power = pkgs.writeScriptBin "usb-power" ''
     #!/bin/sh
 
-    PIPE="/tmp/usb-lock"
+    PIPE="/tmp/usb-power"
+    BUS=$(($(${pkgs.usbutils}/bin/lsusb | grep 258a:0090 | sed -E 's/Bus ([0-9]+) Device.+/\1/')))
+    DEVICE=$(($(${pkgs.usbutils}/bin/lsusb | grep 258a:0090 | sed -E 's/.+Device ([0-9]+):.+/\1/') + 1))
+
+    handle() {
+      case "$1" in
+      on)
+        echo on >"/sys/bus/usb/devices/$BUS-$DEVICE/power/control"
+        ;;
+      off)
+        echo auto >"/sys/bus/usb/devices/$BUS-$DEVICE/power/control"
+        ;;
+      esac
+    }
 
     mkfifo "$PIPE"
     chown sam "$PIPE"
-    while read -r line <"$PIPE"; do echo -n "0000:00:14.0" > /sys/bus/pci/drivers/xhci_hcd/unbind; done
+    while read -r line <"$PIPE"; do handle "$line"; done
   '';
 
   logiops = pkgs.logiops.overrideAttrs (oldAttrs: rec {
@@ -89,8 +102,25 @@ in
           reverse_proxy :8090
         '';
       };
+      "ha.xenfo.dev" = {
+        extraConfig = ''
+          ${tlsConf}
+          reverse_proxy :8123 {
+            header_up X-Forwarded-For {header.CF-Connecting-IP}
+          }
+        '';
+      };
     };
   };
+  boot.kernel.sysctl."net.core.rmem_max" = 2500000;
+  boot.kernel.sysctl."net.core.wmem_max" = 2500000;
+
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+  services.printing.enable = true;
 
   services.glance = {
     enable = true;
@@ -209,6 +239,15 @@ in
                   type = "bookmarks";
                   groups = [
                     {
+                      title = "General";
+                      links = [
+                        {
+                          title = "Home Assistant";
+                          url = "https://ha.xenfo.dev";
+                        }
+                      ];
+                    }
+                    {
                       title = "AI";
                       links = [
                         {
@@ -237,6 +276,12 @@ in
     PATH = "/run/wrappers/bin:/run/current-system/sw/bin";
   };
 
+  hardware.bluetooth = {
+    enable = true;
+    package = pkgs.bluez-experimental;
+    powerOnBoot = true;
+  };
+
   hardware.nvidia-container-toolkit.enable = true;
   services.open-webui = {
     enable = true;
@@ -248,7 +293,7 @@ in
     backend = "docker";
     containers = {
       ollama = {
-        image = "ollama/ollama:latest";
+        image = "ollama/ollama:0.4.1";
         ports = [ "11434:11434" ];
         autoStart = true;
         volumes = [ "ollama:/root/.ollama" ];
@@ -260,6 +305,17 @@ in
         autoStart = true;
         volumes = [ "pipelines:/app/pipelines" ];
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
+      };
+
+      homeassistant = {
+        volumes = [
+          "home-assistant:/config"
+          "${flake}/hosts/desktop/ha-config.yaml:/config/configuration.yaml:rw"
+          "/run/dbus:/run/dbus:ro"
+        ];
+        environment.TZ = "America/Toronto";
+        image = "ghcr.io/home-assistant/home-assistant:2024.11.1";
+        extraOptions = [ "--network=host" ];
       };
     };
   };
@@ -318,6 +374,13 @@ in
             originRequest = {
               originServerName = "home.xenfo.dev";
               httpHostHeader = "home.xenfo.dev";
+            };
+          };
+          "ha.xenfo.dev" = {
+            service = "https://localhost";
+            originRequest = {
+              originServerName = "ha.xenfo.dev";
+              httpHostHeader = "ha.xenfo.dev";
             };
           };
         };
@@ -510,39 +573,19 @@ in
       HibernateKeyIgnoreInhibited=yes
     '';
   };
-  systemd.services.usb-lock = {
+  systemd.services.usb-power = {
     enable = true;
 
     wantedBy = [ "graphical.target" ];
 
     unitConfig = {
-      Description = "USB lock manager";
+      Description = "USB power manager";
     };
 
     serviceConfig = {
       User = "root";
       Group = "root";
-      ExecStart = "${usb-lock}/bin/usb-lock";
-    };
-  };
-  services.acpid = {
-    enable = true;
-
-    handlers.power-button = {
-      event = "button/power.*";
-      action = ''
-        handle() {
-            echo -n "0000:00:14.0" > /sys/bus/pci/drivers/xhci_hcd/bind
-            ${pkgs.su}/bin/su - sam -c "openrgb -p Blue"
-            ${pkgs.su}/bin/su - sam -c "HYPRLAND_INSTANCE_SIGNATURE=$(ls -t /run/user/1000/hypr | head -n 1) hyprctl dispatch dpms on"
-        }
-
-        vals=($1)
-        case "''${vals[1]}" in
-            PBTN) handle ;;
-            *)    echo "ACPI action undefined: ''${vals[3]}" ;;
-        esac
-      '';
+      ExecStart = "${usb-power}/bin/usb-power";
     };
   };
 
@@ -645,6 +688,7 @@ in
       vendorHash = "sha256-NS0b25NQEJle///iRHAG3uTC5p6rlGSyHVwEESki3p4=";
     }))
     age-plugin-op.defaultPackage."x86_64-linux"
+    usbutils
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -677,6 +721,9 @@ in
 
     # allow you to SSH in over the public internet
     # allowedTCPPorts = [ 22 ];
+
+    # printer home-assistant homekit-bridge
+    allowedTCPPorts = [ 631 8123 21064 ];
   };
 
   # This value determines the NixOS release from which the default
