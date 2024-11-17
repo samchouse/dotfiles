@@ -21,6 +21,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
+    # systemd.enable = false;
 
     settings = {
       env = [
@@ -53,11 +54,6 @@
 
       decoration = {
         rounding = 10;
-
-        drop_shadow = true;
-        shadow_range = 4;
-        shadow_render_power = 3;
-        "col.shadow" = "rgba(1a1a1aee)";
 
         blur = {
           enabled = true;
@@ -128,7 +124,7 @@
         [
           "$mod, TAB, exec, kitty"
           "$mod, Q, killactive, "
-          "$mod, M, exit, "
+          # "$mod, M, exit, "
           "$mod SHIFT, V, togglefloating, "
           "$mod, P, pseudo, "
           "$mod, J, togglesplit, "

@@ -293,7 +293,7 @@ in
     backend = "docker";
     containers = {
       ollama = {
-        image = "ollama/ollama:0.4.1";
+        image = "ollama/ollama:0.4.2";
         ports = [ "11434:11434" ];
         autoStart = true;
         volumes = [ "ollama:/root/.ollama" ];
@@ -393,9 +393,18 @@ in
     settings = {
       default_session = {
         command = "${pkgs.greetd.tuigreet}/bin/tuigreet -t --time-format '%a, %B %-d, %Y - %-I:%M %p' -r --user-menu --asterisks --power-shutdown 'systemctl poweroff' --power-reboot 'systemctl reboot'";
+        # command = "${pkgs.greetd.tuigreet}/bin/tuigreet -t --time-format '%a, %B %-d, %Y - %-I:%M %p' -r --user-menu --asterisks --power-shutdown 'systemctl poweroff' --power-reboot 'systemctl reboot' --cmd '${pkgs.uwsm}/bin/uwsm start hyprland-uwsm.desktop'";
       };
     };
   };
+  # programs.uwsm = {
+  #   enable = true;
+  #   waylandCompositors.hyprland = {
+  #     binPath = "${pkgs.hyprland}/bin/Hyprland";
+  #     comment = "Hyprland session managed by uwsm";
+  #     prettyName = "Hyprland";
+  #   };
+  # };
 
   programs.nh = {
     inherit flake;
@@ -689,6 +698,7 @@ in
     }))
     age-plugin-op.defaultPackage."x86_64-linux"
     usbutils
+    # uwsm
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -723,7 +733,7 @@ in
     # allowedTCPPorts = [ 22 ];
 
     # printer home-assistant homekit-bridge
-    allowedTCPPorts = [ 631 8123 21064 ];
+    allowedTCPPorts = [ 631 8123 21064 21065 21066 21067 ];
   };
 
   # This value determines the NixOS release from which the default
