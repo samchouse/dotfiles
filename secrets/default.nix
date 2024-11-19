@@ -6,5 +6,5 @@
     ./open-webui.nix
   ];
 
-  sops.secrets."op_service_token" = {};
+  sops.secrets."op_service_token" = { };
 }

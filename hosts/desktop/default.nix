@@ -21,17 +21,26 @@ let
   usb-power = pkgs.writeScriptBin "usb-power" ''
     #!/bin/sh
 
+    VENDOR_ID=258a
+    PRODUCT_ID=0090
     PIPE="/tmp/usb-power"
-    BUS=$(($(${pkgs.usbutils}/bin/lsusb | grep 258a:0090 | sed -E 's/Bus ([0-9]+) Device.+/\1/')))
-    DEVICE=$(($(${pkgs.usbutils}/bin/lsusb | grep 258a:0090 | sed -E 's/.+Device ([0-9]+):.+/\1/') + 1))
+
+    find_usb_device() {
+      grep -rl "$VENDOR_ID" /sys/bus/usb/devices/*/idVendor | while read vendor_file; do
+        product_file="''${vendor_file%/idVendor}/idProduct"
+        if [ -f "$product_file" ] && grep -q "$PRODUCT_ID" "$product_file"; then
+          echo "''${vendor_file%/idVendor}"
+        fi
+      done
+    }
 
     handle() {
       case "$1" in
       on)
-        echo on >"/sys/bus/usb/devices/$BUS-$DEVICE/power/control"
+        echo on >"$(find_usb_device)/power/control"
         ;;
       off)
-        echo auto >"/sys/bus/usb/devices/$BUS-$DEVICE/power/control"
+        echo auto >"$(find_usb_device)/power/control"
         ;;
       esac
     }
@@ -112,8 +121,11 @@ in
       };
     };
   };
-  boot.kernel.sysctl."net.core.rmem_max" = 2500000;
-  boot.kernel.sysctl."net.core.wmem_max" = 2500000;
+
+  boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
+  boot.kernel.sysctl."net.ipv6.conf.all.forwarding" = 1;
+  boot.kernel.sysctl."net.core.rmem_max" = 7500000;
+  boot.kernel.sysctl."net.core.wmem_max" = 7500000;
 
   services.avahi = {
     enable = true;
@@ -300,7 +312,7 @@ in
         extraOptions = [ "--device=nvidia.com/gpu=all" ];
       };
       open-webui-pipelines = {
-        image = "ghcr.io/open-webui/pipelines:main";
+        image = "ghcr.io/open-webui/pipelines:git-c98ca76";
         ports = [ "9099:9099" ];
         autoStart = true;
         volumes = [ "pipelines:/app/pipelines" ];
@@ -314,7 +326,7 @@ in
           "/run/dbus:/run/dbus:ro"
         ];
         environment.TZ = "America/Toronto";
-        image = "ghcr.io/home-assistant/home-assistant:2024.11.1";
+        image = "ghcr.io/home-assistant/home-assistant:2024.11.2";
         extraOptions = [ "--network=host" ];
       };
     };
@@ -481,6 +493,8 @@ in
     extraSetFlags = [
       "--advertise-exit-node"
       "--ssh"
+      "--advertise-routes=10.0.0.0/24"
+      "--accept-routes"
     ];
     useRoutingFeatures = "both";
   };
@@ -733,7 +747,14 @@ in
     # allowedTCPPorts = [ 22 ];
 
     # printer home-assistant homekit-bridge
-    allowedTCPPorts = [ 631 8123 21064 21065 21066 21067 ];
+    allowedTCPPorts = [
+      631
+      8123
+      21064
+      21065
+      21066
+      21067
+    ];
   };
 
   # This value determines the NixOS release from which the default
