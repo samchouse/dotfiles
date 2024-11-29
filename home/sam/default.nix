@@ -18,7 +18,6 @@
   home.username = "sam";
   home.homeDirectory = "/home/sam";
 
-  # Packages that should be installed to the user profile.
   home.packages = with pkgs; [
     firefox
     gammastep
@@ -41,6 +40,7 @@
     direnv
     rainfrog
     cider-2
+    slack
   ];
 
   # This value determines the Home Manager release that your
@@ -52,7 +52,4 @@
   # the Home Manager release notes for a list of state version
   # changes in each release.
   home.stateVersion = "24.05";
-
-  # Let home Manager install and manage itself.
-  programs.home-manager.enable = true;
 }

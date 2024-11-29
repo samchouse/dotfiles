@@ -2,6 +2,7 @@
   inputs,
   pkgs,
   niqspkgs,
+  hyprland,
   ...
 }:
 {
@@ -21,6 +22,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
+    package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     # systemd.enable = false;
 
     settings = {
@@ -39,7 +41,7 @@
       ];
 
       cursor = {
-        allow_dumb_copy = true;
+        use_cpu_buffer = true;
       };
 
       general = {
