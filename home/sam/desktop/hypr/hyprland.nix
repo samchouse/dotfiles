@@ -42,6 +42,7 @@
 
       cursor = {
         use_cpu_buffer = true;
+        no_hardware_cursors = 0;
       };
 
       general = {

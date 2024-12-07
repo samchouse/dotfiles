@@ -15,4 +15,8 @@ in
 
     OPEN_API_KEY=${config.sops.placeholder.open_api_key}
   '';
+
+  systemd.services.open-webui = {
+    requires = [ "sops-install-secrets.service" ];
+  };
 }

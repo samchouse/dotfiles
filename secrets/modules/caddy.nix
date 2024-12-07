@@ -14,8 +14,11 @@ in
     CF_API_TOKEN=${config.sops.placeholder.cf_api_token}
   '';
 
-  systemd.services.caddy.serviceConfig = {
-    AmbientCapabilities = "CAP_NET_BIND_SERVICE";
-    EnvironmentFile = config.sops.templates."caddy.env".path;
+  systemd.services.caddy = {
+    requires = [ "sops-install-secrets.service" ];
+    serviceConfig = {
+      AmbientCapabilities = "CAP_NET_BIND_SERVICE";
+      EnvironmentFile = config.sops.templates."caddy.env".path;
+    };
   };
 }

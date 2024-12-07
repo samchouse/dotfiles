@@ -91,7 +91,7 @@ in
   };
 
   boot = {
-    # kernelPackages = pkgs.linuxKernel.packages.linux_6_12;
+    kernelPackages = pkgs.small.linuxKernel.packages.linux_6_12;
     kernelParams = [
       "quiet"
       "loglevel=3"
@@ -139,6 +139,7 @@ in
     usbutils
     postgresql
     cudatoolkit
+    cloudflared
     polkit_gnome
   ];
 
@@ -150,6 +151,7 @@ in
       extraGroups = [
         "networkmanager"
         "wheel"
+        "dialout"
       ];
     };
   };

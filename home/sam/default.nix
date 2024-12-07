@@ -41,6 +41,8 @@
     rainfrog
     cider-2
     slack
+    thunderbird
+    google-chrome
   ];
 
   # This value determines the Home Manager release that your

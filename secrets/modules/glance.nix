@@ -14,7 +14,10 @@ in
     GLANCE_GH_TOKEN=${config.sops.placeholder.glance_gh_token}
   '';
 
-  systemd.services.glance.serviceConfig = {
-    EnvironmentFile = config.sops.templates."glance.env".path;
+  systemd.services.glance = {
+    requires = [ "sops-install-secrets.service" ];
+    serviceConfig = {
+      EnvironmentFile = config.sops.templates."glance.env".path;
+    };
   };
 }

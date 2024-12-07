@@ -43,7 +43,10 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       overlay-small = final: prev: {
-        small = nixpkgs-small.legacyPackages.${prev.system};
+        small = import nixpkgs-small {
+          config.allowUnfree = true;
+          localSystem = { inherit system; };
+        };
       };
 
       configuration = {
