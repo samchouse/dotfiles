@@ -17,6 +17,8 @@ in
   '';
 
   systemd.services.open-webui = {
+    after = [ "sops-install-secrets.service" ];
     requires = [ "sops-install-secrets.service" ];
+    onSuccess = [ "sops-install-secrets.service" ];
   };
 }

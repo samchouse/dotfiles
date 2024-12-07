@@ -22,7 +22,7 @@ while getopts "igt" opt; do
   i)
     prev=""
     handle() {
-      if [[ "$1" != "" ]] && [[ $1 -eq 0 ]]; then
+      if [[ $1 != "" ]] && [[ $1 -eq 0 ]]; then
         return
       fi
 
@@ -41,7 +41,7 @@ while getopts "igt" opt; do
       fi
 
       curr="{ \"icon\": \"$icon\", \"volume\": \"$volume\" }"
-      if [[ "$curr" != "$prev" ]]; then
+      if [[ $curr != "$prev" ]]; then
         prev=$curr
         echo "$curr"
       fi
@@ -52,19 +52,19 @@ while getopts "igt" opt; do
   g)
     prev=""
     handle() {
-      if [[ "$1" != "" ]] && [[ $1 -eq 0 ]]; then
+      if [[ $1 != "" ]] && [[ $1 -eq 0 ]]; then
         return
       fi
 
       curr=""
       output=$(get_output)
-      if [[ "$output" == "$SPEAKERS" ]]; then
+      if [[ $output == "$SPEAKERS" ]]; then
         curr="speakers"
-      elif [[ "$output" == "$HEADPHONES" ]]; then
+      elif [[ $output == "$HEADPHONES" ]]; then
         curr="headphones"
       fi
 
-      if [[ "$curr" != "$prev" ]]; then
+      if [[ $curr != "$prev" ]]; then
         prev=$curr
         echo "$curr"
       fi
@@ -74,9 +74,9 @@ while getopts "igt" opt; do
     ;;
   t)
     output=$(get_output)
-    if [[ "$output" == "$SPEAKERS" ]]; then
+    if [[ $output == "$SPEAKERS" ]]; then
       wpctl set-profile "$(get_device)" "$(get_index $HEADPHONES)"
-    elif [[ "$output" == "$HEADPHONES" ]]; then
+    elif [[ $output == "$HEADPHONES" ]]; then
       wpctl set-profile "$(get_device)" "$(get_index $SPEAKERS)"
     fi
     ;;

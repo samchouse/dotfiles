@@ -12,6 +12,10 @@
     hyprland.url = "github:hyprwm/Hyprland";
     niqspkgs.url = "github:diniamo/niqspkgs";
     catppuccin.url = "github:catppuccin/nix";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     sops-nix.url = "github:samchouse/sops-nix";
     custom-fonts.url = "git+ssh://git@github.com/samchouse/fonts.git?ref=main";
@@ -38,6 +42,7 @@
       caddy-nixos,
       nixpkgs-small,
       hyprland,
+      treefmt-nix,
     }:
     let
       system = "x86_64-linux";
@@ -87,8 +92,6 @@
       };
     in
     {
-      formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt-rfc-style;
-
       nixosConfigurations.simple = nixpkgs.lib.nixosSystem configuration;
       nixosConfigurations.desktop = nixpkgs.lib.nixosSystem (
         configuration
@@ -98,5 +101,16 @@
           };
         }
       );
+
+      formatter.${system} =
+        (treefmt-nix.lib.evalModule pkgs {
+          projectRootFile = "flake.nix";
+          programs = {
+            shfmt.enable = true;
+            nixfmt.enable = true;
+            shellcheck.enable = true;
+          };
+          settings.on-unmatched = "debug";
+        }).config.build.wrapper;
     };
 }

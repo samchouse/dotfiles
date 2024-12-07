@@ -7,9 +7,14 @@
 
   programs.rofi = {
     enable = true;
-
     package = pkgs.rofi-wayland;
+
     theme = "squared-nord.rasi";
     font = "MonoLisa Nerd Font Medium 12";
+    plugins = with pkgs; [
+      (rofi-calc.override {
+        rofi-unwrapped = rofi-wayland-unwrapped;
+      })
+    ];
   };
 }

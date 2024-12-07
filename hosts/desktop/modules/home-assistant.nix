@@ -33,7 +33,11 @@ in
         };
         serial = {
           port = "/dev/serial/by-id/usb-SMLIGHT_SMLIGHT_SLZB-06M_eae31ba01c72ef1197593b848fcc3fa0-if00-port0";
+          baudrate = 115200;
           adapter = "ember";
+        };
+        advanced = {
+          # transmit_power = 20;
         };
         frontend = {
           host = "0.0.0.0";

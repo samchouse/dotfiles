@@ -19,7 +19,7 @@ case $1 in
     printed=false
 
     while true; do
-      if playerctl --player playerctld status 2>&1 | grep -q Playing || [[ "$2" == "false" ]]; then
+      if playerctl --player playerctld status 2>&1 | grep -q Playing || [[ $2 == "false" ]]; then
         target=$(date -d '3 min' +%s)
 
         if [[ $printed == false ]]; then

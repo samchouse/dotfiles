@@ -18,6 +18,8 @@ in
     environmentFiles = [ config.sops.templates."postgres.env".path ];
   };
   systemd.services.docker-timescaledb = {
+    after = [ "sops-install-secrets.service" ];
     requires = [ "sops-install-secrets.service" ];
+    onSuccess = [ "sops-install-secrets.service" ];
   };
 }

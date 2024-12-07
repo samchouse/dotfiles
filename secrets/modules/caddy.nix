@@ -15,7 +15,9 @@ in
   '';
 
   systemd.services.caddy = {
+    after = [ "sops-install-secrets.service" ];
     requires = [ "sops-install-secrets.service" ];
+    onSuccess = [ "sops-install-secrets.service" ];
     serviceConfig = {
       AmbientCapabilities = "CAP_NET_BIND_SERVICE";
       EnvironmentFile = config.sops.templates."caddy.env".path;
