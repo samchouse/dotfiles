@@ -3,11 +3,6 @@
   services.dunst = {
     enable = true;
 
-    catppuccin = {
-      enable = true;
-      flavor = "macchiato";
-    };
-
     settings = {
       global = {
         offset = "30x50";
@@ -22,5 +17,10 @@
         mouse_right_click = "close_all";
       };
     };
+  };
+
+  catppuccin.dunst = {
+    enable = true;
+    flavor = "macchiato";
   };
 }

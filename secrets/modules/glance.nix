@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   ...
 }:
 let
@@ -15,9 +16,7 @@ in
   '';
 
   systemd.services.glance = {
-    after = [ "sops-install-secrets.service" ];
-    requires = [ "sops-install-secrets.service" ];
-    onSuccess = [ "sops-install-secrets.service" ];
+    wantedBy = lib.mkForce [ ];
     serviceConfig = {
       EnvironmentFile = config.sops.templates."glance.env".path;
     };

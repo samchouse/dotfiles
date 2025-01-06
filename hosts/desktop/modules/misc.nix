@@ -31,7 +31,6 @@ in
     };
   };
 
-  services.hardware.openrgb.enable = true;
   environment.systemPackages = [ logiops ];
   environment.etc."logid.cfg".source = ../config/logid.cfg;
 
@@ -57,5 +56,16 @@ in
         Restart = "on-failure";
       };
     };
+  };
+
+  services = {
+    hardware.openrgb.enable = true;
+    udev.packages = [
+      (pkgs.writeTextFile {
+        name = "xbox-one-elite-2-udev-rules";
+        text = ''KERNEL=="hidraw*", TAG+="uaccess"'';
+        destination = "/etc/udev/rules.d/60-xbox-elite-2-hid.rules";
+      })
+    ];
   };
 }

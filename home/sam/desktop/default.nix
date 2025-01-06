@@ -8,6 +8,7 @@
     ./kitty.nix
     ./vscode.nix
     ./theme.nix
+    ./bluetooth.nix
   ];
 
   xdg.mimeApps = {

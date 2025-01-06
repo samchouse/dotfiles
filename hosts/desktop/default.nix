@@ -18,10 +18,19 @@ in
 
   environment.sessionVariables.FLAKE = flake;
 
-  # hardware.bluetooth = {
-  #   enable = true;
-  #   powerOnBoot = true;
-  # };
+  hardware = {
+    bluetooth = {
+      enable = true;
+
+      powerOnBoot = true;
+      settings = {
+        General = {
+          Experimental = true;
+          Enable = "Source,Sink,Media,Socket";
+        };
+      };
+    };
+  };
 
   security = {
     rtkit.enable = true;
@@ -29,11 +38,8 @@ in
   };
 
   virtualisation = {
+    docker.enable = true;
     oci-containers.backend = "docker";
-    docker.rootless = {
-      enable = true;
-      setSocketVariable = true;
-    };
   };
 
   networking = {
@@ -43,8 +49,17 @@ in
     firewall = {
       enable = true;
 
-      # printer
-      allowedTCPPorts = [ 631 ];
+      # printer steam steam
+      allowedTCPPorts = [
+        631
+        27036
+        27037
+      ];
+      allowedUDPPorts = [
+        27031
+        27036
+      ];
+      trustedInterfaces = [ "docker0" ];
     };
   };
 
@@ -87,17 +102,21 @@ in
         enable = true;
         support32Bit = true;
       };
+      wireplumber.extraConfig."11-bluetooth-policy" = {
+        "wireplumber.settings" = {
+          "bluetooth.autoswitch-to-headset-profile" = false;
+        };
+      };
     };
   };
 
   boot = {
-    kernelPackages = pkgs.small.linuxKernel.packages.linux_6_12;
+    kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
+    kernelModules = [ "hid_microsoft" ];
     kernelParams = [
       "quiet"
       "loglevel=3"
-      # "module_blacklist=iwlwifi"
     ];
-    # blacklistedKernelModules = [ "iwlwifi" ];
 
     initrd = {
       systemd.enable = true;
@@ -126,7 +145,10 @@ in
     };
   };
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    cudaSupport = true;
+  };
   environment.systemPackages = with pkgs; [
     jq
     git

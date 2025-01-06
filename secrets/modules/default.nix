@@ -3,9 +3,14 @@
   imports = [
     ./caddy.nix
     ./glance.nix
-    ./postgres.nix
     ./open-webui.nix
   ];
 
   sops.secrets."op_service_token" = { };
+
+  systemd.services.sops-secrets.wants = [
+    "docker-open-webui.service"
+    "glance.service"
+    "caddy.service"
+  ];
 }

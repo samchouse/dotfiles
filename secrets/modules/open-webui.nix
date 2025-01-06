@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   ...
 }:
 let
@@ -16,9 +17,10 @@ in
     OPEN_API_KEY=${config.sops.placeholder.open_api_key}
   '';
 
-  systemd.services.open-webui = {
-    after = [ "sops-install-secrets.service" ];
-    requires = [ "sops-install-secrets.service" ];
-    onSuccess = [ "sops-install-secrets.service" ];
+  systemd.services.docker-open-webui = {
+    wantedBy = lib.mkForce [ ];
+  };
+  virtualisation.oci-containers.containers.open-webui = {
+    environmentFiles = [ config.sops.templates."open-webui.env".path ];
   };
 }

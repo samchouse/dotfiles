@@ -23,7 +23,6 @@
   wayland.windowManager.hyprland = {
     enable = true;
     package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-    # systemd.enable = false;
 
     settings = {
       env = [
@@ -39,6 +38,24 @@
         "QT_QPA_PLATFORMTHEME,qt5ct"
         "PATH,$PATH:${pkgs.qt6Packages.qtstyleplugin-kvantum}/bin"
       ];
+
+      render = {
+        explicit_sync = 2;
+        explicit_sync_kms = 0;
+      };
+
+      opengl = {
+        nvidia_anti_flicker = 0;
+        force_introspection = 2;
+      };
+
+      misc = {
+        vfr = 0;
+      };
+
+      debug = {
+        damage_tracking = 0;
+      };
 
       cursor = {
         use_cpu_buffer = true;
@@ -112,6 +129,14 @@
         "idleinhibit always, class:^Minecraft"
         "fullscreen, class:^(Minecraft 1.8.9)$"
 
+        "idleinhibit always, class:^(Lethal Company)$"
+        "fullscreen, class:^(Lethal Company)$"
+
+        "idleinhibit always, title:^Brawlhalla$"
+        "fullscreen, title:^Brawlhalla$"
+
+        "idleinhibit always, title:^Rivals2"
+
         "opacity 0.0 override, class:^(xwaylandvideobridge)$"
         "noanim, class:^(xwaylandvideobridge)$"
         "noinitialfocus, class:^(xwaylandvideobridge)$"
@@ -131,6 +156,7 @@
           "$mod SHIFT, V, togglefloating, "
           "$mod, P, pseudo, "
           "$mod, J, togglesplit, "
+          "$mod, F, fullscreen, "
           "$mod, S, exec, ~/.config/hypr/scripts/screenshot.sh"
           "$mod, space, exec, rofi -show drun -show-icons -icon-theme 'kora' -sort -sorting-method fzf"
           "$mod SHIFT, space, exec, rofi -show calc -modi calc -no-show-match -no-sort"

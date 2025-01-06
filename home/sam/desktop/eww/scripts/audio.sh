@@ -1,20 +1,14 @@
 #!/usr/bin/env bash
 
-SPEAKERS="output:hdmi-stereo"
-HEADPHONES="output:hdmi-stereo-extra1"
-
-get_device() {
-  pw-cli ls Device | awk '/id [0-9]+, type/ {id_line = $0} /device.name = "alsa_card.pci-0000_01_00.1"/ {print id_line}' | grep -oP "id \d*" | sed 's/id //'
-}
+SPEAKERS="alsa_output.pci-0000_01_00.1.hdmi-stereo"
+HEADPHONES="bluez_output.BC_87_FA_46_25_55.1"
 
 get_output() {
-  output=$(wpctl status -n | grep -oP "(${HEADPHONES/output:/})|(${SPEAKERS/output:/})")
-  echo "output:$output"
+  wpctl status -n | grep -oP "\*.+($SPEAKERS|$HEADPHONES)" | sed -E "s/.+($SPEAKERS|$HEADPHONES)/\1/"
 }
 
-get_index() {
-  line=$(pw-cli e "$(get_device)" EnumProfile | grep -nP "\"$1\"\$" | cut -d':' -f1)
-  pw-cli e "$(get_device)" EnumProfile | head -n"$(("$line" - 2))" | tail -n1 | grep -oP "\d+"
+get_id() {
+  wpctl status -n | grep -oP "\d+\.\s$1" | sed -E "s/\s|$SPEAKERS|$HEADPHONES|\.//g"
 }
 
 while getopts "igt" opt; do
@@ -47,7 +41,7 @@ while getopts "igt" opt; do
       fi
     }
 
-    pw-dump -m --no-colors | jq --unbuffered 'del(.[] | select(.type != "PipeWire:Interface:Device")) | length' | while read -r line; do handle line; done
+    pw-dump -m --no-colors | jq --unbuffered 'del(.[] | select(.type != "PipeWire:Interface:Node")) | length' | while read -r line; do handle "$line"; done
     ;;
   g)
     prev=""
@@ -70,14 +64,14 @@ while getopts "igt" opt; do
       fi
     }
 
-    pw-dump -m --no-colors | jq --unbuffered 'del(.[] | select(.type != "PipeWire:Interface:Node")) | length' | while read -r line; do handle line; done
+    pw-dump -m --no-colors | jq --unbuffered 'del(.[] | select(.type != "PipeWire:Interface:Node")) | length' | while read -r line; do handle "$line"; done
     ;;
   t)
     output=$(get_output)
     if [[ $output == "$SPEAKERS" ]]; then
-      wpctl set-profile "$(get_device)" "$(get_index $HEADPHONES)"
+      wpctl set-default "$(get_id "$HEADPHONES")"
     elif [[ $output == "$HEADPHONES" ]]; then
-      wpctl set-profile "$(get_device)" "$(get_index $SPEAKERS)"
+      wpctl set-default "$(get_id "$SPEAKERS")"
     fi
     ;;
   \?)

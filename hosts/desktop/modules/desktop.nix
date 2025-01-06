@@ -26,14 +26,6 @@
       pkgs.xdg-desktop-portal-gtk
     ];
   };
-  # programs.uwsm = {
-  #   enable = true;
-  #   waylandCompositors.hyprland = {
-  #     binPath = "${pkgs.hyprland}/bin/Hyprland";
-  #     comment = "Hyprland session managed by uwsm";
-  #     prettyName = "Hyprland";
-  #   };
-  # };
 
   services = {
     greetd = {
@@ -41,7 +33,6 @@
       settings = {
         default_session = {
           command = "${pkgs.greetd.tuigreet}/bin/tuigreet -t --time-format '%a, %B %-d, %Y - %-I:%M %p' -r --user-menu --asterisks --power-shutdown 'systemctl poweroff' --power-reboot 'systemctl reboot'";
-          # command = "${pkgs.greetd.tuigreet}/bin/tuigreet -t --time-format '%a, %B %-d, %Y - %-I:%M %p' -r --user-menu --asterisks --power-shutdown 'systemctl poweroff' --power-reboot 'systemctl reboot' --cmd '${pkgs.uwsm}/bin/uwsm start hyprland-uwsm.desktop'";
         };
       };
     };

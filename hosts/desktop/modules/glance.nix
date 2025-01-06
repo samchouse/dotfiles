@@ -9,12 +9,12 @@
           pkgs.fetchFromGitHub {
             owner = "glanceapp";
             repo = "glance";
-            rev = "bacb607d902cd125c1e97d56d4b51ad56474cc54";
-            hash = "sha256-LzrnbjljbJ8eCFsZwMp5ylx88IPSx5l3Vsy+2LeIFts=";
+            rev = "e524dd111e014dda9c38d388732e8b73823a4879";
+            hash = "sha256-Wn9TL6Eu8r59G6LoBuP33aMcFdlefDRdZFJ5OCC6zAk=";
           }
         );
 
-        vendorHash = "sha256-i26RD3dIN0pEnfcLAyra2prLhvd/w1Qf1A44rt7L6sc=";
+        vendorHash = "sha256-6lYlfiUJpXANv9D7Ssc0yZ2iCz1VwrOzw8rhMo4HgkQ=";
       })
     );
 

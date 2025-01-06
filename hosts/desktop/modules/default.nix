@@ -11,6 +11,4 @@
     ./home-assistant.nix
     ./misc.nix
   ];
-
-  sops.secrets."op_service_token" = { };
 }

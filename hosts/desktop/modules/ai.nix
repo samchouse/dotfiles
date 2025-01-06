@@ -8,14 +8,6 @@
   environment.systemPackages = with pkgs; [ ffmpeg ];
 
   services = {
-    open-webui = {
-      enable = true;
-      package = pkgs.small.open-webui;
-
-      host = "0.0.0.0";
-      environmentFile = config.sops.templates."open-webui.env".path;
-    };
-
     tika = {
       enable = true;
       enableOcr = true;
@@ -51,52 +43,48 @@
       };
       limiterSettings.botdetection.ip_limit.link_token = true;
     };
-
-    grafana = {
-      enable = true;
-      settings = {
-        server = {
-          http_addr = "0.0.0.0";
-          http_port = 3012;
-          domain = "localhost";
-        };
-        users = {
-          allow_sign_up = false;
-        };
-        "auth.proxy" = {
-          enabled = true;
-        };
-        "unified_alerting" = {
-          enabled = false;
-        };
-      };
-    };
   };
 
   virtualisation.oci-containers = {
     containers = {
       ollama = {
-        image = "ollama/ollama:0.4.3";
+        image = "ollama/ollama:0.5.4";
         ports = [ "11434:11434" ];
         autoStart = true;
         volumes = [ "ollama:/root/.ollama" ];
         extraOptions = [ "--device=nvidia.com/gpu=all" ];
       };
+
+      open-webui = {
+        image = "ghcr.io/open-webui/open-webui:0.5.3-cuda";
+        ports = [ "8080:8080" ];
+        volumes = [ "open-webui:/app/backend/data" ];
+        extraOptions = [
+          "--device=nvidia.com/gpu=all"
+          "--add-host=host.docker.internal:host-gateway"
+          "--security-opt=seccomp=unconfined"
+          "--mount=type=bind,source=/sys/fs/cgroup,target=/sys/fs/cgroup,readonly=false"
+          "--security-opt=apparmor=unconfined"
+          "--security-opt=label=type:container_engine_t"
+        ];
+        environment = {
+          USE_CUDA_DOCKER = "true";
+        };
+      };
       open-webui-pipelines = {
         image = "ghcr.io/open-webui/pipelines:git-1367d95";
         ports = [ "9099:9099" ];
-        autoStart = true;
         volumes = [ "pipelines:/app/pipelines" ];
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
       };
 
-      timescaledb = {
-        image = "timescale/timescaledb:2.17.2-pg16";
-        ports = [ "5432:5432" ];
-        volumes = [
-          "timescaledb:/home/postgres/pgdata/data"
+      openedai-speech = {
+        image = "ghcr.io/matatonic/openedai-speech:0.18.2";
+        ports = [ "8013:8000" ];
+        extraOptions = [
+          "--device=nvidia.com/gpu=all"
+          "--add-host=host.docker.internal:host-gateway"
         ];
-        environment.POSTGRES_DB = "open-webui";
       };
     };
   };

@@ -37,17 +37,20 @@ let
   '';
 in
 {
-  services.logind = {
-    powerKey = "ignore";
-    rebootKey = "ignore";
-    suspendKey = "ignore";
-    hibernateKey = "ignore";
+  services = {
+    upower.enable = true;
+    logind = {
+      powerKey = "ignore";
+      rebootKey = "ignore";
+      suspendKey = "ignore";
+      hibernateKey = "ignore";
 
-    extraConfig = ''
-      PowerKeyIgnoreInhibited=yes
-      SuspendKeyIgnoreInhibited=yes
-      HibernateKeyIgnoreInhibited=yes
-    '';
+      extraConfig = ''
+        PowerKeyIgnoreInhibited=yes
+        SuspendKeyIgnoreInhibited=yes
+        HibernateKeyIgnoreInhibited=yes
+      '';
+    };
   };
 
   systemd.services.usb-power = {

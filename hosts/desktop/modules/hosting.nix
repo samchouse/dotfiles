@@ -41,12 +41,6 @@ in
           }
         '';
       };
-      "streamlit.xenfo.dev" = {
-        extraConfig = ''
-          ${tlsConf}
-          reverse_proxy :8501
-        '';
-      };
     };
   };
 
@@ -78,13 +72,6 @@ in
             originRequest = {
               originServerName = "ha.xenfo.dev";
               httpHostHeader = "ha.xenfo.dev";
-            };
-          };
-          "streamlit.xenfo.dev" = {
-            service = "https://localhost";
-            originRequest = {
-              originServerName = "streamlit.xenfo.dev";
-              httpHostHeader = "streamlit.xenfo.dev";
             };
           };
         };
