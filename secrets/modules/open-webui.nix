@@ -9,12 +9,12 @@ let
   };
 in
 {
-  sops.secrets."open_api_key" = options;
+  sops.secrets."openai_api_key" = options;
 
   sops.templates."open-webui.env".content = ''
     env=PROD
 
-    OPEN_API_KEY=${config.sops.placeholder.open_api_key}
+    OPENAI_API_KEY=${config.sops.placeholder.openai_api_key}
   '';
 
   systemd.services.docker-open-webui = {

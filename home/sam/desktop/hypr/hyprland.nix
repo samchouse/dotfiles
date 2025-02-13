@@ -1,7 +1,6 @@
 {
   inputs,
   pkgs,
-  niqspkgs,
   hyprland,
   ...
 }:
@@ -11,7 +10,7 @@
   home.pointerCursor = {
     gtk.enable = false;
     x11.enable = true;
-    package = niqspkgs.packages.${pkgs.stdenv.hostPlatform.system}.bibata-hyprcursor;
+    package = pkgs.niqs.bibata-hyprcursor;
     name = "Bibata-modern";
     size = 24;
   };
@@ -23,6 +22,7 @@
   wayland.windowManager.hyprland = {
     enable = true;
     package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    portalPackage = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
 
     settings = {
       env = [
@@ -46,7 +46,6 @@
 
       opengl = {
         nvidia_anti_flicker = 0;
-        force_introspection = 2;
       };
 
       misc = {

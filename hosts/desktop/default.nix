@@ -39,6 +39,7 @@ in
 
   virtualisation = {
     docker.enable = true;
+    podman.enable = true;
     oci-containers.backend = "docker";
   };
 
@@ -111,7 +112,7 @@ in
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
+    kernelPackages = pkgs.linuxPackagesFor pkgs.linux_6_12;
     kernelModules = [ "hid_microsoft" ];
     kernelParams = [
       "quiet"

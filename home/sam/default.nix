@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  niqspkgs,
   ...
 }:
 {
@@ -28,8 +27,8 @@
     playerctl
     xwaylandvideobridge
     grim
-    niqspkgs.packages.${pkgs.stdenv.hostPlatform.system}.bibata-hyprcursor
-    kora-icon-theme
+    pkgs.niqs.bibata-hyprcursor
+    pkgs.kora.kora-icon-theme
     wayfreeze
     slurp
     wl-clipboard
@@ -45,6 +44,7 @@
     google-chrome
     r2modman
     lumafly
+    libreoffice
   ];
 
   # This value determines the Home Manager release that your

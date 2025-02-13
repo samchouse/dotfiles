@@ -1,4 +1,9 @@
-{ flake, config, ... }:
+{
+  flake,
+  config,
+  pkgs,
+  ...
+}:
 let
   constants = import ../constants.nix;
   inherit (constants) flake;
@@ -7,7 +12,7 @@ in
   virtualisation.oci-containers = {
     containers = {
       homeassistant = {
-        image = "ghcr.io/home-assistant/home-assistant:2024.12.5";
+        image = "ghcr.io/home-assistant/home-assistant:2025.2.3";
         volumes = [
           "home-assistant:/config"
           "${flake}/hosts/desktop/config/ha-config.yaml:/config/configuration.yaml:rw"
@@ -25,6 +30,25 @@ in
     };
     zigbee2mqtt = {
       enable = true;
+      package = (
+        pkgs.z2m.zigbee2mqtt.overrideAttrs (oldAttrs: rec {
+          version = "2.1.1";
+          src = (
+            pkgs.fetchFromGitHub {
+              owner = "Koenkk";
+              repo = "zigbee2mqtt";
+              tag = version;
+              hash = "sha256-YVsQ4Zo0nlIb9m4wiK7xcqB7eE/h2ZvTTqEYLDagoHM=";
+            }
+          );
+
+          pnpmDeps = pkgs.pnpm_9.fetchDeps {
+            inherit (oldAttrs) pname;
+            inherit version src;
+            hash = "sha256-Wr7FngKfedUrtOLpaTxvAdJZfCXo1/+oLMIJMOCgafk=";
+          };
+        })
+      );
 
       settings = {
         homeassistant = true;
@@ -36,12 +60,18 @@ in
           baudrate = 115200;
           adapter = "ember";
         };
-        advanced = {
-          # transmit_power = 20;
-        };
         frontend = {
           host = "0.0.0.0";
           port = 8453;
+        };
+        advanced = {
+          homeassistant_legacy_entity_attributes = false;
+          homeassistant_legacy_triggers = false;
+          legacy_api = false;
+          legacy_availability_payload = false;
+        };
+        device_options = {
+          legacy = false;
         };
       };
     };
@@ -49,6 +79,7 @@ in
 
   systemd.services.zigbee2mqtt.serviceConfig = {
     Environment = [ "Z2M_WATCHDOG=default" ];
+    SystemCallFilter = [ "@chown" ];
   };
 
   networking.firewall = {

@@ -2,21 +2,7 @@
 {
   services.glance = {
     enable = true;
-    package = (
-      pkgs.glance.overrideAttrs (oldAttrs: rec {
-        version = "latest";
-        src = (
-          pkgs.fetchFromGitHub {
-            owner = "glanceapp";
-            repo = "glance";
-            rev = "e524dd111e014dda9c38d388732e8b73823a4879";
-            hash = "sha256-Wn9TL6Eu8r59G6LoBuP33aMcFdlefDRdZFJ5OCC6zAk=";
-          }
-        );
-
-        vendorHash = "sha256-6lYlfiUJpXANv9D7Ssc0yZ2iCz1VwrOzw8rhMo4HgkQ=";
-      })
-    );
+    package = pkgs.glance.glance;
 
     settings = {
       server = {
