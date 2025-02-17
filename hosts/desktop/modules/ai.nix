@@ -17,43 +17,6 @@
       package = pkgs.mongodb-ce;
       bind_ip = "0.0.0.0";
     };
-    tika = {
-      enable = true;
-      enableOcr = true;
-
-      listenAddress = "0.0.0.0";
-    };
-    searx = {
-      enable = true;
-      package = pkgs.searxng;
-      redisCreateLocally = true;
-      settings = {
-        use_default_settings = true;
-
-        server = {
-          secret_key = "super-secret-key";
-          limiter = false;
-          image_proxy = true;
-          port = 8888;
-          bind_address = "0.0.0.0";
-        };
-
-        ui = {
-          static_use_hash = true;
-        };
-
-        search = {
-          safe_search = 0;
-          autocomplete = "";
-          default_lang = "";
-          formats = [
-            "html"
-            "json"
-          ];
-        };
-      };
-      limiterSettings.botdetection.ip_limit.link_token = true;
-    };
   };
 
   virtualisation.oci-containers = {
@@ -64,44 +27,51 @@
         autoStart = true;
         volumes = [ "ollama:/root/.ollama" ];
         extraOptions = [ "--device=nvidia.com/gpu=all" ];
-      };
-
-      open-webui = {
-        image = "ghcr.io/open-webui/open-webui:0.5.10";
-        ports = [ "8080:8080" ];
-        volumes = [ "open-webui:/app/backend/data" ];
-        extraOptions = [
-          "--add-host=host.docker.internal:host-gateway"
-          "--security-opt=seccomp=unconfined"
-          "--mount=type=bind,source=/sys/fs/cgroup,target=/sys/fs/cgroup,readonly=false"
-          "--security-opt=apparmor=unconfined"
-          "--security-opt=label=type:container_engine_t"
-        ];
-      };
-      open-webui-pipelines = {
-        image = "ghcr.io/open-webui/pipelines:git-db29eb2";
-        ports = [ "9099:9099" ];
-        volumes = [ "pipelines:/app/pipelines" ];
-        extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
+        networks = [ "litellm" ];
       };
 
       librechat = {
-        image = "ghcr.io/danny-avila/librechat:v0.7.7-rc1";
+        image = "ghcr.io/danny-avila/librechat-dev:a65647a7dea18ee58b0c64f578a1332f177e1162";
         ports = [ "3080:3080" ];
-        volumes = [ "${../config/librechat.env}:/app/.env" ];
+        volumes = [
+          "${../config/librechat.yaml}:/app/librechat.yaml"
+          "librechat-images:/app/client/public/images"
+        ];
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
+        networks = [
+          "librechat"
+          "litellm"
+        ];
       };
       vectordb = {
         image = "pgvector/pgvector:0.8.0-pg17";
-        ports = [ "5432:5432" ];
         volumes = [ "vectordb:/var/lib/postgresql/data" ];
-        extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
+        networks = [ "librechat" ];
       };
       rag = {
         image = "ghcr.io/danny-avila/librechat-rag-api-dev:9e4bb52e15d97856e3b69653c88d2cf1bb34324f";
-        ports = [ "6549:6549" ];
         volumes = [ "rag-uploads:/app/uploads" ];
-        extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
+        networks = [ "librechat" ];
+      };
+
+      postgres = {
+        image = "postgres:17.2-alpine";
+        volumes = [ "postgres:/var/lib/postgresql/data" ];
+        networks = [ "litellm" ];
+        environment = {
+          POSTGRES_DB = "litellm";
+          POSTGRES_USER = "litellm";
+        };
+      };
+      litellm = {
+        image = "ghcr.io/berriai/litellm:main-v1.61.6-nightly";
+        volumes = [ "${../config/litellm.yaml}:/app/config.yaml" ];
+        cmd = [ "--config=/app/config.yaml" ];
+        ports = [ "4044:4000" ];
+        networks = [ "litellm" ];
+        environment = {
+          STORE_MODEL_IN_DB = "True";
+        };
       };
     };
   };

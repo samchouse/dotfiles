@@ -100,8 +100,13 @@
                   title = "Services";
                   sites = [
                     {
-                      title = "Open WebUI";
+                      title = "LibreChat";
                       url = "https://ai.xenfo.dev";
+                      icon = "si:openai";
+                    }
+                    {
+                      title = "LiteLLM";
+                      url = "https://lllm.xenfo.dev";
                       icon = "si:openai";
                     }
                   ];
@@ -125,6 +130,10 @@
                     {
                       title = "AI";
                       links = [
+                        {
+                          title = "OpenRouter";
+                          url = "https://openrouter.ai/activity";
+                        }
                         {
                           title = "OpenAI";
                           url = "https://platform.openai.com/usage";

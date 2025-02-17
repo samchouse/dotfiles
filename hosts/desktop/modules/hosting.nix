@@ -24,7 +24,7 @@ in
       "ai.xenfo.dev" = {
         extraConfig = ''
           ${tlsConf}
-          reverse_proxy :8080
+          reverse_proxy :3080
         '';
       };
       "home.xenfo.dev" = {
@@ -39,6 +39,12 @@ in
           reverse_proxy :8123 {
             header_up X-Forwarded-For {header.CF-Connecting-IP}
           }
+        '';
+      };
+      "lllm.xenfo.dev" = {
+        extraConfig = ''
+          ${tlsConf}
+          reverse_proxy :4044
         '';
       };
     };
@@ -72,6 +78,13 @@ in
             originRequest = {
               originServerName = "ha.xenfo.dev";
               httpHostHeader = "ha.xenfo.dev";
+            };
+          };
+          "lllm.xenfo.dev" = {
+            service = "https://localhost";
+            originRequest = {
+              originServerName = "lllm.xenfo.dev";
+              httpHostHeader = "lllm.xenfo.dev";
             };
           };
         };

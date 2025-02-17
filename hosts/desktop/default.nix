@@ -60,7 +60,11 @@ in
         27031
         27036
       ];
-      trustedInterfaces = [ "docker0" ];
+      trustedInterfaces = [
+        "docker0"
+        "br-fdf6080d5bc5"
+        "br-125e2a601276"
+      ];
     };
   };
 
