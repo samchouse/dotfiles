@@ -27,7 +27,7 @@
         autoStart = true;
         volumes = [ "ollama:/root/.ollama" ];
         extraOptions = [ "--device=nvidia.com/gpu=all" ];
-        networks = [ "litellm" ];
+        networks = [ "litellm" "librechat" ];
       };
 
       librechat = {
@@ -72,6 +72,17 @@
         environment = {
           STORE_MODEL_IN_DB = "True";
         };
+      };
+
+      speaches = {
+        image = "ghcr.io/speaches-ai/speaches:0.7.0-cuda";
+        extraOptions = [ "--device=nvidia.com/gpu=all" ];
+        networks = [ "librechat" ];
+      };
+      kokoro-fastapi = {
+        image = "ghcr.io/remsky/kokoro-fastapi-gpu:v0.2.2";
+        extraOptions = [ "--device=nvidia.com/gpu=all" ];
+        networks = [ "librechat" ];
       };
     };
   };

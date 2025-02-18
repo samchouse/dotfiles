@@ -19,20 +19,33 @@ interface:
   multiConvo: true
   agents: false
 
-# speech:
-#   tts:
-#     openai:
-#       url: ''
-#       apiKey: '${TTS_API_KEY}'
-#       model: ''
-#       voices: ['']
-
-#
-#   stt:
-#     openai:
-#       url: ''
-#       apiKey: '${STT_API_KEY}'
-#       model: ''
+speech:
+  tts:
+    openai:
+      url: "http://kokoro-fastapi:8880/v1/audio/speech"
+      apiKey: ""
+      model: "kokoro"
+      voices: ["af_heart(4)+af_bella(3)+af_nicole(1)"]
+  stt:
+    openai:
+      url: "http://speaches:8000/v1/audio/transcriptions"
+      apiKey: ""
+      model: "Systran/faster-whisper-large-v3"
+  speechTab:
+    conversationMode: true
+    advancedMode: false
+    speechToText:
+      engineSTT: "external"
+      languageSTT: "English (US)"
+      autoTranscribeAudio: true
+      decibelValue: -45
+      autoSendText: 3
+    textToSpeech:
+      engineTTS: "external"
+      voice: "af_heart(4)+af_bella(3)+af_nicole(1)"
+      automaticPlayback: false
+      playbackRate: 1.1
+      cacheTTS: true
 
 actions:
   allowedDomains: []
@@ -43,12 +56,12 @@ mcpServers: {}
 endpoints:
   assistants:
     disableBuilder: true
-  # agents:
-  # disableBuilder: true
+  agents:
+    disableBuilder: true
   custom:
     - name: "LiteLLM"
       apiKey: "${LITELLM_API_KEY}"
-      baseURL: "http://host.docker.internal:4044"
+      baseURL: "http://litellm:4000"
       models:
         default: ["openai/gpt-4o"]
         fetch: true
