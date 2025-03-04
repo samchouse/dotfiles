@@ -16,4 +16,21 @@
       ExecStart = "${pkgs.direnv}/bin/direnv exec . bun start";
     };
   };
+
+  systemd.user.services.tracker = {
+    Unit = {
+      After = [ "network.target" ];
+    };
+
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+
+    Service = {
+      Restart = "on-failure";
+      Environment = [ "PATH=$PATH:${pkgs.devenv}/bin" ];
+      WorkingDirectory = "/home/sam/Documents/projects/personal/tracker";
+      ExecStart = "${pkgs.direnv}/bin/direnv exec . bun start";
+    };
+  };
 }

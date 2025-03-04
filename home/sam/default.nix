@@ -12,7 +12,7 @@
     ../ssh.nix
   ];
 
-  xdg.configFile."sops/age/keys.txt".source = ./age-identity.txt;
+  xdg.configFile."sops/age/keys.txt".source = ../age-identity.txt;
 
   home.username = "sam";
   home.homeDirectory = "/home/sam";
@@ -25,10 +25,10 @@
     bibata-cursors
     vesktop
     playerctl
-    xwaylandvideobridge
+    kdePackages.xwaylandvideobridge
     grim
-    pkgs.niqs.bibata-hyprcursor
-    pkgs.kora.kora-icon-theme
+    niqs.bibata-hyprcursor
+    kora-icon-theme
     wayfreeze
     slurp
     wl-clipboard

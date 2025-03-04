@@ -51,7 +51,7 @@ in
 
     iconTheme = {
       name = "Kora";
-      package = pkgs.kora.kora-icon-theme;
+      package = pkgs.kora-icon-theme;
     };
 
     theme = {

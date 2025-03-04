@@ -30,25 +30,6 @@ in
     };
     zigbee2mqtt = {
       enable = true;
-      package = (
-        pkgs.z2m.zigbee2mqtt.overrideAttrs (oldAttrs: rec {
-          version = "2.1.1";
-          src = (
-            pkgs.fetchFromGitHub {
-              owner = "Koenkk";
-              repo = "zigbee2mqtt";
-              tag = version;
-              hash = "sha256-YVsQ4Zo0nlIb9m4wiK7xcqB7eE/h2ZvTTqEYLDagoHM=";
-            }
-          );
-
-          pnpmDeps = pkgs.pnpm_9.fetchDeps {
-            inherit (oldAttrs) pname;
-            inherit version src;
-            hash = "sha256-Wr7FngKfedUrtOLpaTxvAdJZfCXo1/+oLMIJMOCgafk=";
-          };
-        })
-      );
 
       settings = {
         homeassistant = true;

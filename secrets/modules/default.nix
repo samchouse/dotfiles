@@ -1,9 +1,9 @@
 { ... }:
 {
   imports = [
-    ./caddy.nix
+    ./ai.nix
     ./glance.nix
-    ./librechat.nix
+    ./hosting.nix
   ];
 
   sops.secrets."op_service_token" = { };
@@ -12,9 +12,11 @@
     "caddy.service"
     "glance.service"
     "docker-rag.service"
+    "docker-invokeai.service"
     "docker-librechat.service"
     "docker-postgres.service"
     "docker-vectordb.service"
     "docker-litellm.service"
+    "docker-cloudflared.service"
   ];
 }

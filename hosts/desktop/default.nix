@@ -165,9 +165,10 @@ in
     ethtool
     usbutils
     postgresql
-    cudatoolkit
+    cudaPackages_12_6.cudatoolkit
     cloudflared
     polkit_gnome
+    dua
   ];
 
   users = {

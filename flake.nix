@@ -4,9 +4,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     nixpkgs-small.url = "github:nixos/nixpkgs?ref=nixos-unstable-small";
-    nixpkgs-z2m.url = "github:mweinelt/nixpkgs?ref=z2m-2.0";
-    nixpkgs-kora.url = "github:arminius-smh/nixpkgs?ref=kora-icon-theme-update";
-    nixpkgs-glance.url = "github:nixos/nixpkgs?ref=staging-next";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -46,9 +43,6 @@
       nixpkgs-small,
       hyprland,
       treefmt-nix,
-      nixpkgs-z2m,
-      nixpkgs-kora,
-      nixpkgs-glance,
     }:
     let
       system = "x86_64-linux";
@@ -59,9 +53,6 @@
           localSystem = { inherit system; };
         };
         niqs = niqspkgs.packages.${prev.system};
-        z2m = nixpkgs-z2m.legacyPackages.${prev.system};
-        kora = nixpkgs-kora.legacyPackages.${prev.system};
-        glance = nixpkgs-glance.legacyPackages.${prev.system};
       };
 
       configuration = {

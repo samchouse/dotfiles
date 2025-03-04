@@ -9,6 +9,8 @@
     ../ssh.nix
   ];
 
+  xdg.configFile."sops/age/keys.txt".source = ../age-identity.txt;
+
   home.username = "root";
   home.homeDirectory = "/root";
 

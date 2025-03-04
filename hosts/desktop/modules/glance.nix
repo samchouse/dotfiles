@@ -2,7 +2,6 @@
 {
   services.glance = {
     enable = true;
-    package = pkgs.glance.glance;
 
     settings = {
       server = {

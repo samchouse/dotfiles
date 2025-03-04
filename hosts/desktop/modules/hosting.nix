@@ -4,13 +4,6 @@
   caddy-nixos,
   ...
 }:
-let
-  tlsConf = ''
-    tls {
-      dns cloudflare {env.CF_API_TOKEN}
-    }
-  '';
-in
 {
   boot.kernel.sysctl."net.core.rmem_max" = 7500000;
   boot.kernel.sysctl."net.core.wmem_max" = 7500000;
@@ -20,74 +13,60 @@ in
     package = caddy-nixos.packages.x86_64-linux.caddy;
 
     email = "sam@chouse.dev";
-    virtualHosts = {
-      "ai.xenfo.dev" = {
-        extraConfig = ''
-          ${tlsConf}
-          reverse_proxy :3080
-        '';
-      };
-      "home.xenfo.dev" = {
-        extraConfig = ''
-          ${tlsConf}
-          reverse_proxy :8090
-        '';
-      };
-      "ha.xenfo.dev" = {
-        extraConfig = ''
-          ${tlsConf}
-          reverse_proxy :8123 {
-            header_up X-Forwarded-For {header.CF-Connecting-IP}
+    virtualHosts = builtins.listToAttrs (
+      map
+        (host: {
+          name = host.domain;
+          value = {
+            extraConfig = ''
+              tls {
+                dns cloudflare {env.CF_API_TOKEN}
+              }
+              reverse_proxy :${toString host.port} {
+                header_up X-Forwarded-For {header.CF-Connecting-IP}
+              }
+            '';
+          };
+        })
+        [
+          {
+            domain = "ai.xenfo.dev";
+            port = 3080;
           }
-        '';
-      };
-      "lllm.xenfo.dev" = {
-        extraConfig = ''
-          ${tlsConf}
-          reverse_proxy :4044
-        '';
-      };
-    };
+          {
+            domain = "ha.xenfo.dev";
+            port = 8123;
+          }
+          {
+            domain = "home.xenfo.dev";
+            port = 8090;
+          }
+          {
+            domain = "invoke.xenfo.dev";
+            port = 9090;
+          }
+          {
+            domain = "lllm.xenfo.dev";
+            port = 4044;
+          }
+          {
+            domain = "tracker.xenfo.dev";
+            port = 3729;
+          }
+        ]
+    );
   };
 
-  services.cloudflared = {
-    enable = true;
-
-    user = "sam";
-    tunnels = {
-      "f9331601-f962-4b2a-9bbf-0d140f17afbe" = {
-        default = "http_status:404";
-        credentialsFile = "/home/sam/.cloudflared/f9331601-f962-4b2a-9bbf-0d140f17afbe.json";
-        ingress = {
-          "ai.xenfo.dev" = {
-            service = "https://localhost";
-            originRequest = {
-              originServerName = "ai.xenfo.dev";
-              httpHostHeader = "ai.xenfo.dev";
-            };
-          };
-          "home.xenfo.dev" = {
-            service = "https://localhost";
-            originRequest = {
-              originServerName = "home.xenfo.dev";
-              httpHostHeader = "home.xenfo.dev";
-            };
-          };
-          "ha.xenfo.dev" = {
-            service = "https://localhost";
-            originRequest = {
-              originServerName = "ha.xenfo.dev";
-              httpHostHeader = "ha.xenfo.dev";
-            };
-          };
-          "lllm.xenfo.dev" = {
-            service = "https://localhost";
-            originRequest = {
-              originServerName = "lllm.xenfo.dev";
-              httpHostHeader = "lllm.xenfo.dev";
-            };
-          };
-        };
+  virtualisation.oci-containers = {
+    containers = {
+      cloudflared = {
+        image = "cloudflare/cloudflared:2025.2.1";
+        cmd = [
+          "tunnel"
+          "--no-autoupdate"
+          "run"
+        ];
+        extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
       };
     };
   };

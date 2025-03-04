@@ -18,7 +18,7 @@ in
 {
   sops.secrets."meilisearch_key" = options;
   sops.secrets."openrouter_key" = options;
-  sops.secrets."wolfram_app_id" = options;
+  sops.secrets."tracker_key" = options;
   sops.secrets."postgres_password" = options;
   sops.secrets."creds_iv" = options;
   sops.secrets."creds_key" = options;
@@ -29,6 +29,8 @@ in
   sops.secrets."anthropic_key" = options;
   sops.secrets."openai_key" = options;
   sops.secrets."litellm_key" = options;
+  sops.secrets."civitai_token" = options;
+  sops.secrets."huggingface_token" = options;
 
   sops.templates."meilisearch.env".content = ''
     MEILI_MASTER_KEY=${config.sops.placeholder.meilisearch_key}
@@ -48,7 +50,10 @@ in
   sops.templates."librechat.env".content =
     builtins.readFile ../../hosts/desktop/config/librechat.env
     + ''
-      WOLFRAM_APP_ID=${config.sops.placeholder.wolfram_app_id}
+      # WOLFRAM_APP_ID=${config.sops.placeholder.tracker_key}
+      # TAVILY_API_KEY=${config.sops.placeholder.tracker_key}
+      # YOUTUBE_API_KEY=${config.sops.placeholder.tracker_key}
+      # OPENWEATHER_API_KEY=${config.sops.placeholder.tracker_key}
       MEILI_MASTER_KEY=${config.sops.placeholder.meilisearch_key}
       POSTGRES_PASSWORD=${config.sops.placeholder.postgres_password}
       LITELLM_API_KEY=${config.sops.placeholder.litellm_key}
@@ -59,6 +64,10 @@ in
       JWT_SECRET=${config.sops.placeholder.jwt_secret}
       JWT_REFRESH_SECRET=${config.sops.placeholder.jwt_refresh_secret}
     '';
+  sops.templates."invokeai.env".content = ''
+    INVOKEAI_ROOT=/opt/invokeai/data
+    INVOKEAI_REMOTE_API_TOKENS=[{"url_regex": "huggingface.co", "token": "${config.sops.placeholder.huggingface_token}"}, {"url_regex": "civitai.com", "token": "${config.sops.placeholder.civitai_token}"}]
+  '';
 
   systemd.services = {
     docker-librechat = {
@@ -74,6 +83,9 @@ in
       wantedBy = lib.mkForce [ ];
     };
     docker-litellm = {
+      wantedBy = lib.mkForce [ ];
+    };
+    docker-invokeai = {
       wantedBy = lib.mkForce [ ];
     };
     meilisearch = {
@@ -98,6 +110,9 @@ in
     };
     postgres = {
       environmentFiles = [ config.sops.templates."postgres.env".path ];
+    };
+    invokeai = {
+      environmentFiles = [ config.sops.templates."invokeai.env".path ];
     };
   };
 }
