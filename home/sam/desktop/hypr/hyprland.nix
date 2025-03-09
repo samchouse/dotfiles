@@ -1,7 +1,6 @@
 {
   inputs,
   pkgs,
-  hyprland,
   ...
 }:
 {
@@ -21,8 +20,8 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-    portalPackage = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+    package = null;
+    portalPackage = null;
 
     settings = {
       env = [
@@ -50,6 +49,7 @@
 
       misc = {
         vfr = 0;
+        enable_anr_dialog = false;
       };
 
       debug = {

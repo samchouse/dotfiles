@@ -10,7 +10,10 @@
 
   services.caddy = {
     enable = true;
-    package = caddy-nixos.packages.x86_64-linux.caddy;
+    package = pkgs.caddy.withPlugins {
+      plugins = [ "github.com/caddy-dns/cloudflare@v0.0.0-20250228175314-1fb64108d4de" ];
+      hash = "sha256-3nvVGW+ZHLxQxc1VCc/oTzCLZPBKgw4mhn+O3IoyiSs=";
+    };
 
     email = "sam@chouse.dev";
     virtualHosts = builtins.listToAttrs (
@@ -53,6 +56,10 @@
             domain = "tracker.xenfo.dev";
             port = 3729;
           }
+          {
+            domain = "sys.xenfo.dev";
+            port = 7463;
+          }
         ]
     );
   };
@@ -61,6 +68,7 @@
     containers = {
       cloudflared = {
         image = "cloudflare/cloudflared:2025.2.1";
+        autoStart = false;
         cmd = [
           "tunnel"
           "--no-autoupdate"

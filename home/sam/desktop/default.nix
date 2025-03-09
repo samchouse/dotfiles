@@ -12,14 +12,14 @@
   ];
 
   xdg.mimeApps = {
-    enable = true;
+    enable = false;
 
     associations.added = {
-      "application/pdf" = "firefox.desktop";
+      "application/pdf" = "zen.desktop";
     };
 
     defaultApplications = {
-      "application/pdf" = [ "firefox.desktop" ];
+      "application/pdf" = [ "zen.desktop" ];
     };
   };
 }

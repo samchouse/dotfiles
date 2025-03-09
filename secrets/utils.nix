@@ -1,0 +1,5 @@
+{
+  mkOpts = units: {
+    restartUnits = units;
+  };
+}

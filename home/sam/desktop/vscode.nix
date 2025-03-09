@@ -16,10 +16,11 @@
           src = (
             builtins.fetchTarball {
               url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-              sha256 = "sha256:1x3bakpn6h6nb2gwn698bwkgw8w4cqcxgq098rynrpphpy503sl8";
+              sha256 = "sha256:0ikynk2vvnwxmxn4h3nxsk2sgd5r6hy27sh08d6bwq5ns74yy2lb";
             }
           );
 
+          dontStrip = true;
           buildInputs = oldAttrs.buildInputs ++ [ pkgs.krb5 ];
         });
   };

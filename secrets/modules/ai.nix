@@ -4,33 +4,41 @@
   ...
 }:
 let
-  options = {
-    restartUnits = [
-      "meilisearch.service"
-      "docker-postgres.service"
-      "docker-vectordb.service"
-      "docker-librechat.service"
-      "docker-litellm.service"
-      "docker-rag.service"
-    ];
-  };
+  utils = import ../utils.nix;
+
+  litellmUnits = [ "docker-litellm.service" ];
+  meilisearchUnits = [ "meilisearch.service" ];
+  postgresUnits = [ "docker-postgres.service" ];
+  invokeaiUnits = [ "docker-invokeai.service" ];
+  librechatUnits = [
+    "docker-rag.service"
+    "docker-vectordb.service"
+    "docker-librechat.service"
+  ];
+
+  litellmOptions = utils.mkOpts litellmUnits;
+  invokeaiOptions = utils.mkOpts invokeaiUnits;
+  librechatOptions = utils.mkOpts librechatUnits;
 in
 {
-  sops.secrets."meilisearch_key" = options;
-  sops.secrets."openrouter_key" = options;
-  sops.secrets."tracker_key" = options;
-  sops.secrets."postgres_password" = options;
-  sops.secrets."creds_iv" = options;
-  sops.secrets."creds_key" = options;
-  sops.secrets."jwt_secret" = options;
-  sops.secrets."jwt_refresh_secret" = options;
-  sops.secrets."master_key" = options;
-  sops.secrets."salt_key" = options;
-  sops.secrets."anthropic_key" = options;
-  sops.secrets."openai_key" = options;
-  sops.secrets."litellm_key" = options;
-  sops.secrets."civitai_token" = options;
-  sops.secrets."huggingface_token" = options;
+  systemd.services.sops-secrets.wants =
+    meilisearchUnits ++ litellmUnits ++ postgresUnits ++ invokeaiUnits ++ librechatUnits;
+
+  sops.secrets."salt_key" = litellmOptions;
+  sops.secrets."master_key" = litellmOptions;
+  sops.secrets."openai_key" = litellmOptions;
+  sops.secrets."anthropic_key" = litellmOptions;
+  sops.secrets."openrouter_key" = litellmOptions;
+  sops.secrets."creds_iv" = librechatOptions;
+  sops.secrets."creds_key" = librechatOptions;
+  sops.secrets."jwt_secret" = librechatOptions;
+  sops.secrets."litellm_key" = librechatOptions;
+  sops.secrets."tracker_key" = librechatOptions;
+  sops.secrets."jwt_refresh_secret" = librechatOptions;
+  sops.secrets."civitai_token" = invokeaiOptions;
+  sops.secrets."huggingface_token" = invokeaiOptions;
+  sops.secrets."meilisearch_key" = utils.mkOpts (meilisearchUnits ++ librechatUnits);
+  sops.secrets."postgres_password" = utils.mkOpts (postgresUnits ++ librechatUnits ++ litellmUnits);
 
   sops.templates."meilisearch.env".content = ''
     MEILI_MASTER_KEY=${config.sops.placeholder.meilisearch_key}
@@ -50,10 +58,10 @@ in
   sops.templates."librechat.env".content =
     builtins.readFile ../../hosts/desktop/config/librechat.env
     + ''
-      # WOLFRAM_APP_ID=${config.sops.placeholder.tracker_key}
-      # TAVILY_API_KEY=${config.sops.placeholder.tracker_key}
-      # YOUTUBE_API_KEY=${config.sops.placeholder.tracker_key}
-      # OPENWEATHER_API_KEY=${config.sops.placeholder.tracker_key}
+      WOLFRAM_APP_ID=${config.sops.placeholder.tracker_key}
+      TAVILY_API_KEY=${config.sops.placeholder.tracker_key}
+      YOUTUBE_API_KEY=${config.sops.placeholder.tracker_key}
+      OPENWEATHER_API_KEY=${config.sops.placeholder.tracker_key}
       MEILI_MASTER_KEY=${config.sops.placeholder.meilisearch_key}
       POSTGRES_PASSWORD=${config.sops.placeholder.postgres_password}
       LITELLM_API_KEY=${config.sops.placeholder.litellm_key}
@@ -70,24 +78,6 @@ in
   '';
 
   systemd.services = {
-    docker-librechat = {
-      wantedBy = lib.mkForce [ ];
-    };
-    docker-rag = {
-      wantedBy = lib.mkForce [ ];
-    };
-    docker-vectordb = {
-      wantedBy = lib.mkForce [ ];
-    };
-    docker-postgres = {
-      wantedBy = lib.mkForce [ ];
-    };
-    docker-litellm = {
-      wantedBy = lib.mkForce [ ];
-    };
-    docker-invokeai = {
-      wantedBy = lib.mkForce [ ];
-    };
     meilisearch = {
       wantedBy = lib.mkForce [ ];
       serviceConfig = {

@@ -4,12 +4,14 @@
   ...
 }:
 let
-  options = {
-    restartUnits = [ "glance.service" ];
-  };
+  utils = import ../utils.nix;
+
+  glanceUnits = [ "glance.service" ];
 in
 {
-  sops.secrets."glance_gh_token" = options;
+  systemd.services.sops-secrets.wants = glanceUnits;
+
+  sops.secrets."glance_gh_token" = utils.mkOpts glanceUnits;
 
   sops.templates."glance.env".content = ''
     GLANCE_GH_TOKEN=${config.sops.placeholder.glance_gh_token}

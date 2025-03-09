@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 let
   no-kb = pkgs.writeScriptBin "no-kb" ''
     #!/bin/sh
@@ -21,6 +21,15 @@ let
   });
 in
 {
+  environment.etc = {
+    "1password/custom_allowed_browsers" = {
+      text = ''
+        zen
+      '';
+      mode = "0755";
+    };
+  };
+
   programs = {
     steam.enable = true;
 
@@ -67,5 +76,53 @@ in
         destination = "/etc/udev/rules.d/60-xbox-elite-2-hid.rules";
       })
     ];
+  };
+
+  virtualisation.oci-containers = {
+    containers = {
+      beszel = {
+        image = "ghcr.io/henrygd/beszel/beszel:0.10.1";
+        ports = [ "7463:8090" ];
+        volumes = [ "beszel:/beszel_data" ];
+        extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
+      };
+    };
+  };
+
+  # TODO: remove when https://github.com/NixOS/nixpkgs/pull/380731 is merged
+  systemd.services.beszel-agent = {
+    description = "Beszel Agent";
+
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" ];
+
+    path = [ config.boot.kernelPackages.nvidiaPackages.stable ];
+    environment = {
+      KEY = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHpWIT7z6MkRkDOeFLMC9JlBzYbXxM7q+aDOnQiCKdwP";
+    };
+
+    serviceConfig = {
+      ExecStart = ''
+        ${(pkgs.callPackage ../../../pkgs/beszel { })}/bin/beszel-agent
+      '';
+
+      KeyringMode = "private";
+      LockPersonality = "yes";
+      NoNewPrivileges = "yes";
+      PrivateTmp = "yes";
+      ProtectClock = "yes";
+      ProtectHome = "read-only";
+      ProtectHostname = "yes";
+      ProtectKernelLogs = "yes";
+      ProtectSystem = "strict";
+      RemoveIPC = "yes";
+      RestrictSUIDSGID = true;
+      SystemCallArchitectures = "native";
+      DeviceAllow = [
+        "/dev/nvidiactl rw"
+        "/dev/nvidia0 rw"
+      ];
+    };
   };
 }

@@ -19,6 +19,7 @@
 
   home.packages = with pkgs; [
     firefox
+    zen-browser
     gammastep
     gh
     prismlauncher

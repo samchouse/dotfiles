@@ -2,29 +2,46 @@
   description = "Sam's NixOS flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    nixpkgs-small.url = "github:nixos/nixpkgs?ref=nixos-unstable-small";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-small.url = "github:nixos/nixpkgs/nixos-unstable-small";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hyprland.url = "github:hyprwm/Hyprland";
-    niqspkgs.url = "github:diniamo/niqspkgs";
-    catppuccin.url = "github:catppuccin/nix";
-    treefmt-nix = {
-      url = "github:numtide/treefmt-nix";
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    niqspkgs = {
+      url = "github:diniamo/niqspkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    catppuccin = {
+      url = "github:catppuccin/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    sops-nix.url = "github:samchouse/sops-nix";
-    custom-fonts.url = "git+ssh://git@github.com/samchouse/fonts.git?ref=main";
-    caddy-nixos = {
-      url = "github:samchouse/caddy-nixos";
+    # TODO: https://github.com/Mic92/sops-nix/issues/576
+    sops-nix = {
+      url = "github:samchouse/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     age-plugin-op = {
       url = "github:samchouse/age-plugin-op";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    custom-fonts = {
+      url = "git+ssh://git@github.com/samchouse/fonts.git?ref=main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -33,27 +50,20 @@
     {
       self,
       nixpkgs,
-      catppuccin,
-      home-manager,
-      custom-fonts,
+      hyprland,
       niqspkgs,
       sops-nix,
-      age-plugin-op,
-      caddy-nixos,
-      nixpkgs-small,
-      hyprland,
+      catppuccin,
+      zen-browser,
       treefmt-nix,
+      home-manager,
+      custom-fonts,
+      age-plugin-op,
+      nixpkgs-small,
     }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-      overlay-nixpkgs = final: prev: {
-        small = import nixpkgs-small {
-          config.allowUnfree = true;
-          localSystem = { inherit system; };
-        };
-        niqs = niqspkgs.packages.${prev.system};
-      };
 
       configuration = {
         inherit system;
@@ -62,7 +72,20 @@
           (
             { config, pkgs, ... }:
             {
-              nixpkgs.overlays = [ overlay-nixpkgs ];
+              nixpkgs.overlays = [
+                (_: _: {
+                  zen-browser = zen-browser.packages.${system}.default;
+                  age-plugin-op = age-plugin-op.defaultPackage.${system};
+
+                  niqs = niqspkgs.packages.${system};
+                  hypr = hyprland.packages.${system};
+
+                  small = import nixpkgs-small {
+                    config.allowUnfree = true;
+                    localSystem = { inherit system; };
+                  };
+                })
+              ];
             }
           )
 
@@ -79,16 +102,8 @@
               catppuccin.homeManagerModules.catppuccin
             ];
             home-manager.users.root.imports = [ ./home/root ];
-            home-manager.extraSpecialArgs = {
-              inherit hyprland;
-            };
           }
         ];
-        specialArgs = {
-          inherit hyprland;
-          inherit caddy-nixos;
-          inherit age-plugin-op;
-        };
       };
     in
     {
@@ -96,7 +111,7 @@
       nixosConfigurations.desktop = nixpkgs.lib.nixosSystem (
         configuration
         // {
-          specialArgs = configuration.specialArgs // {
+          specialArgs = {
             inherit custom-fonts;
           };
         }

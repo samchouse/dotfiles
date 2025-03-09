@@ -59,8 +59,7 @@ endpoints:
         default: ["openai/gpt-4o"]
         fetch: true
       titleConvo: true
-      titleModel: "openrouter/google/gemini-2.0-flash"
-      dropParams: ["stop"]
+      titleModel: "or/google/gemini-2.0-flash"
       modelDisplayLabel: "LiteLLM"
 
 fileConfig:

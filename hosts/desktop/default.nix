@@ -1,7 +1,6 @@
 {
   lib,
   pkgs,
-  age-plugin-op,
   ...
 }:
 let
