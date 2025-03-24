@@ -1,5 +1,4 @@
 {
-  lib,
   pkgs,
   ...
 }:
@@ -7,8 +6,8 @@ let
   sweet = pkgs.fetchFromGitHub {
     owner = "EliverLara";
     repo = "Sweet";
-    rev = "926ed1928f451b45b728f0ae72990c5576c507d4";
-    sha256 = "sha256-bX+hwYpJQkwEuh4E23q4jW84c769NYojrsuAyGU14gg=";
+    rev = "e886a8acfa7f6a0816db03160f8b942874f2153a";
+    sha256 = "sha256-3n70aJrnTRQ8CU3cXx2noHTQrbW1VcNwpuBym/3Yu/w=";
   };
 
   qtctConfig = ''

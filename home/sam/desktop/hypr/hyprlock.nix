@@ -1,9 +1,4 @@
 {
-  inputs,
-  pkgs,
-  ...
-}:
-{
   programs.hyprlock = {
     enable = true;
 
@@ -16,16 +11,12 @@
         {
           monitor = "DP-2";
           path = "/tmp/hyprlock-1.png";
-          # path = screenshot # TODO(@Xenfo): enable this once https://github.com/hyprwm/hyprlock/issues/59 is fixed
-
           blur_passes = 1;
           blur_size = 3;
         }
         {
           monitor = "DP-1";
           path = "/tmp/hyprlock-2.png";
-          # path = screenshot # TODO(@Xenfo): enable this once https://github.com/hyprwm/hyprlock/issues/59 is fixed
-
           blur_passes = 1;
           blur_size = 3;
         }

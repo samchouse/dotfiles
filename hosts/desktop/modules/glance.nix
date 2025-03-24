@@ -1,4 +1,3 @@
-{ pkgs, ... }:
 {
   services.glance = {
     enable = true;

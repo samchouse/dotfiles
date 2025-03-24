@@ -7,7 +7,7 @@ let
     ${pkgs.jq}/bin/jq '.Detectors.detectors."Genesis Thor 300" = false | .' /var/lib/OpenRGB/OpenRGB.json.bak > /var/lib/OpenRGB/OpenRGB.json
   '';
 
-  logiops = pkgs.logiops.overrideAttrs (oldAttrs: rec {
+  logiops = pkgs.logiops.overrideAttrs (oldAttrs: {
     version = "git";
     src = (
       pkgs.fetchFromGitHub {
@@ -81,7 +81,7 @@ in
   virtualisation.oci-containers = {
     containers = {
       beszel = {
-        image = "ghcr.io/henrygd/beszel/beszel:0.10.1";
+        image = "ghcr.io/henrygd/beszel/beszel:0.10.2";
         ports = [ "7463:8090" ];
         volumes = [ "beszel:/beszel_data" ];
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
@@ -90,6 +90,7 @@ in
   };
 
   # TODO: remove when https://github.com/NixOS/nixpkgs/pull/380731 is merged
+  # https://nixpk.gs/pr-tracker.html?pr=388231
   systemd.services.beszel-agent = {
     description = "Beszel Agent";
 

@@ -1,4 +1,3 @@
-{ ... }:
 {
   programs.eww = {
     enable = true;

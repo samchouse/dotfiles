@@ -64,30 +64,30 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
       configuration = {
         inherit system;
 
         modules = [
-          (
-            { config, pkgs, ... }:
-            {
-              nixpkgs.overlays = [
-                (_: _: {
-                  zen-browser = zen-browser.packages.${system}.default;
-                  age-plugin-op = age-plugin-op.defaultPackage.${system};
+          {
+            nixpkgs.overlays = [
+              (_: _: {
+                zen-browser = zen-browser.packages.${system}.default;
+                age-plugin-op = age-plugin-op.defaultPackage.${system};
 
-                  niqs = niqspkgs.packages.${system};
-                  hypr = hyprland.packages.${system};
+                niqs = niqspkgs.packages.${system};
+                hypr = hyprland.packages.${system};
 
-                  small = import nixpkgs-small {
-                    config.allowUnfree = true;
-                    localSystem = { inherit system; };
+                small = import nixpkgs-small {
+                  config.allowUnfree = true;
+                  localSystem = {
+                    inherit system;
                   };
-                })
-              ];
-            }
-          )
+                };
+              })
+            ];
+          }
 
           ./hosts/desktop
           sops-nix.nixosModules.sops
@@ -117,15 +117,13 @@
         }
       );
 
-      formatter.${system} =
-        (treefmt-nix.lib.evalModule pkgs {
-          projectRootFile = "flake.nix";
-          programs = {
-            shfmt.enable = true;
-            nixfmt.enable = true;
-            shellcheck.enable = true;
-          };
-          settings.on-unmatched = "debug";
-        }).config.build.wrapper;
+      formatter.${system} = treefmtEval.config.build.wrapper;
+      checks.${system} = {
+        formatting = treefmtEval.config.build.check self;
+      };
+
+      devShells.${system}.default = pkgs.mkShell {
+        buildInputs = [ treefmtEval.config.build.wrapper ];
+      };
     };
 }

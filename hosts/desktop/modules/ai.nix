@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   ...
 }:
@@ -22,7 +21,7 @@
   virtualisation.oci-containers = {
     containers = {
       ollama = {
-        image = "ollama/ollama:0.5.12";
+        image = "ollama/ollama:0.6.2";
         ports = [ "11434:11434" ];
         volumes = [ "ollama:/root/.ollama" ];
         extraOptions = [ "--device=nvidia.com/gpu=all" ];
@@ -60,7 +59,7 @@
       };
 
       postgres = {
-        image = "postgres:17.2-alpine";
+        image = "postgres:17.4-alpine";
         autoStart = false;
         volumes = [ "postgres:/var/lib/postgresql/data" ];
         networks = [ "litellm" ];
@@ -70,7 +69,7 @@
         };
       };
       litellm = {
-        image = "ghcr.io/berriai/litellm:main-v1.63.3-nightly";
+        image = "ghcr.io/berriai/litellm:main-v1.63.14-nightly";
         autoStart = false;
         volumes = [ "${../config/litellm.yaml}:/app/config.yaml" ];
         cmd = [ "--config=/app/config.yaml" ];
@@ -82,7 +81,7 @@
       };
 
       invokeai = {
-        image = "ghcr.io/invoke-ai/invokeai:v5.7.2-cuda";
+        image = "ghcr.io/invoke-ai/invokeai:v5.8.1-cuda";
         autoStart = false;
         ports = [ "9090:9090" ];
         volumes = [

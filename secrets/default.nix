@@ -49,7 +49,7 @@
       (sops.override {
         buildGo122Module = buildGoModule;
       }).overrideAttrs
-      (oldAttrs: rec {
+      (oldAttrs: {
         version = "latest";
         src = fetchFromGitHub {
           owner = "getsops";

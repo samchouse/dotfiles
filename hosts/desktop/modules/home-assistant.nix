@@ -1,9 +1,3 @@
-{
-  flake,
-  config,
-  pkgs,
-  ...
-}:
 let
   constants = import ../constants.nix;
   inherit (constants) flake;
@@ -12,7 +6,7 @@ in
   virtualisation.oci-containers = {
     containers = {
       homeassistant = {
-        image = "ghcr.io/home-assistant/home-assistant:2025.3.1";
+        image = "ghcr.io/home-assistant/home-assistant:2025.3.4";
         volumes = [
           "home-assistant:/config"
           "${flake}/hosts/desktop/config/ha-config.yaml:/config/configuration.yaml:rw"

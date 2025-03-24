@@ -1,5 +1,4 @@
 {
-  lib,
   pkgs,
   ...
 }:
@@ -11,17 +10,16 @@
         isInsiders = true;
         commandLineArgs = "--password-store='gnome-libsecret'";
       }).overrideAttrs
-        (oldAttrs: rec {
+        (oldAttrs: {
           version = "latest";
           src = (
             builtins.fetchTarball {
               url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-              sha256 = "sha256:0ikynk2vvnwxmxn4h3nxsk2sgd5r6hy27sh08d6bwq5ns74yy2lb";
+              sha256 = "sha256:0hbvf1ji5sws1ckn9klalcz4r51jj6bry2a3kgis29pxmkm5pvnd";
             }
           );
 
           dontStrip = true;
-          buildInputs = oldAttrs.buildInputs ++ [ pkgs.krb5 ];
         });
   };
 }

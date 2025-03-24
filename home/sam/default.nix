@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   ...
 }:
@@ -24,7 +23,9 @@
     gh
     prismlauncher
     bibata-cursors
-    vesktop
+    (discord.override {
+      withVencord = true;
+    })
     playerctl
     kdePackages.xwaylandvideobridge
     grim
@@ -39,13 +40,14 @@
     devenv
     direnv
     rainfrog
-    cider-2
+    (pkgs.callPackage ../../pkgs/cider-2 { })
     slack
     thunderbird
     google-chrome
     r2modman
     lumafly
     libreoffice
+    gtrash
   ];
 
   # This value determines the Home Manager release that your

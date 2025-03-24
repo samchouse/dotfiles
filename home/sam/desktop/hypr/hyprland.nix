@@ -1,5 +1,4 @@
 {
-  inputs,
   pkgs,
   ...
 }:
@@ -38,15 +37,6 @@
         "PATH,$PATH:${pkgs.qt6Packages.qtstyleplugin-kvantum}/bin"
       ];
 
-      render = {
-        explicit_sync = 2;
-        explicit_sync_kms = 0;
-      };
-
-      opengl = {
-        nvidia_anti_flicker = 0;
-      };
-
       misc = {
         vfr = 0;
         enable_anr_dialog = false;
@@ -54,11 +44,6 @@
 
       debug = {
         damage_tracking = 0;
-      };
-
-      cursor = {
-        use_cpu_buffer = true;
-        no_hardware_cursors = 0;
       };
 
       general = {

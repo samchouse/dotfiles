@@ -1,19 +1,18 @@
 {
   stdenv,
   fetchFromGitHub,
-  lib,
   gtk-engine-murrine,
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "sweet";
   version = "latest";
 
   src = fetchFromGitHub {
     owner = "EliverLara";
     repo = "Sweet";
-    rev = "cee419fb7794c4a441fd203d9a821429ab978d6e";
-    sha256 = "sha256-rp1xtUawDiwrSV3J7RjKnb7qjhSqPDklJkeV1y1WBTQ=";
+    rev = "d44d76dc488bbe9588c065eacd7422a9333b1428";
+    sha256 = "sha256-F+9zXXyCUVtNmuP8I42bPO1AgaC8kgoFM9IWGONSN7Y=";
   };
 
   propagatedUserEnvPkgs = [ gtk-engine-murrine ];

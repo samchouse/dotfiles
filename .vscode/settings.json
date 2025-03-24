@@ -1,0 +1,17 @@
+{
+  "nix.serverSettings": {
+    "nixd": {
+      "formatting": {
+        "command": ["treefmt", "--stdin", "{file}"]
+      },
+      "options": {
+        "nixos": {
+          "expr": "(builtins.getFlake \"${workspaceFolder}\").nixosConfigurations.desktop.options"
+        },
+        "home-manager": {
+          "expr": "(builtins.getFlake \"${workspaceFolder}\").nixosConfigurations.desktop.options.home-manager.users.type.getSubOptions []"
+        }
+      }
+    }
+  }
+}

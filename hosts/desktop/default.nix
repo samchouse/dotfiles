@@ -1,5 +1,4 @@
 {
-  lib,
   pkgs,
   ...
 }:
@@ -168,6 +167,7 @@ in
     cloudflared
     polkit_gnome
     dua
+    nixd
   ];
 
   users = {
