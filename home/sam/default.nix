@@ -23,7 +23,7 @@
     gh
     prismlauncher
     bibata-cursors
-    (discord.override {
+    (discord-canary.override {
       withVencord = true;
     })
     playerctl
@@ -41,7 +41,6 @@
     direnv
     rainfrog
     (pkgs.callPackage ../../pkgs/cider-2 { })
-    slack
     thunderbird
     google-chrome
     r2modman
