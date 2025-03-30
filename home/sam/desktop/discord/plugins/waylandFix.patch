@@ -1,0 +1,134 @@
+diff --git a/src/userplugins/waylandFix/index.ts b/src/userplugins/waylandFix/index.ts
+new file mode 100644
+index 00000000..567d3408
+--- /dev/null
++++ b/src/userplugins/waylandFix/index.ts
+@@ -0,0 +1,128 @@
++/*
++ * Vencord, a Discord client mod
++ * Copyright (c) 2025 Vendicated and contributors
++ * SPDX-License-Identifier: GPL-3.0-or-later
++ */
++
++import { definePluginSettings } from "@api/Settings";
++import { makeRange } from "@components/PluginSettings/components";
++import definePlugin, { OptionType } from "@utils/types";
++import { FluxDispatcher } from "@webpack/common";
++
++let isAfk = false;
++let afkAt: Date | null = null;
++let interval: NodeJS.Timeout | null = null;
++
++const settings = definePluginSettings({
++  idleTimeout: {
++    description: "Minutes before Discord goes idle/afk.",
++    type: OptionType.SLIDER,
++    markers: makeRange(1, 15, 1),
++    default: 3,
++    stickToMarkers: true,
++    onChange: () => {
++      afkAt = getNextAfk();
++    }
++  },
++});
++
++export default definePlugin({
++  name: "WaylandFix",
++  description: "Fixes Wayland issues with Discord.",
++  authors: [{ name: "Sam", id: 550337381128208396n }],
++  settings,
++  patches: [
++    {
++      find: 'type:"IDLE",idle:',
++      replacement: [
++        {
++          match: /\i\.\i\.dispatch\({type:"IDLE",idle:!1}\)/,
++          replace: "true"
++        },
++        {
++          match: /\i\.\i\.dispatch\({type:"IDLE",idle:!0,idleSince:\i}\)/,
++          replace: "true"
++        }
++      ]
++    },
++    {
++      find: 'type:"AFK",afk:',
++      replacement: [
++        {
++          match: /\i\.\i\.dispatch\({type:"AFK",afk:!0}\)/,
++          replace: "true"
++        },
++        {
++          match: /\i\.\i\.dispatch\({type:"AFK",afk:!1}\)/,
++          replace: "true"
++        }
++      ]
++    }
++  ],
++  flux: {
++    AFK: payload => {
++      if (payload.afk) {
++        isAfk = true;
++      } else {
++        isAfk = false;
++        afkAt = getNextAfk();
++      }
++    }
++  },
++  start: () => {
++    afkAt = getNextAfk();
++
++    document.addEventListener("scroll", returnFromAfk);
++    document.addEventListener("keydown", returnFromAfk);
++    document.addEventListener("mousemove", returnFromAfk);
++    document.addEventListener("mouseclick", returnFromAfk);
++
++    interval = setInterval(() => {
++      if (new Date() > afkAt!)
++        goAfk();
++    }, 1000);
++  },
++  stop: () => {
++    document.removeEventListener("scroll", returnFromAfk);
++    document.removeEventListener("keydown", returnFromAfk);
++    document.removeEventListener("mousemove", returnFromAfk);
++    document.removeEventListener("mouseclick", returnFromAfk);
++
++    if (interval) {
++      clearInterval(interval);
++      interval = null;
++    }
++
++    returnFromAfk();
++  }
++});
++
++function goAfk() {
++  if (isAfk) return;
++
++  FluxDispatcher.dispatch({
++    type: "IDLE",
++    idle: true,
++  });
++  FluxDispatcher.dispatch({
++    type: "AFK",
++    afk: true,
++  });
++}
++
++function returnFromAfk() {
++  if (!isAfk) return;
++
++  FluxDispatcher.dispatch({
++    type: "IDLE",
++    idle: false,
++  });
++  FluxDispatcher.dispatch({
++    type: "AFK",
++    afk: false,
++  });
++}
++
++function getNextAfk() {
++  return new Date(new Date().getTime() + settings.store.idleTimeout * 60 * 1000);
++}

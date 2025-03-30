@@ -23,9 +23,6 @@
     gh
     prismlauncher
     bibata-cursors
-    (discord-canary.override {
-      withVencord = true;
-    })
     playerctl
     kdePackages.xwaylandvideobridge
     grim
