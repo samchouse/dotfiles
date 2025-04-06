@@ -1,20 +1,33 @@
 #!/usr/bin/env bash
 
 case $1 in
-toggle)
+status)
   if systemctl --user status hypridle | grep -q "Active: active"; then
+    echo "inactive"
+  else
+    echo "active"
+  fi
+  ;;
+toggle)
+  if [ "$("$0" status)" == "inactive" ]; then
     systemctl --user stop hypridle
-    eww update inhibitor_enabled=true
+    if [ -z "$2" ]; then
+      eww update inhibitor_enabled=true
+    fi
   else
     systemctl --user start hypridle
-    eww update inhibitor_enabled=false
+    if [ -z "$2" ]; then
+      eww update inhibitor_enabled=false
+    fi
   fi
 
-  icon=$("$0" icon)
-  eww update "inhibitor_icon=$icon"
+  if [ -z "$2" ]; then
+    icon=$("$0" icon)
+    eww update "inhibitor_icon=$icon"
+  fi
   ;;
 icon)
-  if systemctl --user status hypridle | grep -q "Active: active"; then
+  if [ "$("$0" status)" == "inactive" ]; then
     echo ""
   else
     echo ""
