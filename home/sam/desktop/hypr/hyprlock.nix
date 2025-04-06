@@ -1,6 +1,8 @@
+{ pkgs, ... }:
 {
   programs.hyprlock = {
     enable = true;
+    package = pkgs.hypr.hyprlock;
 
     settings = {
       general = {
@@ -61,7 +63,6 @@
         check_color = "rgb(199, 210, 254)";
         fail_color = "rgb(185, 28, 28)";
         fail_text = "$FAIL <b>($ATTEMPTS)</b>";
-        fail_transition = 300;
         capslock_color = "rgb(253, 230, 138)";
 
         position = "0, 50";

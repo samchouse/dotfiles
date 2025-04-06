@@ -14,6 +14,10 @@
       url = "github:hyprwm/Hyprland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    hyprlock = {
+      url = "github:hyprwm/hyprlock";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     niqspkgs = {
       url = "github:diniamo/niqspkgs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -57,6 +61,7 @@
       nixvim,
       nixpkgs,
       hyprland,
+      hyprlock,
       niqspkgs,
       sops-nix,
       catppuccin,
@@ -81,10 +86,12 @@
             nixpkgs.overlays = [
               (_: _: {
                 niqs = niqspkgs.packages.${system};
-                hypr = hyprland.packages.${system};
                 zen-browser = zen-browser.packages.${system}.default;
                 age-plugin-op = age-plugin-op.defaultPackage.${system};
                 cloudflared = nixpkgs-cloudflared.legacyPackages.${system}.cloudflared;
+                hypr = hyprland.packages.${system} // {
+                  hyprlock = hyprlock.packages.${system}.default;
+                };
 
                 small = import nixpkgs-small {
                   config.allowUnfree = true;
