@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-small.url = "github:nixos/nixpkgs/nixos-unstable-small";
+    nixpkgs-cloudflared.url = "github:wrbbz/nixpkgs/cloudflared-2025.4.0";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -23,6 +24,10 @@
     };
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixvim = {
+      url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -49,6 +54,7 @@
   outputs =
     {
       self,
+      nixvim,
       nixpkgs,
       hyprland,
       niqspkgs,
@@ -60,10 +66,12 @@
       custom-fonts,
       age-plugin-op,
       nixpkgs-small,
+      nixpkgs-cloudflared,
     }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      zenSources = builtins.fromJSON (builtins.readFile "${zen-browser}/sources.json");
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
       configuration = {
@@ -73,11 +81,17 @@
           {
             nixpkgs.overlays = [
               (_: _: {
-                zen-browser = zen-browser.packages.${system}.default;
-                age-plugin-op = age-plugin-op.defaultPackage.${system};
-
                 niqs = niqspkgs.packages.${system};
                 hypr = hyprland.packages.${system};
+                zen-browser = pkgs.callPackage "${zen-browser}/zen-browser.nix" {
+                  zen-browser-unwrapped = pkgs.callPackage "${zen-browser}/zen-browser-unwrapped.nix" {
+                    inherit (zenSources) version;
+                    inherit (zenSources.${system}) url;
+                    hash = "sha256-xAjzK6z6gSJ0iP7EvqzF5+sENU1o5Ud2syivAw8ivDs=";
+                  };
+                };
+                age-plugin-op = age-plugin-op.defaultPackage.${system};
+                cloudflared = nixpkgs-cloudflared.legacyPackages.${system}.cloudflared;
 
                 small = import nixpkgs-small {
                   config.allowUnfree = true;
@@ -94,14 +108,15 @@
 
           home-manager.nixosModules.home-manager
           {
-            home-manager.backupFileExtension = "bak";
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = "bak";
+            home-manager.users.root.imports = [ ./home/root ];
             home-manager.users.sam.imports = [
               ./home/sam
-              catppuccin.homeManagerModules.catppuccin
+              catppuccin.homeModules.catppuccin
+              nixvim.homeManagerModules.nixvim
             ];
-            home-manager.users.root.imports = [ ./home/root ];
           }
         ];
       };

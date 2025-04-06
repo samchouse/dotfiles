@@ -44,26 +44,7 @@
 
   environment.systemPackages = with pkgs; [
     age
+    sops
     age-plugin-op
-    (
-      (sops.override {
-        buildGo122Module = buildGoModule;
-      }).overrideAttrs
-      (oldAttrs: {
-        version = "latest";
-        src = fetchFromGitHub {
-          owner = "getsops";
-          repo = "sops";
-          rev = "024b94f67afa967ed758ae17433d7da600e87599";
-          hash = "sha256-rNO9+gIxxH4sYoemFbOD8HaKWL48VnbdCOKvQ0FoTgI=";
-        };
-        vendorHash = "sha256-wdsPuUpYHEBkZ80d7L3iXIbBsnK4to0zDUOOlvOtde4=";
-
-        postPatch = ''
-          substituteInPlace go.mod \
-            --replace-fail "go 1.22" "go 1.23.0"
-        '';
-      })
-    )
   ];
 }

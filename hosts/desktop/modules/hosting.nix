@@ -65,7 +65,7 @@
   virtualisation.oci-containers = {
     containers = {
       cloudflared = {
-        image = "cloudflare/cloudflared:2025.2.1";
+        image = "cloudflare/cloudflared:2025.4.0";
         autoStart = false;
         cmd = [
           "tunnel"
