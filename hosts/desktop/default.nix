@@ -129,7 +129,7 @@ in
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackagesFor pkgs.linux_6_12;
+    kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
     kernelModules = [ "hid_microsoft" ];
     kernelParams = [
       "quiet"

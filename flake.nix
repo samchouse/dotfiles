@@ -71,7 +71,6 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-      zenSources = builtins.fromJSON (builtins.readFile "${zen-browser}/sources.json");
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
       configuration = {
@@ -83,13 +82,7 @@
               (_: _: {
                 niqs = niqspkgs.packages.${system};
                 hypr = hyprland.packages.${system};
-                zen-browser = pkgs.callPackage "${zen-browser}/zen-browser.nix" {
-                  zen-browser-unwrapped = pkgs.callPackage "${zen-browser}/zen-browser-unwrapped.nix" {
-                    inherit (zenSources) version;
-                    inherit (zenSources.${system}) url;
-                    hash = "sha256-xAjzK6z6gSJ0iP7EvqzF5+sENU1o5Ud2syivAw8ivDs=";
-                  };
-                };
+                zen-browser = zen-browser.packages.${system}.default;
                 age-plugin-op = age-plugin-op.defaultPackage.${system};
                 cloudflared = nixpkgs-cloudflared.legacyPackages.${system}.cloudflared;
 
