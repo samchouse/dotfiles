@@ -44,6 +44,24 @@
     lumafly
     libreoffice
     gtrash
+    (pkgs.writeScriptBin "upnp" ''
+      #!${pkgs.bash}/bin/bash
+
+      case $1 in
+      open)
+        sudo nixos-firewall-tool open "$2" "$3"
+        upnpc -a @ "$3" "$3" "$2"
+        ;;
+      close)
+        upnpc -d "$3" "$2"
+        sudo iptables -D nixos-fw -p "$2" --dport "$3" -j nixos-fw-accept
+        ;;
+      *)
+        echo "Invalid argument. Use 'open' or 'close'."
+        exit 1
+        ;;
+      esac
+    '')
   ];
 
   # This value determines the Home Manager release that your
