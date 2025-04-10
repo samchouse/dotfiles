@@ -94,7 +94,11 @@
       speaches = {
         image = "ghcr.io/speaches-ai/speaches:0.7.0-cuda";
         extraOptions = [ "--device=nvidia.com/gpu=all" ];
+        volumes = [ "speaches-hf-cache:/home/ubuntu/.cache/huggingface/hub" ];
         networks = [ "librechat" ];
+        environment = {
+          LOOPBACK_HOST_URL = "http://localhost:8000";
+        };
       };
       kokoro-fastapi = {
         image = "ghcr.io/remsky/kokoro-fastapi-gpu:v0.2.2";
