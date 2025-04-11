@@ -21,7 +21,7 @@
   virtualisation.oci-containers = {
     containers = {
       ollama = {
-        image = "ollama/ollama:0.6.4";
+        image = "ollama/ollama:0.6.5";
         ports = [ "11434:11434" ];
         volumes = [ "ollama:/root/.ollama" ];
         extraOptions = [ "--device=nvidia.com/gpu=all" ];
@@ -69,7 +69,7 @@
         };
       };
       litellm = {
-        image = "ghcr.io/berriai/litellm:main-v1.65.4-nightly";
+        image = "ghcr.io/berriai/litellm:main-v1.65.5-nightly";
         autoStart = false;
         volumes = [ "${../config/litellm.yaml}:/app/config.yaml" ];
         cmd = [ "--config=/app/config.yaml" ];
