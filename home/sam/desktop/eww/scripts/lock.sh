@@ -16,7 +16,7 @@ case $1 in
 
   (
     hyprlock
-    if grep -q "active" /tmp/inhibitor_status; then
+    if ! grep -q "inactive" /tmp/inhibitor_status; then
       "$INHIBITOR" toggle true
     fi
   ) &
