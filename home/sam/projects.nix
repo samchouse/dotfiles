@@ -11,9 +11,8 @@
 
     Service = {
       Restart = "on-failure";
-      Environment = [ "PATH=$PATH:${pkgs.devenv}/bin" ];
       WorkingDirectory = "/home/sam/Documents/projects/personal/gerry-bot";
-      ExecStart = "${pkgs.direnv}/bin/direnv exec . bun start";
+      ExecStart = "${pkgs.devenv}/bin/devenv shell bun start";
     };
   };
 
@@ -28,9 +27,8 @@
 
     Service = {
       Restart = "on-failure";
-      Environment = [ "PATH=$PATH:${pkgs.devenv}/bin" ];
       WorkingDirectory = "/home/sam/Documents/projects/personal/tracker";
-      ExecStart = "${pkgs.direnv}/bin/direnv exec . bun start";
+      ExecStart = "${pkgs.devenv}/bin/devenv shell bun start";
     };
   };
 }

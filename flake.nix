@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-small.url = "github:nixos/nixpkgs/nixos-unstable-small";
-    nixpkgs-cloudflared.url = "github:wrbbz/nixpkgs/cloudflared-2025.4.0";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -71,7 +70,6 @@
       custom-fonts,
       age-plugin-op,
       nixpkgs-small,
-      nixpkgs-cloudflared,
     }:
     let
       system = "x86_64-linux";
@@ -88,7 +86,6 @@
                 niqs = niqspkgs.packages.${system};
                 zen-browser = zen-browser.packages.${system}.default;
                 age-plugin-op = age-plugin-op.defaultPackage.${system};
-                cloudflared = nixpkgs-cloudflared.legacyPackages.${system}.cloudflared;
                 hypr = hyprland.packages.${system} // {
                   hyprlock = hyprlock.packages.${system}.default;
                 };

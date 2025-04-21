@@ -150,6 +150,11 @@ let
               continue
             fi
 
+            if [[ "$line" == *"# pinned"* ]]; then
+              echo -e "\033[1;33m⚠️  No newer version found for $name because it's pinned\033[0m (evaluated $considered_count versions)"
+              continue
+            fi
+
             echo -e "\033[1;34m✅ Update available: \033[1;36m$name\033[0m \033[90m$version → \033[1;32m$best_version\033[0m"
             sed -i "s?$name:$version?$name:$best_version?" "$(echo "$line" | jq -r .data.path.text)"
           done
@@ -219,5 +224,11 @@ in
 
   programs.starship = {
     enable = true;
+  };
+
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true;
+    nix-direnv.enable = true;
   };
 }

@@ -35,7 +35,6 @@
     qview
     clipse
     devenv
-    direnv
     rainfrog
     (pkgs.callPackage ../../pkgs/cider-2 { })
     thunderbird
