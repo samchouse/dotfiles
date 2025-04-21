@@ -36,10 +36,10 @@ in
   '';
 
   virtualisation.oci-containers.containers = {
-    twenty-server = {
+    twenty-server-init = {
       environmentFiles = [ config.sops.templates."twenty.env".path ];
     };
-    twenty-server-init = {
+    twenty-server = {
       environmentFiles = [ config.sops.templates."twenty.env".path ];
     };
     twenty-worker = {

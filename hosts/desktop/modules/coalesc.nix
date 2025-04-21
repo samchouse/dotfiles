@@ -5,12 +5,6 @@
 {
   virtualisation.oci-containers = {
     containers = {
-      twenty-server = {
-        image = "twentycrm/twenty:v0.51";
-        ports = [ "3625:3000" ];
-        volumes = [ "twenty-docker:/app/docker-data" ];
-        networks = [ "twenty" ];
-      };
       twenty-server-init = {
         image = "twentycrm/twenty:v0.51";
         networks = [ "twenty" ];
@@ -29,6 +23,16 @@
           ''
         ];
       };
+      twenty-server = {
+        image = "twentycrm/twenty:v0.51";
+        ports = [ "3625:3000" ];
+        volumes = [ "twenty-docker:/app/docker-data" ];
+        networks = [ "twenty" ];
+        environment = {
+          DISABLE_DB_MIGRATIONS = "true";
+        };
+        dependsOn = [ "twenty-server-init" ];
+      };
       twenty-worker = {
         image = "twentycrm/twenty:v0.51";
         networks = [ "twenty" ];
@@ -36,6 +40,10 @@
           "yarn"
           "worker:prod"
         ];
+        environment = {
+          DISABLE_DB_MIGRATIONS = "true";
+        };
+        dependsOn = [ "twenty-server-init" ];
       };
       twenty-db = {
         image = "postgres:16.8-alpine"; # pinned
