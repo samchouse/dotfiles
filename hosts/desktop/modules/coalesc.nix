@@ -1,4 +1,3 @@
-# https://github.com/Automattic/node-canvas/issues/2239
 {
   lib,
   ...
