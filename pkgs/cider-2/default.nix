@@ -7,12 +7,12 @@
 
 appimageTools.wrapType2 rec {
   pname = "cider-2";
-  version = "2.6.1";
+  version = "3.0.0-alpha";
 
   src = requireFile {
     name = "cider-linux-x64.AppImage";
     url = "https://cidercollective.itch.io/cider";
-    sha256 = "sha256-Q8vGPAVwcqHv2zRkKsHkgG7pA4l46fBNUwm4U+MJcO8=";
+    sha256 = "sha256-bOaAOGPoCa9UxnE/gfmG3K0Xl2C8Qk42KL6oH8t8s2Y=";
   };
 
   nativeBuildInputs = [ makeWrapper ];
@@ -27,8 +27,7 @@ appimageTools.wrapType2 rec {
     in
     ''
       wrapProgram $out/bin/${pname} \
-         --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
-         --add-flags "--no-sandbox --disable-gpu-sandbox" # Cider 2 does not start up properly without these from my preliminary testing
+        --add-flags "--no-sandbox --disable-gpu-sandbox" # Cider 2 does not start up properly without these from my preliminary testing
 
       install -m 444 -D ${contents}/Cider.desktop $out/share/applications/${pname}.desktop
       substituteInPlace $out/share/applications/${pname}.desktop \
