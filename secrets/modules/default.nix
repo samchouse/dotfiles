@@ -2,6 +2,7 @@
   imports = [
     ./ai.nix
     ./glance.nix
+    ./coalesc.nix
     ./hosting.nix
   ];
 

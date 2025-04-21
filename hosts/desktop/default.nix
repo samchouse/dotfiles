@@ -48,11 +48,12 @@ in
     firewall = {
       enable = true;
 
-      # printer steam steam
+      # printer steam steam cider
       allowedTCPPorts = [
         631
         27036
         27037
+        10767
       ];
       allowedUDPPorts = [
         27031
@@ -62,6 +63,7 @@ in
         "docker0"
         "br-fdf6080d5bc5"
         "br-125e2a601276"
+        "br-c06faecd2b05"
       ];
 
       # https://github.com/miniupnp/miniupnp/tree/master/miniupnpc#readme
@@ -225,13 +227,11 @@ in
     ];
 
     substituters = [
-      "https://devenv.cachix.org"
       "https://nix-community.cachix.org"
       "https://cuda-maintainers.cachix.org"
       "https://hyprland.cachix.org"
     ];
     trusted-public-keys = [
-      "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="

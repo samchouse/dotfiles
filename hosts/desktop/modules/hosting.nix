@@ -10,7 +10,7 @@
     enable = true;
     package = pkgs.caddy.withPlugins {
       plugins = [ "github.com/caddy-dns/cloudflare@v0.0.0-20250228175314-1fb64108d4de" ];
-      hash = "sha256-YYpsf8HMONR1teMiSymo2y+HrKoxuJMKIea5/NEykGc=";
+      hash = "sha256-pfh9DXUj35jlAntkWc4D5wuW04xxQfM1rZ4KFauMzvc=";
     };
 
     email = "sam@chouse.dev";
@@ -21,7 +21,7 @@
           value = {
             extraConfig = ''
               tls {
-                dns cloudflare {env.CF_API_TOKEN}
+                dns cloudflare ${if host ? cloudflare then host.cloudflare else "{env.CF_API_TOKEN}"} 
               }
               reverse_proxy :${toString host.port} {
                 header_up X-Forwarded-For {header.CF-Connecting-IP}
@@ -55,8 +55,9 @@
             port = 3729;
           }
           {
-            domain = "sys.xenfo.dev";
-            port = 7463;
+            domain = "crm.coalesc.xyz";
+            port = 3625;
+            cloudflare = "{env.COALESC_CF_API_TOKEN}";
           }
         ]
     );
@@ -67,6 +68,15 @@
       cloudflared = {
         image = "cloudflare/cloudflared:2025.4.0";
         autoStart = false;
+        cmd = [
+          "tunnel"
+          "--no-autoupdate"
+          "run"
+        ];
+        extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
+      };
+      cloudflared-coalesc = {
+        image = "cloudflare/cloudflared:2025.4.0";
         cmd = [
           "tunnel"
           "--no-autoupdate"

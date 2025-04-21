@@ -9,5 +9,6 @@
     ./power.nix
     ./home-assistant.nix
     ./misc.nix
+    ./coalesc.nix
   ];
 }
