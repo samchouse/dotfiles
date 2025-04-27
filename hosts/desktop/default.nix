@@ -14,7 +14,7 @@ in
     ../../secrets
   ];
 
-  environment.sessionVariables.FLAKE = flake;
+  environment.sessionVariables.NH_FLAKE = flake;
 
   hardware = {
     bluetooth = {

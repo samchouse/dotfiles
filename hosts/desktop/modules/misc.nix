@@ -90,7 +90,6 @@ in
   };
 
   # TODO: remove when https://github.com/NixOS/nixpkgs/pull/380731 is merged
-  # https://nixpk.gs/pr-tracker.html?pr=388231
   systemd.services.beszel-agent = {
     description = "Beszel Agent";
 
@@ -105,7 +104,7 @@ in
 
     serviceConfig = {
       ExecStart = ''
-        ${(pkgs.callPackage ../../../pkgs/beszel { })}/bin/beszel-agent
+        ${pkgs.beszel}/bin/beszel-agent
       '';
 
       KeyringMode = "private";

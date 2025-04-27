@@ -69,7 +69,7 @@
         };
       };
       litellm = {
-        image = "ghcr.io/berriai/litellm:main-v1.67.0-nightly";
+        image = "ghcr.io/berriai/litellm:main-v1.67.2-nightly";
         autoStart = false;
         volumes = [ "${../config/litellm.yaml}:/app/config.yaml" ];
         cmd = [ "--config=/app/config.yaml" ];

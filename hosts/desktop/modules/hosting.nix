@@ -9,8 +9,8 @@
   services.caddy = {
     enable = true;
     package = pkgs.caddy.withPlugins {
-      plugins = [ "github.com/caddy-dns/cloudflare@v0.0.0-20250228175314-1fb64108d4de" ];
-      hash = "sha256-pfh9DXUj35jlAntkWc4D5wuW04xxQfM1rZ4KFauMzvc=";
+      plugins = [ "github.com/caddy-dns/cloudflare@v0.2.2-0.20250420134112-006ebb07b349" ];
+      hash = "sha256-2U+icm4GtI5Fww6U8nKzQ/+pPf63T3scTGuj1zjj4b4=";
     };
 
     email = "sam@chouse.dev";
@@ -53,6 +53,10 @@
           {
             domain = "tracker.xenfo.dev";
             port = 3729;
+          }
+          {
+            domain = "sys.xenfo.dev";
+            port = 7463;
           }
           {
             domain = "crm.coalesc.xyz";

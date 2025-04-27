@@ -8,7 +8,7 @@ let
     while getopts ":cd" opt; do
       case $opt in
       c)
-        FILE="$FLAKE/home/sam/desktop/vscode.nix"
+        FILE="$NH_FLAKE/home/sam/desktop/vscode.nix"
         URL=$(${pkgs.ripgrep}/bin/rg 'url = "' "$FILE" --json | jq -cM 'select(.type | contains("match"))' | ${pkgs.ripgrep}/bin/rg '\s+url =' | jq -r .data.lines.text | sed -E 's/.*url = "(.*)".*/\1/' | tr -d '\n')
         OLD_HASH=$(${pkgs.ripgrep}/bin/rg 'sha256 = "' "$FILE" --json | jq -cM 'select(.type | contains("match"))' | ${pkgs.ripgrep}/bin/rg '\s+sha256 =' | jq -r .data.lines.text | sed -E 's/.*sha256 = "(.*)".*/\1/' | tr -d '\n')
 
@@ -53,7 +53,7 @@ let
           done
         }
 
-        ${pkgs.ripgrep}/bin/rg 'image = "' "$FLAKE" --json | jq -cM 'select(.type | contains("match"))' | ${pkgs.ripgrep}/bin/rg '\s+image =' | while IFS= read -r line; do
+        ${pkgs.ripgrep}/bin/rg 'image = "' "$NH_FLAKE" --json | jq -cM 'select(.type | contains("match"))' | ${pkgs.ripgrep}/bin/rg '\s+image =' | while IFS= read -r line; do
           echo "$line" | jq -r .data.lines.text | sed -E 's/.*image = "(.*)".*/\1/' | tr -d '\n' | sed 's/$/\n/' | while IFS=: read -r name version; do
             echo -e "\n\033[1;34m📦 Checking for updates: \033[1;36m$name\033[0m (\033[33m$version\033[0m)"
 
@@ -197,14 +197,10 @@ in
 
     oh-my-zsh = {
       enable = true;
-
-      plugins = [
-        "git"
-        "direnv"
-      ];
+      plugins = [ "git" ];
     };
 
-    initExtra = ''
+    initContent = ''
       function y() {
         local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
         yazi "$@" --cwd-file="$tmp"
