@@ -81,7 +81,7 @@ in
   virtualisation.oci-containers = {
     containers = {
       beszel = {
-        image = "ghcr.io/henrygd/beszel/beszel:0.10.2";
+        image = "ghcr.io/henrygd/beszel/beszel:0.11.1";
         ports = [ "7463:8090" ];
         volumes = [ "beszel:/beszel_data" ];
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];

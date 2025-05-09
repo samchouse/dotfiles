@@ -1,45 +1,100 @@
 {
-  appimageTools,
+  stdenv,
   lib,
-  requireFile,
+  fetchurl,
+  rpmextract,
+  autoPatchelfHook,
+  xorg,
+  libxcb,
+  glib,
+  nss,
+  nspr,
+  dbus,
+  atk,
+  at-spi2-atk,
+  gtk3,
+  pango,
+  cairo,
+  cups,
+  mesa,
+  libxkbcommon,
+  libepoxy,
+  expat,
+  systemd,
+  alsa-lib,
+  at-spi2-core,
   makeWrapper,
 }:
 
-appimageTools.wrapType2 rec {
-  pname = "cider-2";
-  version = "3.0.0-alpha";
+stdenv.mkDerivation rec {
+  pname = "cider";
+  version = "3.0.0-rc1";
 
-  src = requireFile {
-    name = "cider-linux-x64.AppImage";
-    url = "https://cidercollective.itch.io/cider";
-    sha256 = "sha256-bOaAOGPoCa9UxnE/gfmG3K0Xl2C8Qk42KL6oH8t8s2Y=";
+  src = fetchurl rec {
+    name = "cider-v${builtins.elemAt (lib.splitString "-" version) 0}-linux-x64.rpm";
+    url = "https://repo.cider.sh/rpm/RPMS/${name}";
+    sha256 = "sha256-Xc7EHvTTXwvy1+bqpIPGVWQ78tGUxXLnkRjDOqZI+8Y=";
   };
 
-  nativeBuildInputs = [ makeWrapper ];
+  nativeBuildInputs = [
+    rpmextract
+    autoPatchelfHook
+    makeWrapper
+  ];
+  buildInputs = [
+    stdenv.cc.cc.lib
+    xorg.libX11
+    xorg.libXext
+    xorg.libXcomposite
+    xorg.libXdamage
+    xorg.libXfixes
+    xorg.libXrandr
+    libxcb
+    glib
+    nss
+    nspr
+    dbus
+    atk
+    at-spi2-atk
+    gtk3
+    pango
+    cairo
+    cups
+    mesa
+    libxkbcommon
+    libepoxy
+    expat
+    systemd
+    alsa-lib
+    at-spi2-core
+  ];
 
-  extraInstallCommands =
-    let
-      contents = appimageTools.extract {
-        inherit version src;
-        # HACK: this looks for a ${pname}.desktop, where `cider-2.desktop` doesn't exist
-        pname = "Cider";
-      };
-    in
-    ''
-      wrapProgram $out/bin/${pname} \
-        --add-flags "--no-sandbox --disable-gpu-sandbox" # Cider 2 does not start up properly without these from my preliminary testing
+  unpackPhase = ''
+    rpmextract $src
+    rm -r usr/lib/.build-id
+  '';
 
-      install -m 444 -D ${contents}/Cider.desktop $out/share/applications/${pname}.desktop
-      substituteInPlace $out/share/applications/${pname}.desktop \
-        --replace-warn 'Exec=Cider' 'Exec=${pname}'
-      cp -r ${contents}/usr/share/icons $out/share
+  installPhase = ''
+    runHook preInstall
+
+    mv usr $out
+
+    runHook postInstall
+  '';
+
+  postInstall =''
+      wrapProgram $out/bin/Cider \
+        --add-flags "--no-sandbox --disable-gpu-sandbox"
+      mv $out/bin/Cider $out/bin/cider
+      substituteInPlace $out/share/applications/Cider.desktop \
+        --replace-warn 'Exec=Cider' 'Exec=cider'
     '';
 
   meta = {
     description = "Powerful music player that allows you listen to your favorite tracks with style";
     homepage = "https://cider.sh";
     license = lib.licenses.unfree;
-    mainProgram = "cider-2";
+    mainProgram = "cider";
     maintainers = with lib.maintainers; [ itsvic-dev ];
     platforms = [ "x86_64-linux" ];
   };

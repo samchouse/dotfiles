@@ -55,7 +55,7 @@
         };
       };
       twenty-redis = {
-        image = "redis:7.4.3-alpine";
+        image = "redis:8.0.0-alpine";
         networks = [ "twenty" ];
       };
     };

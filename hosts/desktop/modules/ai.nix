@@ -21,7 +21,7 @@
   virtualisation.oci-containers = {
     containers = {
       ollama = {
-        image = "ollama/ollama:0.6.6";
+        image = "ollama/ollama:0.6.8";
         ports = [ "11434:11434" ];
         volumes = [ "ollama:/root/.ollama" ];
         extraOptions = [ "--device=nvidia.com/gpu=all" ];
@@ -46,7 +46,7 @@
         ];
       };
       rag = {
-        image = "ghcr.io/danny-avila/librechat-rag-api-dev:v0.4.0";
+        image = "ghcr.io/danny-avila/librechat-rag-api-dev:v0.5.0";
         autoStart = false;
         volumes = [ "rag-uploads:/app/uploads" ];
         networks = [ "librechat" ];
@@ -59,7 +59,7 @@
       };
 
       postgres = {
-        image = "postgres:17.4-alpine";
+        image = "postgres:17.5-alpine";
         autoStart = false;
         volumes = [ "postgres:/var/lib/postgresql/data" ];
         networks = [ "litellm" ];
@@ -69,7 +69,7 @@
         };
       };
       litellm = {
-        image = "ghcr.io/berriai/litellm:main-v1.67.2-nightly";
+        image = "ghcr.io/berriai/litellm:main-v1.68.1-nightly";
         autoStart = false;
         volumes = [ "${../config/litellm.yaml}:/app/config.yaml" ];
         cmd = [ "--config=/app/config.yaml" ];
