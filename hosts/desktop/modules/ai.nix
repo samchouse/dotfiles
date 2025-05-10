@@ -32,7 +32,7 @@
       };
 
       librechat = {
-        image = "ghcr.io/samchouse/librechat-dev:57fad4efb1bf2cdb6d6b02389190f6f71bab3f83";
+        image = "ghcr.io/samchouse/librechat:0.7.8";
         autoStart = false;
         ports = [ "3080:3080" ];
         volumes = [
