@@ -1,8 +1,6 @@
-{ pkgs, ... }:
 {
   programs.hyprlock = {
     enable = true;
-    package = pkgs.hypr.hyprlock;
 
     settings = {
       general = {

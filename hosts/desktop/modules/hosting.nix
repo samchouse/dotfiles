@@ -9,8 +9,8 @@
   services.caddy = {
     enable = true;
     package = pkgs.caddy.withPlugins {
-      plugins = [ "github.com/caddy-dns/cloudflare@v0.2.2-0.20250420134112-006ebb07b349" ];
-      hash = "sha256-2U+icm4GtI5Fww6U8nKzQ/+pPf63T3scTGuj1zjj4b4=";
+      plugins = [ "github.com/caddy-dns/cloudflare@v0.2.2-0.20250506153119-35fb8474f57d" ];
+      hash = "sha256-xMxNAg08LDVifhsryGXV22LXqgRDdfjmsU0NfbUJgMg=";
     };
 
     email = "sam@chouse.dev";
@@ -70,7 +70,7 @@
   virtualisation.oci-containers = {
     containers = {
       cloudflared = {
-        image = "cloudflare/cloudflared:2025.4.2";
+        image = "cloudflare/cloudflared:2025.5.0";
         autoStart = false;
         cmd = [
           "tunnel"
@@ -80,7 +80,7 @@
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
       };
       cloudflared-coalesc = {
-        image = "cloudflare/cloudflared:2025.4.2";
+        image = "cloudflare/cloudflared:2025.5.0";
         cmd = [
           "tunnel"
           "--no-autoupdate"

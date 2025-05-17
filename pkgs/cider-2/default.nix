@@ -82,13 +82,13 @@ stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  postInstall =''
-      wrapProgram $out/bin/Cider \
-        --add-flags "--no-sandbox --disable-gpu-sandbox"
-      mv $out/bin/Cider $out/bin/cider
-      substituteInPlace $out/share/applications/Cider.desktop \
-        --replace-warn 'Exec=Cider' 'Exec=cider'
-    '';
+  postInstall = ''
+    wrapProgram $out/bin/Cider \
+      --add-flags "--no-sandbox --disable-gpu-sandbox"
+    mv $out/bin/Cider $out/bin/cider
+    substituteInPlace $out/share/applications/Cider.desktop \
+      --replace-warn 'Exec=Cider' 'Exec=cider'
+  '';
 
   meta = {
     description = "Powerful music player that allows you listen to your favorite tracks with style";
