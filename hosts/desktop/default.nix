@@ -167,7 +167,7 @@ in
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
+    kernelPackages = pkgs.small.linuxPackagesFor pkgs.small.linux_latest;
     kernelModules = [ "hid_microsoft" ];
     kernelParams = [
       "quiet"
@@ -224,6 +224,7 @@ in
     ripgrep
     fd
     miniupnpc
+    gparted
   ];
 
   users = {
