@@ -70,7 +70,7 @@
         };
       };
       litellm = {
-        image = "ghcr.io/berriai/litellm:main-v1.71.2-nightly";
+        image = "ghcr.io/berriai/litellm:main-v1.72.0-nightly";
         autoStart = false;
         volumes = [ "${../config/litellm.yaml}:/app/config.yaml" ];
         cmd = [ "--config=/app/config.yaml" ];
@@ -82,7 +82,7 @@
       };
 
       invokeai = {
-        image = "ghcr.io/invoke-ai/invokeai:v5.12.0-cuda";
+        image = "ghcr.io/invoke-ai/invokeai:v5.13.0-cuda";
         autoStart = false;
         ports = [ "9090:9090" ];
         volumes = [

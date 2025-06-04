@@ -38,12 +38,7 @@
       ];
 
       misc = {
-        vfr = 0;
         enable_anr_dialog = false;
-      };
-
-      debug = {
-        damage_tracking = 0;
       };
 
       general = {

@@ -167,7 +167,7 @@ in
   };
 
   boot = {
-    kernelPackages = pkgs.small.linuxPackagesFor pkgs.small.linux_latest;
+    kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
     kernelModules = [ "hid_microsoft" ];
     kernelParams = [
       "quiet"
@@ -261,6 +261,7 @@ in
     experimental-features = [
       "nix-command"
       "flakes"
+      "pipe-operators"
     ];
 
     substituters = [
