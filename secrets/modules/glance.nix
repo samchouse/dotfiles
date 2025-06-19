@@ -20,7 +20,7 @@ in
   systemd.services.glance = {
     wantedBy = lib.mkForce [ ];
     serviceConfig = {
-      EnvironmentFile = config.sops.templates."glance.env".path;
+      EnvironmentFile = lib.mkForce config.sops.templates."glance.env".path;
     };
   };
 }

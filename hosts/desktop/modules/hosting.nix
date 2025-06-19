@@ -70,7 +70,7 @@
   virtualisation.oci-containers = {
     containers = {
       cloudflared = {
-        image = "cloudflare/cloudflared:2025.5.0";
+        image = "cloudflare/cloudflared:2025.6.1";
         autoStart = false;
         cmd = [
           "tunnel"
@@ -80,7 +80,7 @@
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
       };
       cloudflared-coalesc = {
-        image = "cloudflare/cloudflared:2025.5.0";
+        image = "cloudflare/cloudflared:2025.6.1";
         cmd = [
           "tunnel"
           "--no-autoupdate"
