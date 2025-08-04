@@ -81,7 +81,7 @@ in
   virtualisation.oci-containers = {
     containers = {
       beszel = {
-        image = "ghcr.io/henrygd/beszel/beszel:0.11.1";
+        image = "ghcr.io/henrygd/beszel/beszel:0.12.3";
         ports = [ "7463:8090" ];
         volumes = [ "beszel:/beszel_data" ];
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
@@ -104,7 +104,19 @@ in
 
     serviceConfig = {
       ExecStart = ''
-        ${pkgs.beszel}/bin/beszel-agent
+        ${pkgs.beszel.overrideAttrs (oldAttrs: rec {
+    version = "0.12.3";
+    src = (
+      pkgs.fetchFromGitHub {
+        owner = "henrygd";
+        repo = "beszel";
+        rev = "v${version}";
+        hash = "sha256-rthaufUL0JX3sE2hdrcJ8J73DLK4/2wMR+uOs8GoX2A=";
+      }
+    );
+
+    vendorHash = "sha256-Nd2jDlq+tdGrgxU6ZNgj9awAb+G/yDqY1J15dpMcjtw=";
+  })}/bin/beszel-agent
       '';
 
       KeyringMode = "private";

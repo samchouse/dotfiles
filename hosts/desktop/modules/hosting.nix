@@ -10,11 +10,25 @@
     enable = true;
     package = pkgs.caddy.withPlugins {
       plugins = [ "github.com/caddy-dns/cloudflare@v0.2.2-0.20250506153119-35fb8474f57d" ];
-      hash = "sha256-xMxNAg08LDVifhsryGXV22LXqgRDdfjmsU0NfbUJgMg=";
+      hash = "sha256-60yLaAEyjdcGokoi4/n90u2z/ic3kz7dCREhx9u/gGM=";
     };
 
     email = "sam@chouse.dev";
-    virtualHosts = builtins.listToAttrs (
+    virtualHosts = {
+      "http://dev.coalesc.xyz" = {
+        extraConfig = ''
+          @userpath path_regexp userpath ^/([^/]+)(?:(/.*)|/?)?$
+          handle @userpath {
+            rewrite * {re.userpath.2}
+            reverse_proxy dev-{re.userpath.1}.coalesc.xyz:443 {
+              transport http { tls }
+              header_up Host dev-{re.userpath.1}.coalesc.xyz
+            }
+          }
+        '';
+      };
+    }
+    // builtins.listToAttrs (
       map
         (host: {
           name = host.domain;
@@ -23,7 +37,7 @@
               tls {
                 dns cloudflare ${if host ? cloudflare then host.cloudflare else "{env.CF_API_TOKEN}"} 
               }
-              reverse_proxy :${toString host.port} {
+              reverse_proxy ${if host ? host then host.host else ""}:${toString host.port} {
                 header_up X-Forwarded-For {header.CF-Connecting-IP}
               }
             '';
@@ -59,6 +73,11 @@
             port = 7463;
           }
           {
+            domain = "deploy.xenfo.dev";
+            port = 3000;
+            host = "pi";
+          }
+          {
             domain = "crm.coalesc.xyz";
             port = 3625;
             cloudflare = "{env.COALESC_CF_API_TOKEN}";
@@ -70,7 +89,7 @@
   virtualisation.oci-containers = {
     containers = {
       cloudflared = {
-        image = "cloudflare/cloudflared:2025.6.1";
+        image = "cloudflare/cloudflared:2025.7.0";
         autoStart = false;
         cmd = [
           "tunnel"
@@ -80,7 +99,7 @@
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
       };
       cloudflared-coalesc = {
-        image = "cloudflare/cloudflared:2025.6.1";
+        image = "cloudflare/cloudflared:2025.7.0";
         cmd = [
           "tunnel"
           "--no-autoupdate"

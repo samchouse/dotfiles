@@ -7,6 +7,7 @@
       treesitter.enable = true;
       web-devicons.enable = true;
       typst-preview.enable = true;
+      typescript-tools.enable = true;
       cmp = {
         enable = true;
         autoEnableSources = true;

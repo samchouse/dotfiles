@@ -20,6 +20,31 @@
   };
 
   services = {
+    sunshine = {
+      enable = true;
+      capSysAdmin = true;
+      openFirewall = true;
+      applications = {
+        env = {
+          PATH = "$(PATH):$(HOME)/.local/bin";
+        };
+        apps = [
+          {
+            name = "Desktop";
+            image-path = "desktop.png";
+          }
+        ];
+      };
+      settings = {
+        output_name = "2";
+        global_prep_cmd = builtins.toJSON [
+          {
+            do = "sh -c \"hyprctl keyword monitor VIRT-1,\${SUNSHINE_CLIENT_WIDTH}x\${SUNSHINE_CLIENT_HEIGHT}@\${SUNSHINE_CLIENT_FPS},5120x0,1\"";
+          }
+        ];
+      };
+    };
+
     greetd = {
       enable = true;
       settings = {

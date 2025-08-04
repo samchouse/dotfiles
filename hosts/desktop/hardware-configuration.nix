@@ -29,6 +29,8 @@
 
   boot.initrd.luks.devices."luks-68f12c7e-fc53-49de-9b3d-91ab69f6c2a4".device =
     "/dev/disk/by-uuid/68f12c7e-fc53-49de-9b3d-91ab69f6c2a4";
+  boot.initrd.luks.devices."luks-3123f1b8-9b1e-4d7b-931f-416a79602070".device =
+    "/dev/disk/by-uuid/3123f1b8-9b1e-4d7b-931f-416a79602070";
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/71F0-031A";
@@ -37,6 +39,11 @@
       "fmask=0077"
       "dmask=0077"
     ];
+  };
+
+  fileSystems."/mnt/secondary" = {
+    device = "/dev/disk/by-uuid/422fb13d-33f6-4a00-a2ef-744af615c26f";
+    fsType = "ext4";
   };
 
   swapDevices = [ ];

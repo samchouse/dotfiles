@@ -1,9 +1,9 @@
 diff --git a/src/userplugins/waylandFix/index.ts b/src/userplugins/waylandFix/index.ts
 new file mode 100644
-index 00000000..567d3408
+index 00000000..74c4564d
 --- /dev/null
 +++ b/src/userplugins/waylandFix/index.ts
-@@ -0,0 +1,128 @@
+@@ -0,0 +1,127 @@
 +/*
 + * Vencord, a Discord client mod
 + * Copyright (c) 2025 Vendicated and contributors
@@ -11,8 +11,7 @@ index 00000000..567d3408
 + */
 +
 +import { definePluginSettings } from "@api/Settings";
-+import { makeRange } from "@components/PluginSettings/components";
-+import definePlugin, { OptionType } from "@utils/types";
++import definePlugin, { makeRange, OptionType } from "@utils/types";
 +import { FluxDispatcher } from "@webpack/common";
 +
 +let isAfk = false;

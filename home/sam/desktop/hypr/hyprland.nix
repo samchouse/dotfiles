@@ -97,6 +97,7 @@
       workspace = [
         "1,monitor:DP-2,default:true"
         "2,monitor:DP-1,default:true"
+        "10,monitor:VIRT-1,default:true"
       ];
 
       layerrule = [
@@ -127,49 +128,48 @@
       ];
 
       "$mod" = "SUPER";
-      bind =
-        [
-          "$mod, TAB, exec, kitty"
-          "$mod, Q, killactive, "
-          # "$mod, M, exit, "
-          "$mod SHIFT, V, togglefloating, "
-          "$mod, P, pseudo, "
-          "$mod, J, togglesplit, "
-          "$mod, F, fullscreen, "
-          "$mod, S, exec, ~/.config/hypr/scripts/screenshot.sh"
-          "$mod, space, exec, rofi -show drun -show-icons -icon-theme 'kora' -sort -sorting-method fzf"
-          "$mod SHIFT, space, exec, rofi -show calc -modi calc -no-show-match -no-sort"
-          "$mod, V, exec, kitty --class clipse -e clipse"
+      bind = [
+        "$mod, TAB, exec, kitty"
+        "$mod, Q, killactive, "
+        # "$mod, M, exit, "
+        "$mod SHIFT, V, togglefloating, "
+        "$mod, P, pseudo, "
+        "$mod, J, togglesplit, "
+        "$mod, F, fullscreen, "
+        "$mod, S, exec, ~/.config/hypr/scripts/screenshot.sh"
+        "$mod, space, exec, rofi -show drun -show-icons -icon-theme 'kora' -sort -sorting-method fzf"
+        "$mod SHIFT, space, exec, rofi -show calc -modi calc -no-show-match -no-sort"
+        "$mod, V, exec, kitty --class clipse -e clipse"
 
-          "$mod, left, movefocus, l"
-          "$mod, right, movefocus, r"
-          "$mod, up, movefocus, u"
-          "$mod, down, movefocus, d"
+        "$mod, left, movefocus, l"
+        "$mod, right, movefocus, r"
+        "$mod, up, movefocus, u"
+        "$mod, down, movefocus, d"
 
-          # Scroll through existing workspaces with mod + scroll
-          "$mod, mouse_down, workspace, e+1"
-          "$mod, mouse_up, workspace, e-1"
-        ]
-        ++ (
-          # workspaces
-          # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
-          builtins.concatLists (
-            builtins.genList (
-              x:
-              let
-                ws =
-                  let
-                    c = (x + 1) / 10;
-                  in
-                  builtins.toString (x + 1 - (c * 10));
-              in
-              [
-                "$mod, ${ws}, workspace, ${toString (x + 1)}"
-                "$mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
-              ]
-            ) 10
-          )
-        );
+        # Scroll through existing workspaces with mod + scroll
+        "$mod, mouse_down, workspace, e+1"
+        "$mod, mouse_up, workspace, e-1"
+      ]
+      ++ (
+        # workspaces
+        # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
+        builtins.concatLists (
+          builtins.genList (
+            x:
+            let
+              ws =
+                let
+                  c = (x + 1) / 10;
+                in
+                builtins.toString (x + 1 - (c * 10));
+            in
+            [
+              "$mod, ${ws}, workspace, ${toString (x + 1)}"
+              "$mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
+            ]
+          ) 10
+        )
+      );
 
       bindm = [
         # Move/resize windows with mod + LMB/RMB and dragging
@@ -190,6 +190,7 @@
       exec-once = [
         "clipse -listen >>/dev/null 2>&1"
         "gammastep -O 4000 >>/dev/null 2>&1"
+        "hyprctl output create headless VIRT-1 >>/dev/null 2>&1"
         "$HOME/.config/hypr/scripts/startup.sh >>/dev/null 2>&1"
         "$HOME/.config/hypr/scripts/monitor-watcher.sh >>/dev/null 2>&1"
       ];

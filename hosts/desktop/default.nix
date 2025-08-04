@@ -37,6 +37,7 @@ in
 
   virtualisation = {
     docker.enable = true;
+    docker.liveRestore = false;
     podman.enable = true;
     oci-containers.backend = "docker";
   };
@@ -225,7 +226,11 @@ in
     fd
     miniupnpc
     gparted
+    qemu
+    quickemu
   ];
+
+  systemd.tmpfiles.rules = [ "L+ /var/lib/qemu/firmware - - - - ${pkgs.qemu}/share/qemu/firmware" ];
 
   users = {
     defaultUserShell = pkgs.zsh;
