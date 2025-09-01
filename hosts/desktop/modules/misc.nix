@@ -31,12 +31,50 @@ in
   };
 
   programs = {
+    zoxide.enable = true;
     steam.enable = true;
 
     _1password.enable = true;
     _1password-gui = {
       enable = true;
       polkitPolicyOwners = [ "sam" ];
+    };
+
+    tmux = {
+      enable = true;
+      shortcut = "s";
+      keyMode = "vi";
+      customPaneNavigationAndResize = true;
+      plugins = with pkgs.tmuxPlugins; [
+        catppuccin
+        cpu
+      ];
+      terminal = "tmux-256color";
+      extraConfig = ''
+        set-option -g status-position top
+        set -g mouse on
+
+        set -g @catppuccin_flavor "mocha"
+        set -g @catppuccin_window_status_style "custom"
+
+        set -g @catppuccin_window_left_separator "#[bg=default,fg=#{@thm_surface_0}]#[bg=#{@thm_surface_0},fg=#{@thm_fg}]"
+        set -g @catppuccin_window_right_separator "#[bg=default,fg=#{@thm_surface_0}]"
+        set -g @catppuccin_window_current_left_separator "#[bg=default,fg=#{@thm_mauve}]#[bg=#{@thm_mauve},fg=#{@thm_bg}]"
+        set -g @catppuccin_window_current_middle_separator "#[fg=#{@thm_mauve}]█"
+        set -g @catppuccin_window_current_right_separator "#[bg=default,fg=#{@thm_surface_1}]"
+
+        set -g @catppuccin_status_background "none"
+        run-shell ${pkgs.tmuxPlugins.catppuccin}/share/tmux-plugins/catppuccin/catppuccin.tmux
+
+        set -g status-right-length 100
+        set -g status-left-length 100
+        set -g status-left ""
+        set -g status-right "#{E:@catppuccin_status_application}"
+        set -ag status-right "#{E:@catppuccin_status_directory}"
+        set -agF status-right "#{E:@catppuccin_status_cpu}"
+        set -ag status-right "#{E:@catppuccin_status_session}"
+        run-shell ${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/cpu.tmux
+      '';
     };
   };
 
@@ -76,12 +114,19 @@ in
         destination = "/etc/udev/rules.d/60-xbox-elite-2-hid.rules";
       })
     ];
+
+    nfs.server = {
+      enable = true;
+      exports = ''
+        /home/sam 100.123.34.40(rw,sync,no_subtree_check,insecure,all_squash,anonuid=1000,anongid=100)
+      '';
+    };
   };
 
   virtualisation.oci-containers = {
     containers = {
       beszel = {
-        image = "ghcr.io/henrygd/beszel/beszel:0.12.3";
+        image = "ghcr.io/henrygd/beszel/beszel:0.12.6";
         ports = [ "7463:8090" ];
         volumes = [ "beszel:/beszel_data" ];
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
@@ -104,19 +149,21 @@ in
 
     serviceConfig = {
       ExecStart = ''
-        ${pkgs.beszel.overrideAttrs (oldAttrs: rec {
-    version = "0.12.3";
-    src = (
-      pkgs.fetchFromGitHub {
-        owner = "henrygd";
-        repo = "beszel";
-        rev = "v${version}";
-        hash = "sha256-rthaufUL0JX3sE2hdrcJ8J73DLK4/2wMR+uOs8GoX2A=";
-      }
-    );
+        ${
+          pkgs.beszel.overrideAttrs (oldAttrs: rec {
+            version = "0.12.6";
+            src = (
+              pkgs.fetchFromGitHub {
+                owner = "henrygd";
+                repo = "beszel";
+                rev = "v${version}";
+                hash = "sha256-OZD8nB2oKaMFvUbDfYNhtq18riaQSdTZASDUJ29TYu8=";
+              }
+            );
 
-    vendorHash = "sha256-Nd2jDlq+tdGrgxU6ZNgj9awAb+G/yDqY1J15dpMcjtw=";
-  })}/bin/beszel-agent
+            vendorHash = "sha256-8Sr7MYQnIfNx9hvfjCTYKQOUZIBxpGPbsR75jEB0mbk=";
+          })
+        }/bin/beszel-agent
       '';
 
       KeyringMode = "private";

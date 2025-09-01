@@ -81,6 +81,7 @@
         kb_layout = "us";
         follow_mouse = 2;
         sensitivity = 0;
+        kb_options = "ctrl:nocaps";
       };
 
       dwindle = {

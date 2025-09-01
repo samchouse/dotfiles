@@ -38,17 +38,14 @@ in
 {
   services = {
     upower.enable = true;
-    logind = {
-      powerKey = "ignore";
-      rebootKey = "ignore";
-      suspendKey = "ignore";
-      hibernateKey = "ignore";
-
-      extraConfig = ''
-        PowerKeyIgnoreInhibited=yes
-        SuspendKeyIgnoreInhibited=yes
-        HibernateKeyIgnoreInhibited=yes
-      '';
+    logind.settings.Login = {
+      HandlePowerKey = "ignore";
+      HandleRebootKey = "ignore";
+      HandleSuspendKey = "ignore";
+      HandleHibernateKey = "ignore";
+      PowerKeyIgnoreInhibited = true;
+      SuspendKeyIgnoreInhibited = true;
+      HibernateKeyIgnoreInhibited = true;
     };
   };
 

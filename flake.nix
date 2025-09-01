@@ -9,7 +9,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hyprland.url = "github:hyprwm/Hyprland";
     niqspkgs = {
       url = "github:diniamo/niqspkgs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -52,7 +51,6 @@
       self,
       nixvim,
       nixpkgs,
-      hyprland,
       niqspkgs,
       sops-nix,
       catppuccin,
@@ -76,7 +74,6 @@
             nixpkgs.overlays = [
               (_: _: {
                 niqs = niqspkgs.packages.${system};
-                hypr = hyprland.packages.${system};
                 zen-browser = zen-browser.packages.${system}.default;
                 age-plugin-op = age-plugin-op.defaultPackage.${system};
 
@@ -102,7 +99,7 @@
             home-manager.users.sam.imports = [
               ./home/sam
               catppuccin.homeModules.catppuccin
-              nixvim.homeManagerModules.nixvim
+              nixvim.homeModules.nixvim
             ];
           }
         ];

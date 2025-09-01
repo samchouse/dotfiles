@@ -6,7 +6,7 @@
   virtualisation.oci-containers = {
     containers = {
       twenty-server-init = {
-        image = "twentycrm/twenty:v1.2.1";
+        image = "twentycrm/twenty:v1.4.1";
         networks = [ "twenty" ];
         volumes = [ "twenty-docker:/app/docker-data" ];
         user = "root";
@@ -24,7 +24,7 @@
         ];
       };
       twenty-server = {
-        image = "twentycrm/twenty:v1.2.1";
+        image = "twentycrm/twenty:v1.4.1";
         ports = [ "3625:3000" ];
         volumes = [ "twenty-docker:/app/docker-data" ];
         networks = [ "twenty" ];
@@ -34,7 +34,7 @@
         dependsOn = [ "twenty-server-init" ];
       };
       twenty-worker = {
-        image = "twentycrm/twenty:v1.2.1";
+        image = "twentycrm/twenty:v1.4.1";
         networks = [ "twenty" ];
         cmd = [
           "yarn"
@@ -55,8 +55,17 @@
         };
       };
       twenty-redis = {
-        image = "redis:8.0.3-alpine";
+        image = "redis:8.2.1-alpine";
         networks = [ "twenty" ];
+      };
+      typesense = {
+        image = "typesense/typesense:29.0";
+        ports = [ "8108:8108" ];
+        volumes = [ "typesense-data:/data" ];
+        environment = {
+          TYPESENSE_DATA_DIR = "/data";
+          TYPESENSE_ENABLE_CORS = "true";
+        };
       };
     };
   };

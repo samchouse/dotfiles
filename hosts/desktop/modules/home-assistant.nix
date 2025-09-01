@@ -6,7 +6,7 @@ in
   virtualisation.oci-containers = {
     containers = {
       homeassistant = {
-        image = "ghcr.io/home-assistant/home-assistant:2025.7.4";
+        image = "ghcr.io/home-assistant/home-assistant:2025.8.3";
         volumes = [
           "home-assistant:/config"
           "${flake}/hosts/desktop/config/ha-config.yaml:/config/configuration.yaml:rw"
@@ -26,7 +26,7 @@ in
       enable = true;
 
       settings = {
-        homeassistant = true;
+        homeassistant.enabled = true;
         mqtt = {
           server = "mqtt://localhost:1883";
         };

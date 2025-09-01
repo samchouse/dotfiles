@@ -12,14 +12,17 @@ let
     "docker-twenty-db.service"
     "docker-twenty-redis.service"
   ];
+  typesenseUnits = [ "docker-typesense.service" ];
+
   twentyOptions = utils.mkOpts twentyUnits;
 in
 {
-  systemd.services.sops-secrets.wants = twentyUnits;
+  systemd.services.sops-secrets.wants = twentyUnits ++ typesenseUnits;
 
   sops.secrets."s3_name" = twentyOptions;
   sops.secrets."s3_endpoint" = twentyOptions;
   sops.secrets."app_secret" = twentyOptions;
+  sops.secrets."preview_typesense_key" = utils.mkOpts typesenseUnits;
 
   sops.templates."twenty.env".content = ''
     NODE_PORT=3000
@@ -34,6 +37,9 @@ in
 
     APP_SECRET=${config.sops.placeholder.app_secret}
   '';
+  sops.templates."typesense.env".content = ''
+    TYPESENSE_API_KEY=${config.sops.placeholder.preview_typesense_key}
+  '';
 
   virtualisation.oci-containers.containers = {
     twenty-server-init = {
@@ -44,6 +50,9 @@ in
     };
     twenty-worker = {
       environmentFiles = [ config.sops.templates."twenty.env".path ];
+    };
+    typesense = {
+      environmentFiles = [ config.sops.templates."typesense.env".path ];
     };
   };
 }
