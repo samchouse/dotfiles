@@ -14,6 +14,7 @@
 
 (deflisten workspaces_left :initial "[{}, {}, {}, {}, {}, {}, {}, {}, {}]" "~/.config/eww/scripts/hypr.sh workspaces left")
 (deflisten workspaces_right :initial "[{}, {}, {}, {}, {}, {}, {}, {}, {}]" "~/.config/eww/scripts/hypr.sh workspaces right")
+(deflisten workspaces_virt :initial "[{}, {}, {}, {}, {}, {}, {}, {}, {}]" "~/.config/eww/scripts/hypr.sh workspaces virt")
 (deflisten media_title "~/.config/eww/scripts/media.sh -t metadata")
 (deflisten media_isplaying "~/.config/eww/scripts/media.sh -s metadata")
 (deflisten media_path "~/.config/eww/scripts/media.sh -p metadata")
@@ -136,7 +137,7 @@
 
 (defwidget start [position]
   (box :orientation "h" :halign "start"
-    (workspaces :statuses {position == "left" ? workspaces_left : workspaces_right})
+    (workspaces :statuses {position == "left" ? workspaces_left : position == "right" ? workspaces_right : workspaces_virt})
   )
 )
 
@@ -233,4 +234,20 @@
   )
   
   (cal)
+)
+
+(defwindow topbar-virt
+  :monitor 2
+  :exclusive true
+  :focusable false
+  :stacking "fg"
+  
+  :geometry (geometry
+    :y "20px"
+    :width "98%"
+    :height "50px"
+    :anchor "top center"
+  )
+  
+  (topbar :position "virt")
 )

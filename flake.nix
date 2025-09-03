@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-small.url = "github:nixos/nixpkgs/nixos-unstable-small";
+    nixpkgs-old.url = "github:nixos/nixpkgs/df372dcaba0309fd081f19bf6490e27ac186078c";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -60,6 +61,7 @@
       custom-fonts,
       age-plugin-op,
       nixpkgs-small,
+      nixpkgs-old,
     }:
     let
       system = "x86_64-linux";
@@ -76,6 +78,7 @@
                 niqs = niqspkgs.packages.${system};
                 zen-browser = zen-browser.packages.${system}.default;
                 age-plugin-op = age-plugin-op.defaultPackage.${system};
+                hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
 
                 small = import nixpkgs-small {
                   config.allowUnfree = true;

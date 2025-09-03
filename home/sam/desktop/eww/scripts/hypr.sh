@@ -16,6 +16,9 @@ workspaces)
   right)
     active_workspace=$(hyprctl workspaces -j | jq -r '.[] | select(.id==2)')
     ;;
+  virt)
+    active_workspace=$(hyprctl workspaces -j | jq -r '.[] | select(.id==10)')
+    ;;
   *)
     echo "Invalid command"
     ;;

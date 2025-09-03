@@ -40,6 +40,13 @@ in
     docker.liveRestore = false;
     podman.enable = true;
     oci-containers.backend = "docker";
+    libvirtd = {
+      enable = true;
+      qemu = {
+        swtpm.enable = true;
+        ovmf.packages = [ pkgs.OVMFFull.fd ];
+      };
+    };
   };
 
   networking = {
@@ -226,13 +233,9 @@ in
     fd
     miniupnpc
     gparted
-    qemu
-    quickemu
     zellij
     jujutsu
   ];
-
-  systemd.tmpfiles.rules = [ "L+ /var/lib/qemu/firmware - - - - ${pkgs.qemu}/share/qemu/firmware" ];
 
   users = {
     defaultUserShell = pkgs.zsh;
@@ -243,6 +246,7 @@ in
         "networkmanager"
         "wheel"
         "dialout"
+        "libvirtd"
       ];
     };
   };
