@@ -23,7 +23,7 @@
   virtualisation.oci-containers = {
     containers = {
       ollama = {
-        image = "ollama/ollama:0.11.8";
+        image = "ollama/ollama:0.12.3";
         ports = [ "11434:11434" ];
         volumes = [ "ollama:/root/.ollama" ];
         extraOptions = [ "--device=nvidia.com/gpu=all" ];
@@ -54,14 +54,14 @@
         networks = [ "librechat" ];
       };
       vectordb = {
-        image = "pgvector/pgvector:0.8.0-pg17";
+        image = "pgvector/pgvector:0.8.1-pg17";
         autoStart = false;
         volumes = [ "vectordb:/var/lib/postgresql/data" ];
         networks = [ "librechat" ];
       };
 
       postgres = {
-        image = "postgres:17.6-alpine";
+        image = "postgres:17.6-alpine"; # pinned
         autoStart = false;
         volumes = [ "postgres:/var/lib/postgresql/data" ];
         networks = [ "litellm" ];
@@ -71,7 +71,7 @@
         };
       };
       litellm = {
-        image = "ghcr.io/berriai/litellm:main-v1.76.1-nightly";
+        image = "ghcr.io/berriai/litellm:main-v1.77.4-nightly";
         autoStart = false;
         volumes = [ "${../config/litellm.yaml}:/app/config.yaml" ];
         cmd = [ "--config=/app/config.yaml" ];
@@ -83,7 +83,7 @@
       };
 
       invokeai = {
-        image = "ghcr.io/invoke-ai/invokeai:v6.5.1-cuda";
+        image = "ghcr.io/invoke-ai/invokeai:v6.7.0-cuda";
         autoStart = false;
         ports = [ "9090:9090" ];
         volumes = [
@@ -94,7 +94,7 @@
       };
 
       speaches = {
-        image = "ghcr.io/speaches-ai/speaches:0.8.2-cuda";
+        image = "ghcr.io/speaches-ai/speaches:0.8.3-cuda";
         extraOptions = [ "--device=nvidia.com/gpu=all" ];
         volumes = [ "speaches-hf-cache:/home/ubuntu/.cache/huggingface/hub" ];
         networks = [ "librechat" ];

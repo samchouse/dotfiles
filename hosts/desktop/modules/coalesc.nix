@@ -6,7 +6,7 @@
   virtualisation.oci-containers = {
     containers = {
       twenty-server-init = {
-        image = "twentycrm/twenty:v1.4.1";
+        image = "twentycrm/twenty:v1.6.7";
         networks = [ "twenty" ];
         volumes = [ "twenty-docker:/app/docker-data" ];
         user = "root";
@@ -24,7 +24,7 @@
         ];
       };
       twenty-server = {
-        image = "twentycrm/twenty:v1.4.1";
+        image = "twentycrm/twenty:v1.6.7";
         ports = [ "3625:3000" ];
         volumes = [ "twenty-docker:/app/docker-data" ];
         networks = [ "twenty" ];
@@ -34,7 +34,7 @@
         dependsOn = [ "twenty-server-init" ];
       };
       twenty-worker = {
-        image = "twentycrm/twenty:v1.4.1";
+        image = "twentycrm/twenty:v1.6.7";
         networks = [ "twenty" ];
         cmd = [
           "yarn"

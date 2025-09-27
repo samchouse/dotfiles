@@ -28,12 +28,12 @@
 
 stdenv.mkDerivation rec {
   pname = "cider";
-  version = "3.0.0-rc1";
+  version = "3.1.1";
 
   src = fetchurl rec {
     name = "cider-v${builtins.elemAt (lib.splitString "-" version) 0}-linux-x64.rpm";
     url = "https://repo.cider.sh/rpm/RPMS/${name}";
-    sha256 = "sha256-Xc7EHvTTXwvy1+bqpIPGVWQ78tGUxXLnkRjDOqZI+8Y=";
+    sha256 = "sha256-YdD5jOL9Gc0VVb5EEsix6TFf5VWUaP9kjqcmPITQQK4=";
   };
 
   nativeBuildInputs = [

@@ -3,6 +3,7 @@
     ./hypr
     ./rofi
     ./eww
+    ./ags
     ./neovim
     ./discord
     ./dunst.nix

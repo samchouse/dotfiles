@@ -26,6 +26,14 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    astal = {
+      url = "github:aylur/astal";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    ags = {
+      url = "github:aylur/ags";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # TODO: https://github.com/Mic92/sops-nix/issues/576
     sops-nix = {
@@ -62,6 +70,8 @@
       age-plugin-op,
       nixpkgs-small,
       nixpkgs-old,
+      ags,
+      astal,
     }:
     let
       system = "x86_64-linux";
@@ -95,6 +105,7 @@
 
           home-manager.nixosModules.home-manager
           {
+            home-manager.extraSpecialArgs = { inherit astal; };
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "bak";
@@ -103,6 +114,7 @@
               ./home/sam
               catppuccin.homeModules.catppuccin
               nixvim.homeModules.nixvim
+              ags.homeManagerModules.default
             ];
           }
         ];
