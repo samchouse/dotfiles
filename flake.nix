@@ -5,6 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-small.url = "github:nixos/nixpkgs/nixos-unstable-small";
     nixpkgs-old.url = "github:nixos/nixpkgs/df372dcaba0309fd081f19bf6490e27ac186078c";
+    nixpkgs-staging.url = "github:nixos/nixpkgs/staging-next";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -72,6 +73,7 @@
       nixpkgs-old,
       ags,
       astal,
+      nixpkgs-staging,
     }:
     let
       system = "x86_64-linux";
@@ -91,6 +93,12 @@
                 hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
 
                 small = import nixpkgs-small {
+                  config.allowUnfree = true;
+                  localSystem = {
+                    inherit system;
+                  };
+                };
+                staging = import nixpkgs-staging {
                   config.allowUnfree = true;
                   localSystem = {
                     inherit system;

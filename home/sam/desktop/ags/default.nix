@@ -1,4 +1,4 @@
-{astal, pkgs, ...}:
+{ astal, pkgs, ... }:
 {
   programs.ags = {
     enable = true;

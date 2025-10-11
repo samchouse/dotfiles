@@ -126,7 +126,7 @@ in
   virtualisation.oci-containers = {
     containers = {
       beszel = {
-        image = "ghcr.io/henrygd/beszel/beszel:0.12.12";
+        image = "ghcr.io/henrygd/beszel/beszel:0.13.2";
         ports = [ "7463:8090" ];
         volumes = [ "beszel:/beszel_data" ];
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
@@ -150,18 +150,60 @@ in
     serviceConfig = {
       ExecStart = ''
         ${
-          pkgs.beszel.overrideAttrs (oldAttrs: rec {
-            version = "0.12.6";
+          (pkgs.beszel.override {
+            buildGoModule = pkgs.staging.buildGoModule;
+          }).overrideAttrs (oldAttrs: rec {
+            version = "0.13.0";
             src = (
               pkgs.fetchFromGitHub {
                 owner = "henrygd";
                 repo = "beszel";
                 rev = "v${version}";
-                hash = "sha256-OZD8nB2oKaMFvUbDfYNhtq18riaQSdTZASDUJ29TYu8=";
+                hash = "sha256-gne5nVsshX/v69L24r0RYM8P3F4aVdeoBp/bIb1YfI0=";
               }
             );
 
-            vendorHash = "sha256-8Sr7MYQnIfNx9hvfjCTYKQOUZIBxpGPbsR75jEB0mbk=";
+            vendorHash = "sha256-IfwgL4Ms5Uho1l0yGCyumbr1N/SN+j5HaFl4hACkTsQ=";
+            sourceRoot = src.name;
+
+            webui = pkgs.buildNpmPackage {
+              inherit
+                version
+                src
+                ;
+
+              pname = oldAttrs.pname;
+              meta = oldAttrs.meta;
+
+              npmFlags = [ "--legacy-peer-deps" ];
+
+              buildPhase = ''
+                runHook preBuild
+
+                npx lingui extract --overwrite
+                npx lingui compile
+                node --max_old_space_size=1024000 ./node_modules/vite/bin/vite.js build
+
+                runHook postBuild
+              '';
+
+              installPhase = ''
+                runHook preInstall
+
+                mkdir -p $out
+                cp -r dist/* $out
+
+                runHook postInstall
+              '';
+
+              sourceRoot = "${src.name}/internal/site";
+              npmDepsHash = "sha256-IjteJXSyrzGL9LuqskftPdv/pHi/P6bxFcYHvsP3JsY=";
+            };
+
+            preBuild = ''
+              mkdir -p internal/site/dist
+              cp -r ${webui}/* internal/site/dist
+            '';
           })
         }/bin/beszel-agent
       '';

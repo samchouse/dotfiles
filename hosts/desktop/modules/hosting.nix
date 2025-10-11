@@ -10,7 +10,7 @@
     enable = true;
     package = pkgs.caddy.withPlugins {
       plugins = [ "github.com/caddy-dns/cloudflare@v0.2.2-0.20250506153119-35fb8474f57d" ];
-      hash = "sha256-IChro8pCcmAayHetH6+/oZzfbJNTBongaWJ5+KJYWng=";
+      hash = "sha256-Stzaxnh853PxETByIxMwADsqqOTpWjNVWVEuTGKSliw=";
     };
 
     email = "sam@chouse.dev";
@@ -39,6 +39,7 @@
               }
               reverse_proxy ${if host ? host then host.host else ""}:${toString host.port} {
                 header_up X-Forwarded-For {header.CF-Connecting-IP}
+                ${if host ? extra then host.extra else ""}
               }
             '';
           };
@@ -86,6 +87,16 @@
             domain = "ts.coalesc.xyz";
             port = 8108;
             cloudflare = "{env.COALESC_CF_API_TOKEN}";
+          }
+          {
+            domain = "preview.coalesc.xyz";
+            port = 3000;
+            host = "coalesc-staging";
+            cloudflare = "{env.COALESC_CF_API_TOKEN}";
+            extra = ''
+              header_up Host preview.coalesc.xyz
+              header_up Origin preview.coalesc.xyz
+            '';
           }
         ]
     );
