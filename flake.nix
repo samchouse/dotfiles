@@ -3,9 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-small.url = "github:nixos/nixpkgs/nixos-unstable-small";
-    nixpkgs-old.url = "github:nixos/nixpkgs/df372dcaba0309fd081f19bf6490e27ac186078c";
     nixpkgs-staging.url = "github:nixos/nixpkgs/staging-next";
+    nixpkgs-old.url = "github:nixos/nixpkgs/df372dcaba0309fd081f19bf6490e27ac186078c";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -20,7 +19,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     zen-browser = {
-      url = "github:youwen5/zen-browser-flake";
+      url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixvim = {
@@ -58,7 +57,9 @@
 
   outputs =
     {
+      ags,
       self,
+      astal,
       nixvim,
       nixpkgs,
       niqspkgs,
@@ -69,10 +70,7 @@
       home-manager,
       custom-fonts,
       age-plugin-op,
-      nixpkgs-small,
       nixpkgs-old,
-      ags,
-      astal,
       nixpkgs-staging,
     }:
     let
@@ -87,17 +85,12 @@
           {
             nixpkgs.overlays = [
               (_: _: {
+                astal = astal.packages.${system};
                 niqs = niqspkgs.packages.${system};
                 zen-browser = zen-browser.packages.${system}.default;
                 age-plugin-op = age-plugin-op.defaultPackage.${system};
                 hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
 
-                small = import nixpkgs-small {
-                  config.allowUnfree = true;
-                  localSystem = {
-                    inherit system;
-                  };
-                };
                 staging = import nixpkgs-staging {
                   config.allowUnfree = true;
                   localSystem = {
@@ -113,7 +106,6 @@
 
           home-manager.nixosModules.home-manager
           {
-            home-manager.extraSpecialArgs = { inherit astal; };
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "bak";

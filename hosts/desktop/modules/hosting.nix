@@ -10,7 +10,7 @@
     enable = true;
     package = pkgs.caddy.withPlugins {
       plugins = [ "github.com/caddy-dns/cloudflare@v0.2.2-0.20250506153119-35fb8474f57d" ];
-      hash = "sha256-Stzaxnh853PxETByIxMwADsqqOTpWjNVWVEuTGKSliw=";
+      hash = "sha256-p9YUXUBHrmfKqALUtuKct+vie8HqJ2rTiBnjrsU7twg=";
     };
 
     email = "sam@chouse.dev";
@@ -90,12 +90,16 @@
           }
           {
             domain = "preview.coalesc.xyz";
-            port = 3000;
-            host = "coalesc-staging";
+            port = 443;
+            host = "https://staging1";
             cloudflare = "{env.COALESC_CF_API_TOKEN}";
             extra = ''
               header_up Host preview.coalesc.xyz
-              header_up Origin preview.coalesc.xyz
+              header_up Origin https://preview.coalesc.xyz
+
+              transport http {
+                tls_server_name preview.coalesc.xyz
+              }
             '';
           }
         ]
@@ -105,7 +109,7 @@
   virtualisation.oci-containers = {
     containers = {
       cloudflared = {
-        image = "cloudflare/cloudflared:2025.9.1";
+        image = "cloudflare/cloudflared:2025.10.1";
         autoStart = false;
         cmd = [
           "tunnel"
@@ -115,7 +119,7 @@
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
       };
       cloudflared-coalesc = {
-        image = "cloudflare/cloudflared:2025.9.1";
+        image = "cloudflare/cloudflared:2025.10.1";
         cmd = [
           "tunnel"
           "--no-autoupdate"

@@ -1,4 +1,9 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 let
   no-kb = pkgs.writeScriptBin "no-kb" ''
     #!/bin/sh
@@ -24,7 +29,7 @@ in
   environment.etc = {
     "1password/custom_allowed_browsers" = {
       text = ''
-        zen
+        .zen-wrapped
       '';
       mode = "0755";
     };
@@ -37,6 +42,7 @@ in
     _1password.enable = true;
     _1password-gui = {
       enable = true;
+      package = pkgs.staging._1password-gui-beta;
       polkitPolicyOwners = [ "sam" ];
     };
 
@@ -78,6 +84,44 @@ in
     };
   };
 
+  services = {
+    hardware.openrgb.enable = true;
+    udev.packages = [
+      (pkgs.writeTextFile {
+        name = "xbox-one-elite-2-udev-rules";
+        text = ''KERNEL=="hidraw*", TAG+="uaccess"'';
+        destination = "/etc/udev/rules.d/60-xbox-elite-2-hid.rules";
+      })
+    ];
+
+    nfs.server = {
+      enable = true;
+      exports = ''
+        /home/sam 100.123.34.40(rw,sync,no_subtree_check,insecure,all_squash,anonuid=1000,anongid=100)
+      '';
+    };
+
+    beszel = {
+      hub = {
+        enable = true;
+        package = pkgs.staging.beszel;
+
+        port = 7463;
+      };
+      agent = {
+        enable = true;
+        package = pkgs.staging.beszel;
+
+        environment = {
+          HUB_URL = "http://localhost:7463";
+          EXTRA_FILESYSTEMS = "/mnt/secondary__Secondary";
+          TOKEN = "885fd152-b855-4924-ae54-bac24f36878a";
+          KEY = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHpWIT7z6MkRkDOeFLMC9JlBzYbXxM7q+aDOnQiCKdwP";
+        };
+      };
+    };
+  };
+
   environment.systemPackages = [ logiops ];
   environment.etc."logid.cfg".source = ../config/logid.cfg;
 
@@ -103,127 +147,23 @@ in
         Restart = "on-failure";
       };
     };
-  };
 
-  services = {
-    hardware.openrgb.enable = true;
-    udev.packages = [
-      (pkgs.writeTextFile {
-        name = "xbox-one-elite-2-udev-rules";
-        text = ''KERNEL=="hidraw*", TAG+="uaccess"'';
-        destination = "/etc/udev/rules.d/60-xbox-elite-2-hid.rules";
-      })
-    ];
-
-    nfs.server = {
-      enable = true;
-      exports = ''
-        /home/sam 100.123.34.40(rw,sync,no_subtree_check,insecure,all_squash,anonuid=1000,anongid=100)
-      '';
-    };
-  };
-
-  virtualisation.oci-containers = {
-    containers = {
-      beszel = {
-        image = "ghcr.io/henrygd/beszel/beszel:0.13.2";
-        ports = [ "7463:8090" ];
-        volumes = [ "beszel:/beszel_data" ];
-        extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
+    beszel-hub = {
+      serviceConfig = {
+        ExecStartPre = lib.mkForce [
+          "${config.services.beszel.hub.package}/bin/beszel-hub migrate up"
+          "${config.services.beszel.hub.package}/bin/beszel-hub migrate history-sync"
+        ];
       };
     };
-  };
-
-  # TODO: remove when https://github.com/NixOS/nixpkgs/pull/380731 is merged
-  systemd.services.beszel-agent = {
-    description = "Beszel Agent";
-
-    wantedBy = [ "multi-user.target" ];
-    wants = [ "network-online.target" ];
-    after = [ "network-online.target" ];
-
-    path = [ config.boot.kernelPackages.nvidiaPackages.stable ];
-    environment = {
-      KEY = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHpWIT7z6MkRkDOeFLMC9JlBzYbXxM7q+aDOnQiCKdwP";
-    };
-
-    serviceConfig = {
-      ExecStart = ''
-        ${
-          (pkgs.beszel.override {
-            buildGoModule = pkgs.staging.buildGoModule;
-          }).overrideAttrs (oldAttrs: rec {
-            version = "0.13.0";
-            src = (
-              pkgs.fetchFromGitHub {
-                owner = "henrygd";
-                repo = "beszel";
-                rev = "v${version}";
-                hash = "sha256-gne5nVsshX/v69L24r0RYM8P3F4aVdeoBp/bIb1YfI0=";
-              }
-            );
-
-            vendorHash = "sha256-IfwgL4Ms5Uho1l0yGCyumbr1N/SN+j5HaFl4hACkTsQ=";
-            sourceRoot = src.name;
-
-            webui = pkgs.buildNpmPackage {
-              inherit
-                version
-                src
-                ;
-
-              pname = oldAttrs.pname;
-              meta = oldAttrs.meta;
-
-              npmFlags = [ "--legacy-peer-deps" ];
-
-              buildPhase = ''
-                runHook preBuild
-
-                npx lingui extract --overwrite
-                npx lingui compile
-                node --max_old_space_size=1024000 ./node_modules/vite/bin/vite.js build
-
-                runHook postBuild
-              '';
-
-              installPhase = ''
-                runHook preInstall
-
-                mkdir -p $out
-                cp -r dist/* $out
-
-                runHook postInstall
-              '';
-
-              sourceRoot = "${src.name}/internal/site";
-              npmDepsHash = "sha256-IjteJXSyrzGL9LuqskftPdv/pHi/P6bxFcYHvsP3JsY=";
-            };
-
-            preBuild = ''
-              mkdir -p internal/site/dist
-              cp -r ${webui}/* internal/site/dist
-            '';
-          })
-        }/bin/beszel-agent
-      '';
-
-      KeyringMode = "private";
-      LockPersonality = "yes";
-      NoNewPrivileges = "yes";
-      PrivateTmp = "yes";
-      ProtectClock = "yes";
-      ProtectHome = "read-only";
-      ProtectHostname = "yes";
-      ProtectKernelLogs = "yes";
-      ProtectSystem = "strict";
-      RemoveIPC = "yes";
-      RestrictSUIDSGID = true;
-      SystemCallArchitectures = "native";
-      DeviceAllow = [
-        "/dev/nvidiactl rw"
-        "/dev/nvidia0 rw"
-      ];
+    beszel-agent = {
+      path = [ config.hardware.nvidia.package ];
+      serviceConfig = {
+        DeviceAllow = [
+          "/dev/nvidiactl rw"
+          "/dev/nvidia0 rw"
+        ];
+      };
     };
   };
 }

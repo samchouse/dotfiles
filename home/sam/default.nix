@@ -24,7 +24,6 @@
     prismlauncher
     bibata-cursors
     playerctl
-    kdePackages.xwaylandvideobridge
     grim
     niqs.bibata-hyprcursor
     kora-icon-theme

@@ -42,11 +42,15 @@ in
     oci-containers.backend = "docker";
     libvirtd = {
       enable = true;
-      qemu = {
-        swtpm.enable = true;
-      };
+      nss.enable = true;
+      qemu.swtpm.enable = true;
+      extraConfig = ''
+        auth_tcp = "none"
+      '';
     };
   };
+
+  systemd.sockets.libvirtd-tcp.wantedBy = [ "sockets.target" ];
 
   networking = {
     hostName = "desktop";
@@ -234,6 +238,8 @@ in
     gparted
     zellij
     jujutsu
+    arduino-ide
+    protonvpn-gui
   ];
 
   users = {

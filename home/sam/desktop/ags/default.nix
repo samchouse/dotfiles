@@ -1,11 +1,11 @@
-{ astal, pkgs, ... }:
+{ pkgs, ... }:
 {
   programs.ags = {
     enable = true;
 
     configDir = ./.;
 
-    extraPackages = with astal.packages.${pkgs.system}; [
+    extraPackages = with pkgs.astal; [
       hyprland
       tray
     ];

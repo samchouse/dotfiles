@@ -31,8 +31,8 @@ in
     patch-krisp
     (discord-canary.override {
       withVencord = true;
-      vencord = pkgs.vencord.overrideAttrs (_: {
-        patches = [ ./plugins/waylandFix.patch ];
+      vencord = pkgs.vencord.overrideAttrs (old: {
+        patches = old.patches ++ [ ./plugins/waylandFix.patch ];
       });
     })
   ];

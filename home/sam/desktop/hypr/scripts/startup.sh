@@ -9,7 +9,6 @@ discordcanary --start-minimized >>/dev/null 2>&1 &
 
 sleep 1
 openrgb -p Blue >>/dev/null 2>&1 &
-LIBGL_ALWAYS_SOFTWARE=1 xwaylandvideobridge >>/dev/null 2>&1 &
 
 sleep 3
 steam -nochatui -nofriendsui -silent -vgui >>/dev/null 2>&1 &
