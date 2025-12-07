@@ -1,0 +1,17 @@
+[formatter.biome]
+command = "biome"
+options = ["check", "--colors=force", "--error-on-warnings", "--write", "--unsafe"]
+includes = ["*.ts", "*.tsx", "*.json"]
+
+[formatter.nixfmt]
+command = "nixfmt"
+includes = ["*.nix"]
+
+[formatter.shfmt]
+command = "shfmt"
+options = ["-w", "-i", "2"]
+includes = ["*.sh"]
+
+[formatter.shellcheck]
+command = "shellcheck"
+includes = ["*.sh"]

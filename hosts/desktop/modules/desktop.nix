@@ -9,7 +9,6 @@
     enable = true;
     package = pkgs.hyprland;
     portalPackage = pkgs.xdg-desktop-portal-hyprland;
-    withUWSM = true;
   };
   xdg.portal = {
     enable = true;
@@ -56,7 +55,10 @@
     };
 
     udev.packages = [ pkgs.swayosd ];
-    gnome.gnome-keyring.enable = true;
+    gnome = {
+      gnome-keyring.enable = true;
+      gcr-ssh-agent.enable = false;
+    };
   };
   systemd = {
     services.swayosd-libinput-backend = {

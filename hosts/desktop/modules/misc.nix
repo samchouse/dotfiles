@@ -29,7 +29,7 @@ in
   environment.etc = {
     "1password/custom_allowed_browsers" = {
       text = ''
-        .zen-wrapped
+        zen
       '';
       mode = "0755";
     };
@@ -42,7 +42,6 @@ in
     _1password.enable = true;
     _1password-gui = {
       enable = true;
-      package = pkgs.staging._1password-gui-beta;
       polkitPolicyOwners = [ "sam" ];
     };
 
@@ -104,14 +103,10 @@ in
     beszel = {
       hub = {
         enable = true;
-        package = pkgs.staging.beszel;
-
         port = 7463;
       };
       agent = {
         enable = true;
-        package = pkgs.staging.beszel;
-
         environment = {
           HUB_URL = "http://localhost:7463";
           EXTRA_FILESYSTEMS = "/mnt/secondary__Secondary";

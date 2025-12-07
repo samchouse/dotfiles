@@ -35,7 +35,7 @@
     clipse
     devenv
     rainfrog
-    (pkgs.callPackage ../../pkgs/cider { })
+    cider-2
     thunderbird
     google-chrome
     r2modman

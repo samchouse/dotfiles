@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-staging.url = "github:nixos/nixpkgs/staging-next";
+    nixpkgs-small.url = "github:nixos/nixpkgs/nixos-unstable-small";
     nixpkgs-old.url = "github:nixos/nixpkgs/df372dcaba0309fd081f19bf6490e27ac186078c";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -24,7 +24,7 @@
     };
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-small";
     };
     astal = {
       url = "github:aylur/astal";
@@ -48,17 +48,11 @@
       url = "git+ssh://git@github.com/samchouse/fonts.git?ref=main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    treefmt-nix = {
-      url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
     {
       ags,
-      self,
       astal,
       nixvim,
       nixpkgs,
@@ -66,36 +60,39 @@
       sops-nix,
       catppuccin,
       zen-browser,
-      treefmt-nix,
       home-manager,
       custom-fonts,
       age-plugin-op,
-      nixpkgs-old,
-      nixpkgs-staging,
+      # nixpkgs-old,
+      nixpkgs-small,
+      ...
     }:
     let
       system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+      pkgs = import nixpkgs {
+        inherit system;
+        config = {
+          cudaSupport = true;
+          allowUnfree = true;
+        };
+      };
 
       configuration = {
         inherit system;
 
         modules = [
           {
+            nixpkgs.pkgs = pkgs;
             nixpkgs.overlays = [
               (_: _: {
                 astal = astal.packages.${system};
                 niqs = niqspkgs.packages.${system};
                 zen-browser = zen-browser.packages.${system}.default;
                 age-plugin-op = age-plugin-op.defaultPackage.${system};
-                hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
+                # hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
 
-                staging = import nixpkgs-staging {
-                  config.allowUnfree = true;
-                  localSystem = {
-                    inherit system;
-                  };
+                small = import nixpkgs-small {
+                  inherit system;
                 };
               })
             ];
@@ -131,13 +128,16 @@
         }
       );
 
-      formatter.${system} = treefmtEval.config.build.wrapper;
-      checks.${system} = {
-        formatting = treefmtEval.config.build.check self;
-      };
+      formatter.${system} = pkgs.treefmt;
 
       devShells.${system}.default = pkgs.mkShell {
-        buildInputs = [ treefmtEval.config.build.wrapper ];
+        packages = with pkgs; [
+          biome
+          shfmt
+          shellcheck
+          nixfmt-rfc-style
+          treefmt
+        ];
       };
     };
 }

@@ -10,7 +10,7 @@
     enable = true;
     package = pkgs.caddy.withPlugins {
       plugins = [ "github.com/caddy-dns/cloudflare@v0.2.2-0.20250506153119-35fb8474f57d" ];
-      hash = "sha256-p9YUXUBHrmfKqALUtuKct+vie8HqJ2rTiBnjrsU7twg=";
+      hash = "sha256-SgXuRUhOBHKNYNyIVZWLol2PGBhOKjnJXSPOTDEGcWY=";
     };
 
     email = "sam@chouse.dev";
@@ -46,28 +46,12 @@
         })
         [
           {
-            domain = "ai.xenfo.dev";
-            port = 3080;
-          }
-          {
             domain = "ha.xenfo.dev";
             port = 8123;
           }
           {
             domain = "home.xenfo.dev";
             port = 8090;
-          }
-          {
-            domain = "invoke.xenfo.dev";
-            port = 9090;
-          }
-          {
-            domain = "lllm.xenfo.dev";
-            port = 4044;
-          }
-          {
-            domain = "tracker.xenfo.dev";
-            port = 3729;
           }
           {
             domain = "sys.xenfo.dev";
@@ -77,16 +61,6 @@
             domain = "deploy.xenfo.dev";
             port = 3000;
             host = "pi";
-          }
-          {
-            domain = "crm.coalesc.xyz";
-            port = 3625;
-            cloudflare = "{env.COALESC_CF_API_TOKEN}";
-          }
-          {
-            domain = "ts.coalesc.xyz";
-            port = 8108;
-            cloudflare = "{env.COALESC_CF_API_TOKEN}";
           }
           {
             domain = "preview.coalesc.xyz";
@@ -102,6 +76,20 @@
               }
             '';
           }
+          {
+            domain = "preview.smartbankconverter.com";
+            port = 443;
+            host = "https://staging1";
+            cloudflare = "{env.COALESC_CF_API_TOKEN}";
+            extra = ''
+              header_up Host preview.smartbankconverter.com
+              header_up Origin https://preview.smartbankconverter.com
+
+              transport http {
+                tls_server_name preview.smartbankconverter.com
+              }
+            '';
+          }
         ]
     );
   };
@@ -109,7 +97,7 @@
   virtualisation.oci-containers = {
     containers = {
       cloudflared = {
-        image = "cloudflare/cloudflared:2025.10.1";
+        image = "cloudflare/cloudflared:2025.11.1";
         autoStart = false;
         cmd = [
           "tunnel"
@@ -119,7 +107,8 @@
         extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
       };
       cloudflared-coalesc = {
-        image = "cloudflare/cloudflared:2025.10.1";
+        image = "cloudflare/cloudflared:2025.11.1";
+        autoStart = false;
         cmd = [
           "tunnel"
           "--no-autoupdate"

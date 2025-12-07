@@ -1,16 +1,19 @@
 // https://gitlab.gnome.org/GNOME/gtk/-/blob/gtk-3-24/gtk/theme/Adwaita/_colors-public.scss
 $fg-color: #{"@theme_fg_color"};
-$bg-color: #{"@theme_bg_color"};
+$bg-color: #0a0a0a;
+
+window {
+  background: transparent;
+}
 
 window.Bar {
-  background: transparent;
   color: $fg-color;
   font-weight: bold;
 
   > centerbox {
     background: $bg-color;
-    border-radius: 10px;
-    margin: 8px;
+    // border-radius: 10px;
+    // margin: 8px;
   }
 
   button {
@@ -31,4 +34,9 @@ window.Bar {
   .fa {
     min-width: 100px;
   }
+}
+
+.icon {
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
 }

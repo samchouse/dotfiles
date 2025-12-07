@@ -23,7 +23,7 @@
         ssh.program = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
       };
 
-      pull.rebase = false;
+      pull.rebase = true;
       core.editor = "nano";
       init.defaultBranch = "main";
       push.autoSetupRemote = true;

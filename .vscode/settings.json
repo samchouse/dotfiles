@@ -2,7 +2,7 @@
   "nix.serverSettings": {
     "nixd": {
       "formatting": {
-        "command": ["treefmt", "--stdin", "{file}"]
+        "command": ["nixfmt"]
       },
       "options": {
         "nixos": {
@@ -13,5 +13,8 @@
         }
       }
     }
+  },
+  "[typescript][typescriptreact][json]": {
+    "editor.defaultFormatter": "biomejs.biome"
   }
 }

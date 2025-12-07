@@ -21,15 +21,14 @@
     enable = true;
     package = null;
     portalPackage = null;
-    systemd.enable = false;
 
     settings = {
       env = [
         "LIBVA_DRIVER_NAME,nvidia"
-        "XDG_SESSION_TYPE,wayland"
-        "GBM_BACKEND,nvidia-drm"
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
         "NVD_BACKEND,direct"
+        "XDG_SESSION_TYPE,wayland"
+        "ELECTRON_OZONE_PLATFORM_HINT,auto"
         "XCURSOR_THEME,Bibata-Modern-Classic"
         "XCURSOR_SIZE,24"
         "HYPRCURSOR_THEME,Bitbata-modern"
@@ -106,6 +105,7 @@
       layerrule = [
         "blur, gtk-layer-shell"
         "ignorezero, gtk-layer-shell"
+        "noanim, gtk4-layer-shell"
       ];
 
       windowrulev2 = [
@@ -149,7 +149,7 @@
       ]
       ++ (
         # workspaces
-        # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
+        # binds $mod + [shift +] {0-9} to [move to] workspace {1..10}
         builtins.concatLists (
           builtins.genList (
             x:

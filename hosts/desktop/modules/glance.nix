@@ -102,24 +102,6 @@
                       url = "https://sys.xenfo.dev";
                     }
                     {
-                      title = "Tracker";
-                      url = "https://tracker.xenfo.dev/docs";
-                    }
-                    {
-                      title = "InvokeAI";
-                      url = "https://invoke.xenfo.dev";
-                    }
-                    {
-                      title = "LibreChat";
-                      url = "https://ai.xenfo.dev";
-                      icon = "si:openai";
-                    }
-                    {
-                      title = "LiteLLM";
-                      url = "https://lllm.xenfo.dev";
-                      icon = "si:openai";
-                    }
-                    {
                       title = "Home Assistant";
                       url = "https://ha.xenfo.dev";
                       icon = "si:homeassistant";

@@ -6,7 +6,7 @@ in
   virtualisation.oci-containers = {
     containers = {
       homeassistant = {
-        image = "ghcr.io/home-assistant/home-assistant:2025.11.0";
+        image = "ghcr.io/home-assistant/home-assistant:2025.12.0";
         volumes = [
           "home-assistant:/config"
           "${flake}/hosts/desktop/config/ha-config.yaml:/config/configuration.yaml:rw"
@@ -19,17 +19,13 @@ in
   };
 
   services = {
-    mosquitto = {
-      enable = true;
-    };
+    mosquitto.enable = true;
     zigbee2mqtt = {
       enable = true;
 
       settings = {
         homeassistant.enabled = true;
-        mqtt = {
-          server = "mqtt://localhost:1883";
-        };
+        mqtt.server = "mqtt://localhost:1883";
         serial = {
           port = "/dev/serial/by-id/usb-SMLIGHT_SMLIGHT_SLZB-06M_eae31ba01c72ef1197593b848fcc3fa0-if00-port0";
           baudrate = 115200;
@@ -45,9 +41,7 @@ in
           legacy_api = false;
           legacy_availability_payload = false;
         };
-        device_options = {
-          legacy = false;
-        };
+        device_options.legacy = false;
       };
     };
   };
