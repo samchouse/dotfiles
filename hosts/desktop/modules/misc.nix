@@ -11,27 +11,19 @@ let
     mv /var/lib/OpenRGB/OpenRGB.json /var/lib/OpenRGB/OpenRGB.json.bak
     ${pkgs.jq}/bin/jq '.Detectors.detectors."Genesis Thor 300" = false | .' /var/lib/OpenRGB/OpenRGB.json.bak > /var/lib/OpenRGB/OpenRGB.json
   '';
-
-  logiops = pkgs.logiops.overrideAttrs (oldAttrs: {
-    version = "git";
-    src = (
-      pkgs.fetchFromGitHub {
-        owner = "samchouse";
-        repo = "logiops";
-        rev = "b81261c2f675e8213cede299c9c0f9105ac1ac17";
-        hash = "sha256-W3HGXtVXr0hmN9aED47yOmwzjjkDjeVrte4069Ry51o=";
-        fetchSubmodules = true;
-      }
-    );
-  });
 in
 {
-  environment.etc = {
-    "1password/custom_allowed_browsers" = {
-      text = ''
-        zen
-      '';
-      mode = "0755";
+  environment = {
+    systemPackages = with pkgs; [ logiops ];
+
+    etc = {
+      "logid.cfg".source = ../config/logid.cfg;
+      "1password/custom_allowed_browsers" = {
+        text = ''
+          zen
+        '';
+        mode = "0755";
+      };
     };
   };
 
@@ -84,14 +76,38 @@ in
   };
 
   services = {
-    hardware.openrgb.enable = true;
-    udev.packages = [
-      (pkgs.writeTextFile {
-        name = "xbox-one-elite-2-udev-rules";
-        text = ''KERNEL=="hidraw*", TAG+="uaccess"'';
-        destination = "/etc/udev/rules.d/60-xbox-elite-2-hid.rules";
-      })
-    ];
+    udev = {
+      extraRules = ''
+        ACTION=="change", SUBSYSTEM=="power_supply", ATTRS{manufacturer}=="Logitech", ATTRS{model_name}=="MX Master 3S", RUN{program}="${pkgs.systemd}/bin/systemctl --no-block try-restart logiops.service"
+      '';
+      packages = [
+        (pkgs.writeTextFile {
+          name = "xbox-one-elite-2-udev-rules";
+          text = ''KERNEL=="hidraw*", TAG+="uaccess"'';
+          destination = "/etc/udev/rules.d/60-xbox-elite-2-hid.rules";
+        })
+      ];
+    };
+    hardware.openrgb = {
+      enable = true;
+      package = pkgs.openrgb.overrideAttrs (old: {
+        version = "1.0rc2";
+        src = pkgs.fetchFromGitLab {
+          owner = "CalcProgrammer1";
+          repo = "OpenRGB";
+          rev = "release_candidate_1.0rc2";
+          sha256 = "sha256-vdIA9i1ewcrfX5U7FkcRR+ISdH5uRi9fz9YU5IkPKJQ=";
+        };
+
+        patches = [ ../patches/openrgb_systemd.patch ];
+
+        postPatch = ''
+          patchShebangs scripts/build-udev-rules.sh
+          substituteInPlace scripts/build-udev-rules.sh \
+            --replace-fail /usr/bin/env "${pkgs.coreutils}/bin/env"
+        '';
+      });
+    };
 
     nfs.server = {
       enable = true;
@@ -117,10 +133,8 @@ in
     };
   };
 
-  environment.systemPackages = [ logiops ];
-  environment.etc."logid.cfg".source = ../config/logid.cfg;
-
   systemd.services = {
+    openrgb.after = lib.mkAfter [ "lm_sensors.service" ];
     no-kb = {
       description = "no-kb";
       serviceConfig = {
@@ -130,16 +144,18 @@ in
       };
       wantedBy = [ "multi-user.target" ];
     };
-
     logid = {
-      wantedBy = [ "multi-user.target" ];
       description = "Logitech Configuration Daemon";
+
+      after = [ "multi-user.target" ];
+      wants = [ "multi-user.target" ];
+      wantedBy = [ "graphical.target" ];
+
+      startLimitIntervalSec = 0;
       serviceConfig = {
-        User = "root";
         Type = "simple";
-        ExecStart = "${pkgs.logiops}/bin/logid -c /etc/logid.cfg";
-        ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
-        Restart = "on-failure";
+        ExecStart = "${pkgs.logiops}/bin/logid -v -c /etc/logid.cfg";
+        User = "root";
       };
     };
 

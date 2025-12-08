@@ -24,7 +24,7 @@
     };
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs-small";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     astal = {
       url = "github:aylur/astal";
@@ -60,10 +60,10 @@
       sops-nix,
       catppuccin,
       zen-browser,
+      nixpkgs-old,
       home-manager,
       custom-fonts,
       age-plugin-op,
-      # nixpkgs-old,
       nixpkgs-small,
       ...
     }:
@@ -84,12 +84,23 @@
           {
             nixpkgs.pkgs = pkgs;
             nixpkgs.overlays = [
-              (_: _: {
+              (_: prev: {
                 astal = astal.packages.${system};
                 niqs = niqspkgs.packages.${system};
                 zen-browser = zen-browser.packages.${system}.default;
                 age-plugin-op = age-plugin-op.defaultPackage.${system};
-                # hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
+                hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
+
+                # https://github.com/NixOS/nixpkgs/issues/226575#issuecomment-2813539847
+                logiops = prev.logiops.overrideAttrs (old: {
+                  patches = (old.patches or [ ]) ++ [
+                    (prev.fetchpatch {
+                      name = "bolt_receiver_fix.patch";
+                      url = "https://github.com/PixlOne/logiops/pull/460.patch";
+                      hash = "sha256-A+StDD+Dp7lPWVpuYR9JR5RuvwPU/5h50B0lY8Qu7nY=";
+                    })
+                  ];
+                });
 
                 small = import nixpkgs-small {
                   inherit system;
@@ -129,7 +140,6 @@
       );
 
       formatter.${system} = pkgs.treefmt;
-
       devShells.${system}.default = pkgs.mkShell {
         packages = with pkgs; [
           biome
