@@ -10,7 +10,7 @@ export function clsx(...classes: (string | boolean)[]) {
   return finalClasses.join(" ");
 }
 
-interface Config {
+export interface Config {
   version: Accessor<number>;
 
   pinnedTray: Set<string>;

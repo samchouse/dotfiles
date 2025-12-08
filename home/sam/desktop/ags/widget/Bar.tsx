@@ -10,11 +10,12 @@ import { ControlCenter } from "./ControlCenter";
 import { Tray } from "./Tray";
 
 export default function Bar(gdkmonitor: Gdk.Monitor) {
+  const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
+
   const time = createPoll("", 1000, "date '+%-I:%M %p'");
   const date = createPoll("", 1000, "date '+%a %b %-d'");
-  const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
-  const hyprland = Hyprland.get_default();
 
+  const hyprland = Hyprland.get_default();
   const monitor = hyprland.monitors.find(
     (monitor) => monitor.name === gdkmonitor.connector,
   );

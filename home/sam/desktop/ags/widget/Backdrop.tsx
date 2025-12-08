@@ -42,10 +42,9 @@ export function Backdrop(gdkmonitor: Gdk.Monitor) {
     toggleVisible: () => {
       windowRef.visible = !windowRef.visible;
     },
-    connectOnClick: (onClick: () => void) => {
+    connectOnClick: (onClick: () => boolean) => {
       gestureRef.connect("pressed", () => {
-        windowRef.visible = false;
-        onClick();
+        if (onClick() === true) windowRef.visible = false;
       });
     },
   };

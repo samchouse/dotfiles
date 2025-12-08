@@ -9,7 +9,7 @@ export function ControlCenter({
 }: {
   gdkmonitor: Gdk.Monitor;
   toggleBackdrop: () => void;
-  connectOnBackdropClick: (onClick: () => void) => void;
+  connectOnBackdropClick: (onClick: () => boolean) => void;
 }) {
   const { TOP, RIGHT } = Astal.WindowAnchor;
 
@@ -17,7 +17,9 @@ export function ControlCenter({
   let windowRef: Astal.Window;
 
   connectOnBackdropClick(() => {
-    if (revealerRef.revealChild) revealerRef.revealChild = false;
+    if (!revealerRef.revealChild) return false;
+    revealerRef.revealChild = false;
+    return true;
   });
 
   function toggleWindow() {
