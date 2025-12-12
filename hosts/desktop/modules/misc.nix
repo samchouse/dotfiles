@@ -90,23 +90,7 @@ in
     };
     hardware.openrgb = {
       enable = true;
-      package = pkgs.openrgb.overrideAttrs (old: {
-        version = "1.0rc2";
-        src = pkgs.fetchFromGitLab {
-          owner = "CalcProgrammer1";
-          repo = "OpenRGB";
-          rev = "release_candidate_1.0rc2";
-          sha256 = "sha256-vdIA9i1ewcrfX5U7FkcRR+ISdH5uRi9fz9YU5IkPKJQ=";
-        };
-
-        patches = [ ../patches/openrgb_systemd.patch ];
-
-        postPatch = ''
-          patchShebangs scripts/build-udev-rules.sh
-          substituteInPlace scripts/build-udev-rules.sh \
-            --replace-fail /usr/bin/env "${pkgs.coreutils}/bin/env"
-        '';
-      });
+      package = pkgs.openrgb;
     };
 
     nfs.server = {

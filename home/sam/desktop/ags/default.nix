@@ -2,12 +2,11 @@
 {
   programs.ags = {
     enable = true;
+    extraPackages = with pkgs.astal; [
+      tray
+      hyprland
+    ];
 
     configDir = ./.;
-
-    extraPackages = with pkgs.astal; [
-      hyprland
-      tray
-    ];
   };
 }

@@ -77,36 +77,99 @@
         };
       };
 
+      openrgb-version = "1.0rc2";
       configuration = {
         inherit system;
 
         modules = [
           {
-            nixpkgs.pkgs = pkgs;
-            nixpkgs.overlays = [
-              (_: prev: {
-                astal = astal.packages.${system};
-                niqs = niqspkgs.packages.${system};
-                zen-browser = zen-browser.packages.${system}.default;
-                age-plugin-op = age-plugin-op.defaultPackage.${system};
-                hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
+            nixpkgs = {
+              pkgs = pkgs;
+              overlays = [
+                (final: prev: {
+                  astal = astal.packages.${system};
+                  niqs = niqspkgs.packages.${system};
+                  zen-browser = zen-browser.packages.${system}.default;
+                  age-plugin-op = age-plugin-op.defaultPackage.${system};
+                  hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
 
-                # https://github.com/NixOS/nixpkgs/issues/226575#issuecomment-2813539847
-                logiops = prev.logiops.overrideAttrs (old: {
-                  patches = (old.patches or [ ]) ++ [
-                    (prev.fetchpatch {
-                      name = "bolt_receiver_fix.patch";
-                      url = "https://github.com/PixlOne/logiops/pull/460.patch";
-                      hash = "sha256-A+StDD+Dp7lPWVpuYR9JR5RuvwPU/5h50B0lY8Qu7nY=";
-                    })
-                  ];
-                });
+                  # https://github.com/NixOS/nixpkgs/issues/226575#issuecomment-2813539847
+                  logiops = prev.logiops.overrideAttrs (old: {
+                    patches = (old.patches or [ ]) ++ [
+                      (prev.fetchpatch {
+                        name = "bolt_receiver_fix.patch";
+                        url = "https://github.com/PixlOne/logiops/pull/460.patch";
+                        hash = "sha256-A+StDD+Dp7lPWVpuYR9JR5RuvwPU/5h50B0lY8Qu7nY=";
+                      })
+                    ];
+                  });
 
-                small = import nixpkgs-small {
-                  inherit system;
-                };
-              })
-            ];
+                  openrgb = prev.openrgb.overrideAttrs (old: rec {
+                    version = openrgb-version;
+                    src = prev.fetchFromGitLab {
+                      owner = "CalcProgrammer1";
+                      repo = "OpenRGB";
+                      rev = "release_candidate_${version}";
+                      hash = "sha256-vdIA9i1ewcrfX5U7FkcRR+ISdH5uRi9fz9YU5IkPKJQ=";
+                    };
+
+                    patches = [ ./patches/openrgb_systemd.patch ];
+
+                    postPatch = ''
+                      patchShebangs scripts/build-udev-rules.sh
+                      substituteInPlace scripts/build-udev-rules.sh \
+                        --replace-fail /usr/bin/env "${prev.coreutils}/bin/env"
+                    '';
+
+                    qmakeFlags = old.qmakeFlags ++ [
+                      "OPENRGB_SYSTEM_PLUGIN_DIRECTORY=${
+                        toString (
+                          prev.symlinkJoin {
+                            name = "openrgb-plugins";
+                            paths = [ final.openrgb-plugin-effects ];
+                            # Remove all library version symlinks except one,
+                            # or they will result in duplicates in the UI.
+                            # We leave the one pointing to the actual library, usually the most
+                            # qualified one (eg. libOpenRGBHardwareSyncPlugin.so.1.0.0).
+                            postBuild = ''
+                              for f in $out/lib/*; do
+                                if [ "$(dirname $(readlink "$f"))" == "." ]; then
+                                  rm "$f"
+                                fi
+                              done
+                            '';
+                          }
+                        )
+                      }/lib/openrgb/plugins"
+                    ];
+                  });
+                  openrgb-plugin-effects = prev.openrgb-plugin-effects.overrideAttrs (old: rec {
+                    version = openrgb-version;
+                    src = prev.fetchFromGitLab {
+                      owner = "OpenRGBDevelopers";
+                      repo = "OpenRGBEffectsPlugin";
+                      rev = "release_candidate_${version}";
+                      hash = "sha256-0W0hO3PSMpPLc0a7g/Nn7GWMcwBXhOxh1Y2flpdcnfE=";
+                      fetchSubmodules = true;
+                    };
+
+                    patches = [ ];
+                    postPatch = "";
+
+                    buildInputs = old.buildInputs ++ [ prev.pipewire.dev ];
+
+                    CPATH = "${prev.pipewire.dev}/include/pipewire-0.3:${prev.pipewire.dev}/include/spa-0.2";
+                    qmakeFlags = [
+                      "QT_TOOL.lrelease.binary=${prev.lib.getDev prev.kdePackages.qttools}/bin/lrelease"
+                    ];
+                  });
+
+                  small = import nixpkgs-small {
+                    inherit system;
+                  };
+                })
+              ];
+            };
           }
 
           ./hosts/desktop

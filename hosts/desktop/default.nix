@@ -7,7 +7,13 @@ let
   inherit (constants) flake;
 in
 {
+  disabledModules = [ "services/monitoring/beszel-agent.nix" ];
   imports = [
+    (builtins.fetchurl {
+      url = "https://github.com/hatch01/nixpkgs/raw/refs/heads/beszel-systemd/nixos/modules/services/monitoring/beszel-agent.nix";
+      sha256 = "sha256:10jlpq0jc3p78rlqnvp7a2bhfx5qr7mp27spwsb0zms7xyba2pbh";
+    })
+
     ./hardware-configuration.nix
 
     ./modules
@@ -236,6 +242,7 @@ in
     arduino-ide
     protonvpn-gui
     ffmpeg
+    lunar-client
   ];
 
   users = {
