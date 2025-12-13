@@ -93,6 +93,8 @@
                   age-plugin-op = age-plugin-op.defaultPackage.${system};
                   hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
 
+                  sweet = pkgs.callPackage ./pkgs/sweet { };
+
                   # https://github.com/NixOS/nixpkgs/issues/226575#issuecomment-2813539847
                   logiops = prev.logiops.overrideAttrs (old: {
                     patches = (old.patches or [ ]) ++ [
@@ -126,7 +128,10 @@
                         toString (
                           prev.symlinkJoin {
                             name = "openrgb-plugins";
-                            paths = [ final.openrgb-plugin-effects ];
+                            paths = [
+                              final.openrgb-plugin-effects
+                              final.openrgb-plugin-visual-map
+                            ];
                             # Remove all library version symlinks except one,
                             # or they will result in duplicates in the UI.
                             # We leave the one pointing to the actual library, usually the most
@@ -163,6 +168,9 @@
                       "QT_TOOL.lrelease.binary=${prev.lib.getDev prev.kdePackages.qttools}/bin/lrelease"
                     ];
                   });
+                  openrgb-plugin-visual-map = prev.callPackage ./pkgs/openrgb-plugin-visual-map {
+                    version = openrgb-version;
+                  };
 
                   small = import nixpkgs-small {
                     inherit system;

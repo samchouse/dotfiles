@@ -55,7 +55,7 @@ in
 
     theme = {
       name = "Sweet-Ambar-Blue-Dark";
-      package = (pkgs.callPackage ../../../pkgs/sweet { });
+      package = pkgs.sweet;
     };
   };
 
