@@ -2,8 +2,41 @@
 $fg-color: #{"@theme_fg_color"};
 $bg-color: #0a0a0a;
 
+.icon {
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+// button {
+//   all: unset;
+// }
+
 window {
   background: transparent;
+
+  .backdrop {
+    background: rgba($bg-color, 0.4);
+  }
+}
+
+separator {
+  background: #404040;
+  min-height: 2px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+popover {
+  contents {
+    background: $bg-color;
+  }
+
+  &.top-popover > contents {
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+  }
 }
 
 window.Bar {
@@ -12,8 +45,6 @@ window.Bar {
 
   > centerbox {
     background: $bg-color;
-    // border-radius: 10px;
-    // margin: 8px;
   }
 
   button {
@@ -57,28 +88,42 @@ window.Bar {
   }
 }
 
-.icon {
-  font-family: "Material Symbols Outlined";
-  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
-}
-
-.backdrop {
-  background: rgba($bg-color, 0.4);
-}
-
 .tray {
   button {
     all: unset;
   }
-}
 
-popover contents {
-  background: transparent;
-  padding: 0;
-  box-shadow: none;
-  border: none;
+  popover.menu {
+    // Pin/Unpin button
+    stack > box > box > box:last-child modelbutton {
+      background: rgb(165, 180, 252, 0.1);
+      color: #818cf8;
+      border: 1px solid rgba(165, 180, 252, 0.2);
+      border-radius: 20px;
+
+      &:hover {
+        background: rgb(165, 180, 252, 0.2);
+        border-color: rgba(165, 180, 252, 0.3);
+      }
+    }
+  }
 }
 
 .icons {
   background: $bg-color;
+}
+
+.main-box {
+  background-color: $bg-color;
+}
+
+calendar {
+  label:selected {
+    background: inherit;
+  }
+
+  .today,
+  .today:selected {
+    background-color: green;
+  }
 }

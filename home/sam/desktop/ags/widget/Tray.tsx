@@ -71,6 +71,7 @@ export function Tray({
         <popover
           $={(self) => {
             popoverRef = self;
+            self.add_css_class("top-popover");
           }}
           hasArrow={false}
           autohide={false}
@@ -169,7 +170,7 @@ function IconsList({
   }
 
   return (
-    <box class="icons">
+    <box class="icons" spacing={4}>
       <For each={items}>
         {([item, id, pop]) => (
           <box visible={invertVisible !== config.pinnedTray.has(id)}>

@@ -6,7 +6,7 @@ import { createPoll } from "ags/time";
 import { createBinding, createComputed, For } from "gnim";
 import { clsx } from "../utils";
 import { Backdrop } from "./Backdrop";
-import { ControlCenter } from "./ControlCenter";
+import { Clock } from "./Clock";
 import { Tray } from "./Tray";
 
 export default function Bar(gdkmonitor: Gdk.Monitor) {
@@ -43,7 +43,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
   );
 
   const { toggleVisible, connectOnClick } = Backdrop(gdkmonitor);
-  const { toggleWindow: toggleControlCenter } = ControlCenter({
+  const { toggleWindow: toggleClock } = Clock({
     gdkmonitor,
     toggleBackdrop: toggleVisible,
     connectOnBackdropClick: connectOnClick,
@@ -98,13 +98,13 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
           />
 
           <label class="icon" label="volume_down" />
-          <box spacing={8}>
-            <label label={date} />
-            <label label={time} />
-          </box>
-          <button onClicked={toggleControlCenter}>
-            <label label="power_settings_new" class="icon" />
+          <button onClicked={toggleClock}>
+            <box spacing={8}>
+              <label label={date} />
+              <label label={time} />
+            </box>
           </button>
+          <label label="power_settings_new" class="icon" />
         </box>
       </centerbox>
     </window>
