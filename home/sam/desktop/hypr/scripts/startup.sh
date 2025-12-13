@@ -6,6 +6,7 @@ sleep 3
 openrgb --startminimized --server >>/dev/null 2>&1 &
 discordcanary --start-minimized >>/dev/null 2>&1 &
 1password --silent >>/dev/null 2>&1 &
+easyeffects -w >>/dev/null 2>&1 &
 
 sleep 1
 openrgb -p Blue >>/dev/null 2>&1 &
