@@ -69,13 +69,14 @@
     }:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs {
+      pkgs-config = {
         inherit system;
         config = {
           cudaSupport = true;
           allowUnfree = true;
         };
       };
+      pkgs = import nixpkgs pkgs-config;
 
       openrgb-version = "1.0rc2";
       configuration = {
@@ -172,9 +173,7 @@
                     version = openrgb-version;
                   };
 
-                  small = import nixpkgs-small {
-                    inherit system;
-                  };
+                  small = import nixpkgs-small pkgs-config;
                 })
               ];
             };

@@ -3,6 +3,23 @@
 INHIBITOR="${0/lock/inhibitor}"
 
 case $1 in
+"misc")
+  case $2 in
+  "on")
+    echo on >/tmp/usb-power
+    openrgb -p Blue
+    while hyprctl -j monitors | jq -r '.[].dpmsStatus' | grep -qx false; do
+      hyprctl dispatch dpms on
+      sleep 0.1
+    done
+    ;;
+  "off")
+    echo off >/tmp/usb-power
+    openrgb -p Black
+    hyprctl dispatch dpms off
+    ;;
+  esac
+  ;;
 "ss")
   grim -o DP-1 /tmp/hyprlock-2.png
   grim -o DP-2 /tmp/hyprlock-1.png
