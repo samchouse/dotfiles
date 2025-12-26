@@ -1,15 +1,16 @@
 {
   imports = [
     ./hypr
-    ./rofi
     ./eww
     ./ags
     ./neovim
     ./discord
+    ./niri.nix
     ./dunst.nix
     ./kitty.nix
-    ./vscode.nix
     ./theme.nix
+    ./vscode.nix
+    ./vicinae.nix
     ./bluetooth.nix
   ];
 

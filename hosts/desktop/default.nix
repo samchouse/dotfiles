@@ -7,13 +7,7 @@ let
   inherit (constants) flake;
 in
 {
-  disabledModules = [ "services/monitoring/beszel-agent.nix" ];
   imports = [
-    (builtins.fetchurl {
-      url = "https://github.com/hatch01/nixpkgs/raw/refs/heads/beszel-systemd/nixos/modules/services/monitoring/beszel-agent.nix";
-      sha256 = "sha256:10jlpq0jc3p78rlqnvp7a2bhfx5qr7mp27spwsb0zms7xyba2pbh";
-    })
-
     ./hardware-configuration.nix
 
     ./modules
@@ -147,12 +141,25 @@ in
     };
   };
 
+  security.auditd.enable = true;
+  security.audit.rules = [
+    "-D"
+    "-w /tmp/ -p rwa -k tmp_watch"
+    "-a always,exit -F arch=b64 -S open,openat,openat2 -F dir=/tmp -k tmp_io"
+  ];
+  systemd.services.systemd-tmpfiles-clean = {
+    environment = {
+      SYSTEMD_LOG_LEVEL = "debug";
+    };
+  };
+
   boot = {
     kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
     kernelModules = [ "hid_microsoft" ];
     kernelParams = [
       "quiet"
       "loglevel=3"
+      "audit=1"
     ];
 
     initrd = {
@@ -253,12 +260,14 @@ in
       "https://cache.nixos-cuda.org"
       "https://cache.flox.dev"
       "https://devenv.cachix.org"
+      "https://vicinae.cachix.org"
     ];
     trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
       "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
       "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
+      "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
     ];
   };
 

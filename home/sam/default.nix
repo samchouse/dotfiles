@@ -21,6 +21,7 @@
     zen-browser
     gammastep
     gh
+    jdk25
     prismlauncher
     bibata-cursors
     playerctl

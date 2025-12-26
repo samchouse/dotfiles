@@ -20,7 +20,7 @@
   wayland.windowManager.hyprland = {
     enable = true;
     package = null;
-    portalPackage = null;
+    # portalPackage = null;
 
     settings = {
       env = [
@@ -39,6 +39,7 @@
 
       misc = {
         enable_anr_dialog = false;
+        focus_on_activate = true;
       };
 
       general = {
@@ -106,6 +107,10 @@
         "blur, gtk-layer-shell"
         "ignorezero, gtk-layer-shell"
         "noanim, gtk4-layer-shell"
+
+        "blur, vicinae"
+        "ignorealpha 0, vicinae"
+        "noanim, vicinae"
       ];
 
       windowrulev2 = [
@@ -134,8 +139,7 @@
         "$mod, J, togglesplit, "
         "$mod, F, fullscreen, "
         "$mod, S, exec, ~/.config/hypr/scripts/screenshot.sh"
-        "$mod, space, exec, rofi -show drun -show-icons -icon-theme 'kora' -sort -sorting-method fzf"
-        "$mod SHIFT, space, exec, rofi -show calc -modi calc -no-show-match -no-sort"
+        "$mod, space, exec, vicinae toggle"
         "$mod, V, exec, kitty --class clipse -e clipse"
 
         "$mod, left, movefocus, l"

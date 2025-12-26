@@ -6,10 +6,13 @@
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   security.pam.services.hyprlock = { };
-  programs.hyprland = {
-    enable = true;
-    package = pkgs.hyprland;
-    portalPackage = pkgs.xdg-desktop-portal-hyprland;
+  programs = {
+    niri.enable = true;
+    hyprland = {
+      enable = true;
+      package = pkgs.hyprland;
+      portalPackage = pkgs.xdg-desktop-portal-hyprland;
+    };
   };
   xdg.portal = {
     enable = true;

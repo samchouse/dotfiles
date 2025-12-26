@@ -8,9 +8,12 @@ case $1 in
   "on")
     echo on >/tmp/usb-power
     openrgb -p Blue
-    while hyprctl -j monitors | jq -r '.[].dpmsStatus' | grep -qx false; do
+
+    count=0
+    while [[ $count -lt 3 ]] || ([[ $count -ge 3 ]] && hyprctl -j monitors | jq -r '.[].dpmsStatus' | grep -qx false); do
+      ((count++))
       hyprctl dispatch dpms on
-      sleep 0.1
+      sleep 2
     done
     ;;
   "off")

@@ -103,6 +103,7 @@ in
     beszel = {
       hub = {
         enable = true;
+        host = "0.0.0.0";
         port = 7463;
       };
       agent = {

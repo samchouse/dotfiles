@@ -7,7 +7,7 @@
       global = {
         offset = "30x50";
         font = "Monolist Nerd Font 10";
-        dmenu = "${pkgs.rofi}/bin/rofi -dmenu -p dunst:";
+        dmenu = "${pkgs.vicinae}/bin/vicinae dmenu -p dunst:";
 
         corner_radius = 10;
         icon_corner_radius = 10;

@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-staging.url = "github:nixos/nixpkgs/staging-next";
     nixpkgs-small.url = "github:nixos/nixpkgs/nixos-unstable-small";
     nixpkgs-old.url = "github:nixos/nixpkgs/df372dcaba0309fd081f19bf6490e27ac186078c";
     home-manager = {
@@ -10,6 +11,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    vicinae.url = "github:vicinaehq/vicinae";
+    flake-input-patcher = {
+      url = "github:jfly/flake-input-patcher";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     niqspkgs = {
       url = "github:diniamo/niqspkgs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -51,24 +61,46 @@
   };
 
   outputs =
-    {
-      ags,
-      astal,
-      nixvim,
-      nixpkgs,
-      niqspkgs,
-      sops-nix,
-      catppuccin,
-      zen-browser,
-      nixpkgs-old,
-      home-manager,
-      custom-fonts,
-      age-plugin-op,
-      nixpkgs-small,
-      ...
-    }:
+    unpatchedInputs:
     let
       system = "x86_64-linux";
+
+      patcher = unpatchedInputs.flake-input-patcher.lib.${system};
+      inputs = patcher.patch unpatchedInputs {
+        nixpkgs.patches = [
+          (patcher.fetchpatch {
+            name = "beszel-systemd-monitoring.patch";
+            url = "https://github.com/NixOS/nixpkgs/pull/461327.patch";
+            hash = "sha256-+cpTgQKH7L16cuFffqv9XCIrCpCOcgVN2lqEEJNqdnA=";
+          })
+        ];
+        niri.patches = [
+          (patcher.fetchpatch {
+            name = "niri-add-extraConfig.patch";
+            url = "https://github.com/sodiboo/niri-flake/pull/1467.patch";
+            hash = "sha256-3wd5sFMY9kGUeGIfvLpG/fYkzO1H5hXpKJhZiAv4czQ=";
+          })
+        ];
+      };
+      inherit (inputs)
+        ags
+        niri
+        astal
+        nixvim
+        nixpkgs
+        vicinae
+        niqspkgs
+        sops-nix
+        catppuccin
+        zen-browser
+        nixpkgs-old
+        home-manager
+        custom-fonts
+        age-plugin-op
+        nixpkgs-small
+        nixpkgs-staging
+        ;
+
       pkgs-config = {
         inherit system;
         config = {
@@ -87,14 +119,50 @@
             nixpkgs = {
               pkgs = pkgs;
               overlays = [
+                niri.overlays.niri
+
                 (final: prev: {
                   astal = astal.packages.${system};
                   niqs = niqspkgs.packages.${system};
+                  vicinae = vicinae.packages.${system}.default;
                   zen-browser = zen-browser.packages.${system}.default;
                   age-plugin-op = age-plugin-op.defaultPackage.${system};
                   hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
 
                   sweet = pkgs.callPackage ./pkgs/sweet { };
+
+                  beszel =
+                    (prev.beszel.override {
+                      buildGoModule = final.staging.buildGo125Module;
+                    }).overrideAttrs
+                      (old: rec {
+                        version = "0.17.0";
+                        src = old.src.override {
+                          tag = "v${version}";
+                          hash = "sha256-MY/rsWdIiYsqcw6gqDkfA8A/Ied3OSHfJI3KUBxoRKc=";
+                        };
+
+                        vendorHash = "sha256-gfQU3jGwTGmMJIy9KTjk/Ncwpk886vMo4CJvm5Y5xpA=";
+
+                        webui = old.webui.overrideAttrs rec {
+                          inherit src version;
+
+                          sourceRoot = "${src.name}/internal/site";
+                          npmDepsHash = "sha256-1au4kSxyjdwFExIoUBSPf/At0jQsfbzlEXuigygBTRM=";
+
+                          npmDeps = prev.fetchNpmDeps {
+                            inherit src sourceRoot version;
+
+                            name = "${old.pname}-${version}-npm-deps";
+                            hash = npmDepsHash;
+                          };
+                        };
+
+                        preBuild = ''
+                          mkdir -p internal/site/dist
+                          cp -r ${webui}/* internal/site/dist
+                        '';
+                      });
 
                   # https://github.com/NixOS/nixpkgs/issues/226575#issuecomment-2813539847
                   logiops = prev.logiops.overrideAttrs (old: {
@@ -174,12 +242,14 @@
                   };
 
                   small = import nixpkgs-small pkgs-config;
+                  staging = import nixpkgs-staging pkgs-config;
                 })
               ];
             };
           }
 
           ./hosts/desktop
+          niri.nixosModules.niri
           sops-nix.nixosModules.sops
 
           home-manager.nixosModules.home-manager
@@ -190,9 +260,10 @@
             home-manager.users.root.imports = [ ./home/root ];
             home-manager.users.sam.imports = [
               ./home/sam
-              catppuccin.homeModules.catppuccin
               nixvim.homeModules.nixvim
               ags.homeManagerModules.default
+              catppuccin.homeModules.catppuccin
+              vicinae.homeManagerModules.default
             ];
           }
         ];
