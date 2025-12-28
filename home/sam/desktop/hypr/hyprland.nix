@@ -20,7 +20,7 @@
   wayland.windowManager.hyprland = {
     enable = true;
     package = null;
-    # portalPackage = null;
+    portalPackage = null;
 
     settings = {
       env = [
@@ -162,7 +162,7 @@
                 let
                   c = (x + 1) / 10;
                 in
-                builtins.toString (x + 1 - (c * 10));
+                toString (x + 1 - (c * 10));
             in
             [
               "$mod, ${ws}, workspace, ${toString (x + 1)}"

@@ -50,10 +50,6 @@
             port = 8123;
           }
           {
-            domain = "home.xenfo.dev";
-            port = 8090;
-          }
-          {
             domain = "sys.xenfo.dev";
             port = 7463;
           }

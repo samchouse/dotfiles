@@ -1,6 +1,5 @@
 {
   imports = [
-    ./glance.nix
     ./hosting.nix
   ];
 

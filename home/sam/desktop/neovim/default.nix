@@ -156,6 +156,10 @@
         action = "<cmd>update<cr>";
       }
       {
+        key = "<leader>o";
+        action = "<cmd>Oil<cr>";
+      }
+      {
         key = "<C-d>";
         action = "<C-d>zz";
       }

@@ -145,7 +145,7 @@ in
   security.audit.rules = [
     "-D"
     "-w /tmp/ -p rwa -k tmp_watch"
-    "-a always,exit -F arch=b64 -S open,openat,openat2 -F dir=/tmp -k tmp_io"
+    "-a always,exit -F arch=b64 -S open,openat,openat2 -F path=/tmp -k tmp_io"
   ];
   systemd.services.systemd-tmpfiles-clean = {
     environment = {
@@ -202,7 +202,6 @@ in
     cudaPackages_12_6.cudatoolkit
     cloudflared
     polkit_gnome
-    dua
     nixd
     ripgrep
     fd
@@ -215,6 +214,9 @@ in
     ffmpeg
     lunar-client
     easyeffects
+    tlrc
+    eza
+    (pkgs.writeShellScriptBin "dua" "${pkgs.dua}/bin/dua -i /tmp -i /mnt/secondary $@")
   ];
 
   users = {

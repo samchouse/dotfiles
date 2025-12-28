@@ -7,7 +7,7 @@
 
   security.pam.services.hyprlock = { };
   programs = {
-    niri.enable = true;
+    niri.enable = false;
     hyprland = {
       enable = true;
       package = pkgs.hyprland;

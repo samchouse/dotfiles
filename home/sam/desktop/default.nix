@@ -18,11 +18,11 @@
     enable = false;
 
     associations.added = {
-      "application/pdf" = "zen.desktop";
+      "application/pdf" = "zen-beta.desktop";
     };
 
     defaultApplications = {
-      "application/pdf" = [ "zen.desktop" ];
+      "application/pdf" = [ "zen-beta.desktop" ];
     };
   };
 }
