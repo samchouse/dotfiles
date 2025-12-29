@@ -218,6 +218,7 @@ in
         "wheel"
         "dialout"
         "libvirtd"
+        "podman-proxy"
       ];
     };
   };
