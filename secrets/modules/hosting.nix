@@ -7,8 +7,8 @@ let
   utils = import ../utils.nix;
 
   caddyUnits = [ "caddy.service" ];
-  cloudflaredUnits = [ "docker-cloudflared.service" ];
-  coalescCloudflaredUnits = [ "docker-cloudflared-coalesc.service" ];
+  cloudflaredUnits = [ "podman-cloudflared.service" ];
+  coalescCloudflaredUnits = [ "podman-cloudflared-coalesc.service" ];
 
   caddyOptions = utils.mkOpts caddyUnits;
 in

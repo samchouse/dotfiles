@@ -36,10 +36,7 @@ in
   };
 
   virtualisation = {
-    docker.enable = true;
-    docker.liveRestore = false;
-    podman.enable = true;
-    oci-containers.backend = "docker";
+    oci-containers.backend = "podman";
     libvirtd = {
       enable = true;
       nss.enable = true;
@@ -59,22 +56,14 @@ in
     firewall = {
       enable = true;
 
-      # printer steam steam cider
+      trustedInterfaces = [ "podman0" ];
       allowedTCPPorts = [
-        631
-        27036
-        27037
-        10767
+        631 # printer
+        10767 # cider
       ];
       allowedUDPPorts = [
-        27031
-        27036
-      ];
-      trustedInterfaces = [
-        "docker0"
-        "br-fdf6080d5bc5"
-        "br-125e2a601276"
-        "br-c06faecd2b05"
+        27031 # HA?
+        27036 # HA?
       ];
 
       # https://github.com/miniupnp/miniupnp/tree/master/miniupnpc#readme
@@ -260,14 +249,12 @@ in
     substituters = [
       "https://nix-community.cachix.org"
       "https://cache.nixos-cuda.org"
-      "https://cache.flox.dev"
       "https://devenv.cachix.org"
       "https://vicinae.cachix.org"
     ];
     trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
-      "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
       "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
       "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
     ];

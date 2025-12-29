@@ -100,7 +100,6 @@
           "--no-autoupdate"
           "run"
         ];
-        extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
       };
       cloudflared-coalesc = {
         image = "cloudflare/cloudflared:2025.11.1";
@@ -110,7 +109,6 @@
           "--no-autoupdate"
           "run"
         ];
-        extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
       };
     };
   };
