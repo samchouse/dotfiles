@@ -61,10 +61,6 @@ in
         631 # printer
         10767 # cider
       ];
-      allowedUDPPorts = [
-        27031 # HA?
-        27036 # HA?
-      ];
 
       # https://github.com/miniupnp/miniupnp/tree/master/miniupnpc#readme
       extraCommands = ''
@@ -196,7 +192,6 @@ in
     fd
     miniupnpc
     gparted
-    zellij
     jujutsu
     arduino-ide
     protonvpn-gui
@@ -218,7 +213,6 @@ in
         "wheel"
         "dialout"
         "libvirtd"
-        "podman-proxy"
       ];
     };
   };
