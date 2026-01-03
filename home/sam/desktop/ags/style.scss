@@ -57,6 +57,28 @@ window.Bar {
   }
 }
 
+.osd {
+  background: $bg-color;
+
+  padding: 8px;
+  padding-left: 10px;
+  border-radius: 14px;
+
+  .icon {
+    font-size: 20px;
+  }
+
+  scale {
+    &.muted {
+      opacity: 0.5;
+    }
+
+    slider {
+      opacity: 0;
+    }
+  }
+}
+
 .workspaces box {
   all: unset;
 
@@ -126,4 +148,8 @@ calendar {
   .today:selected {
     background-color: green;
   }
+}
+
+.audio-box {
+  padding: 10px;
 }

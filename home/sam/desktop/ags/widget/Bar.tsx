@@ -5,6 +5,7 @@ import { execAsync } from "ags/process";
 import { createPoll } from "ags/time";
 import { createBinding, createComputed, For } from "gnim";
 import { clsx } from "../utils";
+import { Audio } from "./Audio";
 import { Backdrop } from "./Backdrop";
 import { Clock } from "./Clock";
 import { Tray } from "./Tray";
@@ -44,6 +45,11 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
 
   const { toggleVisible, connectOnClick } = Backdrop(gdkmonitor);
   const { toggleWindow: toggleClock } = Clock({
+    gdkmonitor,
+    toggleBackdrop: toggleVisible,
+    connectOnBackdropClick: connectOnClick,
+  });
+  const { toggleWindow: toggleAudio } = Audio({
     gdkmonitor,
     toggleBackdrop: toggleVisible,
     connectOnBackdropClick: connectOnClick,
@@ -97,7 +103,9 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
             connectOnBackdropClick={connectOnClick}
           />
 
-          <label class="icon" label="volume_down" />
+          <button onClicked={toggleAudio}>
+            <label class="icon" label="volume_down" />
+          </button>
           <button onClicked={toggleClock}>
             <box spacing={8}>
               <label label={date} />
