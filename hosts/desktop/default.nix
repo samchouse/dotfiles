@@ -118,9 +118,42 @@ in
         enable = true;
         support32Bit = true;
       };
-      wireplumber.extraConfig."11-bluetooth-policy" = {
-        "wireplumber.settings" = {
-          "bluetooth.autoswitch-to-headset-profile" = false;
+      wireplumber.extraConfig = {
+        "11-bluetooth-policy" = {
+          "wireplumber.settings" = {
+            "bluetooth.autoswitch-to-headset-profile" = false;
+          };
+        };
+
+        "51-rename-outputs" = {
+          "monitor.alsa.rules" = [
+            {
+              matches = [
+                {
+                  "node.name" = "~alsa_output.*hdmi.*";
+                }
+              ];
+              actions = {
+                update-props = {
+                  "node.description" = "Speakers (HDMI)";
+                };
+              };
+            }
+          ];
+          "monitor.bluez.rules" = [
+            {
+              matches = [
+                {
+                  "node.name" = "~bluez_output.*";
+                }
+              ];
+              actions = {
+                update-props = {
+                  "node.description" = "Headphones (Bluetooth)";
+                };
+              };
+            }
+          ];
         };
       };
     };
@@ -200,6 +233,8 @@ in
     easyeffects
     tlrc
     eza
+    wget
+    hyprshutdown
     (pkgs.writeShellScriptBin "dua" "${pkgs.dua}/bin/dua -i /tmp -i /mnt/secondary $@")
   ];
 
@@ -244,12 +279,14 @@ in
     substituters = [
       "https://nix-community.cachix.org"
       "https://cache.nixos-cuda.org"
+      "https://cache.flox.dev"
       "https://devenv.cachix.org"
       "https://vicinae.cachix.org"
     ];
     trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
+      "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
       "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
       "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
     ];

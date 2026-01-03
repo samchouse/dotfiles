@@ -93,7 +93,6 @@
       monitor = [
         "DP-2,2560x1440@144,0x0,1"
         "DP-1,2560x1440@60,2560x0,1"
-        # "VIRT-1,preferred,7680x2880,auto"
         ",preferred,auto,auto"
       ];
 
@@ -104,43 +103,27 @@
       ];
 
       layerrule = [
-        "blur, gtk-layer-shell"
-        "ignorezero, gtk-layer-shell"
-        "noanim, gtk4-layer-shell"
+        "blur on, match:namespace gtk-layer-shell"
+        "ignore_alpha 0, match:namespace gtk-layer-shell"
+        "no_anim on, match:namespace gtk4-layer-shell"
 
-        "blur, vicinae"
-        "ignorealpha 0, vicinae"
-        "noanim, vicinae"
-      ];
-
-      windowrulev2 = [
-        "idleinhibit always, class:^Minecraft"
-        "fullscreen, class:^(Minecraft 1.8.9)$"
-
-        "idleinhibit always, class:^(Lethal Company)$"
-        "fullscreen, class:^(Lethal Company)$"
-
-        "idleinhibit always, title:^Brawlhalla$"
-        "fullscreen, title:^Brawlhalla$"
-
-        "idleinhibit always, title:^Rivals2"
-
-        "float, class:(clipse)"
-        "size 622 652, class:(clipse)"
+        "blur on, match:namespace vicinae"
+        "ignore_alpha 0, match:namespace vicinae"
+        "no_anim on, match:namespace vicinae"
       ];
 
       "$mod" = "SUPER";
       bind = [
         "$mod, TAB, exec, kitty"
         "$mod, Q, killactive, "
-        # "$mod, M, exit, "
+        "$mod, M, exec, hyprshutdown"
         "$mod SHIFT, V, togglefloating, "
         "$mod, P, pseudo, "
         "$mod, J, togglesplit, "
         "$mod, F, fullscreen, "
         "$mod, S, exec, ~/.config/hypr/scripts/screenshot.sh"
         "$mod, space, exec, vicinae toggle"
-        "$mod, V, exec, kitty --class clipse -e clipse"
+        "$mod, V, exec, vicinae vicinae://extensions/vicinae/clipboard/history"
 
         "$mod, left, movefocus, l"
         "$mod, right, movefocus, r"
@@ -189,7 +172,6 @@
       ];
 
       exec-once = [
-        "clipse -listen >>/dev/null 2>&1"
         "gammastep -O 4000 >>/dev/null 2>&1"
         "hyprctl output create headless VIRT-1 >>/dev/null 2>&1"
         "$HOME/.config/hypr/scripts/startup.sh >>/dev/null 2>&1"

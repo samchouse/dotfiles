@@ -1,7 +1,6 @@
 { pkgs, ... }:
 let
-  rebuild = pkgs.writeScriptBin "rebuild" ''
-    #!/usr/bin/env bash
+  rebuild = pkgs.writeShellScriptBin "rebuild" ''
     set -e
 
     args=()
@@ -58,7 +57,7 @@ let
             echo -e "\n\033[1;34m📦 Checking for updates: \033[1;36m$name\033[0m (\033[33m$version\033[0m)"
 
             echo -e "\033[90m→ Fetching available versions...\033[0m"
-            all_versions=$(sudo ${pkgs.skopeo}/bin/skopeo list-tags "docker://$name" | jq -r .Tags[] | grep -v sha256 | grep -P "$(echo "$version" | make_regex)")
+            all_versions=$(${pkgs.skopeo}/bin/skopeo list-tags "docker://$name" | jq -r .Tags[] | grep -v sha256 | grep -P "$(echo "$version" | make_regex)")
             version_count=$(echo "$all_versions" | wc -l)
             echo -e "\033[90m→ Found $version_count potential version(s) to evaluate\033[0m"
 
@@ -215,6 +214,10 @@ in
       export SSH_AUTH_SOCK=''${SSH_AUTH_SOCK:-/home/sam/.1password/agent.sock}
 
       export PATH="$PATH:${pkgs.qt6Packages.qtstyleplugin-kvantum}/bin"
+
+      export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
+      zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+      source <(${pkgs.carapace}/bin/carapace _carapace)
     '';
   };
 
@@ -227,4 +230,16 @@ in
     enableZshIntegration = true;
     nix-direnv.enable = true;
   };
+
+  programs.atuin = {
+    enable = true;
+    daemon.enable = true;
+    enableZshIntegration = true;
+    settings.enter_accept = true;
+  };
+
+  home.packages = with pkgs; [
+    carapace
+    carapace-bridge
+  ];
 }

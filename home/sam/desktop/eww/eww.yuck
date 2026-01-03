@@ -102,7 +102,7 @@
     (box :space-evenly false :spacing 6 :class "power ${power_revealed ? 'revealed' : ''}"
       (revealer :transition "slideleft" :reveal power_revealed
         (box :orientation "h" :spacing 6
-          (button :class "icon" :onclick "hyprctl dispatch exit" :tooltip "Logout" "")
+          (button :class "icon" :onclick "hyprshutdown" :tooltip "Logout" "")
           (button :class "icon" :onclick "systemctl reboot" :tooltip "Restart" "")
           (button :class "icon" :onclick "systemctl poweroff" :tooltip "Shutdown" "")
         )

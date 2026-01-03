@@ -3,9 +3,7 @@
   ...
 }:
 let
-  usb-power = pkgs.writeScriptBin "usb-power" ''
-    #!/bin/sh
-
+  usb-power = pkgs.writeShellScriptBin "usb-power" ''
     VENDOR_ID=258a
     PRODUCT_ID=0090
     PIPE="/tmp/usb-power"

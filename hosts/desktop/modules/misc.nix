@@ -5,9 +5,7 @@
   ...
 }:
 let
-  no-kb = pkgs.writeScriptBin "no-kb" ''
-    #!/bin/sh
-
+  no-kb = pkgs.writeShellScriptBin "no-kb" ''
     mv /var/lib/OpenRGB/OpenRGB.json /var/lib/OpenRGB/OpenRGB.json.bak
     ${pkgs.jq}/bin/jq '.Detectors.detectors."Genesis Thor 300" = false | .' /var/lib/OpenRGB/OpenRGB.json.bak > /var/lib/OpenRGB/OpenRGB.json
   '';

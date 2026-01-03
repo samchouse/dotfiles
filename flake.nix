@@ -44,6 +44,10 @@
       url = "github:aylur/ags";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    hyprshutdown = {
+      url = "github:hyprwm/hyprshutdown";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # TODO: https://github.com/Mic92/sops-nix/issues/576
     sops-nix = {
@@ -94,6 +98,7 @@
         catppuccin
         zen-browser
         nixpkgs-old
+        hyprshutdown
         home-manager
         custom-fonts
         age-plugin-op
@@ -128,6 +133,7 @@
                   zen-browser = zen-browser.packages.${system}.default;
                   age-plugin-op = age-plugin-op.defaultPackage.${system};
                   hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
+                  hyprshutdown = hyprshutdown.packages.${system}.hyprshutdown;
 
                   sweet = pkgs.callPackage ./pkgs/sweet { };
 
@@ -288,6 +294,8 @@
           shellcheck
           nixfmt-rfc-style
           treefmt
+          nodejs_25
+          nodePackages.typescript
         ];
       };
     };

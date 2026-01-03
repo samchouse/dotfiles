@@ -33,19 +33,15 @@
     wl-clipboard
     yazi
     qview
-    clipse
     devenv
     rainfrog
     cider-2
     thunderbird
-    google-chrome
     r2modman
     lumafly
     libreoffice
     gtrash
-    (pkgs.writeScriptBin "upnp" ''
-      #!${pkgs.bash}/bin/bash
-
+    (pkgs.writeShellScriptBin "upnp" ''
       case $1 in
       open)
         sudo nixos-firewall-tool open "$2" "$3"
