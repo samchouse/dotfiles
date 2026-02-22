@@ -11,9 +11,12 @@
 
   sops = {
     defaultSopsFile = ./secrets.yaml;
-    age.keyFile = "/home/sam/.config/sops/age/keys.txt";
-    environment = {
-      PATH = "/run/wrappers/bin:/run/current-system/sw/bin";
+    age = {
+      keyFile = "/home/sam/.config/sops/age/keys.txt";
+      plugins = with pkgs; [
+        age-plugin-op
+        _1password-cli
+      ];
     };
   };
 
@@ -32,10 +35,27 @@
       };
       sops-install-secrets = {
         wantedBy = [ "graphical.target" ];
-        environment = lib.mkForce config.sops.environment;
+        environment = config.sops.environment // {
+          PATH = lib.mkForce (
+            "/run/wrappers/bin:"
+            + lib.makeBinPath (
+              with pkgs;
+              [
+                bash
+                coreutils
+                procps
+                socat
+                age
+                age-plugin-op
+                sops
+              ]
+            )
+          );
+        };
         serviceConfig = {
+          Restart = "on-failure";
           ExecStart = [
-            "${pkgs.bash}/bin/bash -c 'while ! ${pkgs.procps}/bin/pgrep -x 1password >/dev/null; do sleep 1; done && ${pkgs.procps}/bin/pgrep -x 1password >/dev/null && sleep 5 && ${config.sops.package}/bin/sops-install-secrets ${config.sops.manifest} && echo installed | /usr/bin/env socat - UNIX-CONNECT:/run/sops-secrets.sock'"
+            "${pkgs.bash}/bin/bash -c 'while ! ${pkgs.procps}/bin/pgrep -x 1password >/dev/null; do sleep 1; done && ${pkgs.procps}/bin/pgrep -x 1password >/dev/null && sleep 5 && ${config.sops.package}/bin/sops-install-secrets ${config.system.build.sops-nix-manifest} && echo installed | socat - UNIX-CONNECT:/run/sops-secrets.sock'"
           ];
         };
       };

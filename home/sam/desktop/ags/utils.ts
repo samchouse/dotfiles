@@ -2,7 +2,7 @@ import GLib from "gi://GLib?version=2.0";
 import { readFile, writeFile } from "ags/file";
 import { type Accessor, createState } from "gnim";
 
-export function clsx(...classes: (string | boolean)[]) {
+export function clsx(...classes: (string | boolean | undefined)[]) {
   const finalClasses = [];
   for (const cssClass of classes) {
     if (!!cssClass && typeof cssClass === "string") finalClasses.push(cssClass);

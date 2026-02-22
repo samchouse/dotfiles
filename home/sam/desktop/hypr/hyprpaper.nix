@@ -4,12 +4,20 @@
 
     settings = {
       splash = false;
-      preload = "${./wallpaper.jpg}";
 
       wallpaper = [
-        "DP-1,${./wallpaper.jpg}"
-        "DP-2,${./wallpaper.jpg}"
-        "VIRT-1,${./wallpaper.jpg}"
+        {
+          monitor = "DP-1";
+          path = "${./wallpaper.jpg}";
+        }
+        {
+          monitor = "DP-2";
+          path = "${./wallpaper.jpg}";
+        }
+        {
+          monitor = "VIRT-1";
+          path = "${./wallpaper.jpg}";
+        }
       ];
     };
   };

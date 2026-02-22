@@ -6,7 +6,6 @@ case $1 in
 "misc")
   case $2 in
   "on")
-    echo on >/tmp/usb-power
     openrgb -p Blue
 
     count=0
@@ -17,7 +16,6 @@ case $1 in
     done
     ;;
   "off")
-    echo off >/tmp/usb-power
     openrgb -p Black
     hyprctl dispatch dpms off
     ;;

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 let
   rebuild = pkgs.writeShellScriptBin "rebuild" ''
     set -e
@@ -199,26 +199,31 @@ in
       plugins = [ "git" ];
     };
 
-    initContent = ''
-      function y() {
-        local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-        yazi "$@" --cwd-file="$tmp"
-        if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-          builtin cd -- "$cwd"
-        fi
-        rm -f -- "$tmp"
-      }
+    initContent = lib.mkMerge [
+      (lib.mkBefore ''
+        [[ "$ZED_TERM" == "true" || "$TERM_PROGRAM" == "vscode" ]] && [[ "$TERM_PROGRAM" != "TMUX" ]] && tmux-session
+      '')
+      ''
+        function y() {
+          local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+          yazi "$@" --cwd-file="$tmp"
+          if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+            builtin cd -- "$cwd"
+          fi
+          rm -f -- "$tmp"
+        }
 
-      [ -z "$SSH_TTY" ] && [ -n "$SSH_CONNECTION" ] && export SSH_TTY="/dev/pts/9999"
-      [ -n "$SSH_CONNECTION" ] && [[ "$TERM_PROGRAM" == "vscode" ]] && export SSH_AUTH_SOCK=$(ls -t /tmp | rg auth-agent | head -1 | xargs -I {} echo /tmp/{}/listener.sock)
-      export SSH_AUTH_SOCK=''${SSH_AUTH_SOCK:-/home/sam/.1password/agent.sock}
+        [ -z "$SSH_TTY" ] && [ -n "$SSH_CONNECTION" ] && export SSH_TTY="/dev/pts/9999"
+        [ -n "$SSH_CONNECTION" ] && [[ "$TERM_PROGRAM" == "vscode" ]] && export SSH_AUTH_SOCK=$(ls -t /tmp | rg auth-agent | head -1 | xargs -I {} echo /tmp/{}/listener.sock)
+        export SSH_AUTH_SOCK=''${SSH_AUTH_SOCK:-/home/sam/.1password/agent.sock}
 
-      export PATH="$PATH:${pkgs.qt6Packages.qtstyleplugin-kvantum}/bin"
+        export PATH="$PATH:${pkgs.qt6Packages.qtstyleplugin-kvantum}/bin"
 
-      export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
-      zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
-      source <(${pkgs.carapace}/bin/carapace _carapace)
-    '';
+        export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
+        zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+        source <(${pkgs.carapace}/bin/carapace _carapace)
+      ''
+    ];
   };
 
   programs.starship = {

@@ -20,8 +20,9 @@
     firefox
     zen-browser
     gammastep
+    google-chrome
     gh
-    jdk25
+    zed-editor
     prismlauncher
     bibata-cursors
     playerctl

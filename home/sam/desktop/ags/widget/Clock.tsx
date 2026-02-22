@@ -162,7 +162,7 @@ export function Clock({
 
                 self.add_controller(scrollController);
               }}
-              widthRequest={Math.max(gdkmonitor.geometry.width * 0.2, 200)}
+              widthRequest={Math.max(gdkmonitor.geometry.width * 0.15, 200)}
               showHeading={false}
             />
           </box>

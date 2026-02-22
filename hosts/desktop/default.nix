@@ -41,13 +41,8 @@ in
       enable = true;
       nss.enable = true;
       qemu.swtpm.enable = true;
-      extraConfig = ''
-        auth_tcp = "none"
-      '';
     };
   };
-
-  systemd.sockets.libvirtd-tcp.wantedBy = [ "sockets.target" ];
 
   networking = {
     hostName = "desktop";
@@ -60,6 +55,9 @@ in
       allowedTCPPorts = [
         631 # printer
         10767 # cider
+      ];
+      interfaces.wlp6s0.allowedTCPPorts = [
+        8081
       ];
 
       # https://github.com/miniupnp/miniupnp/tree/master/miniupnpc#readme
@@ -221,6 +219,7 @@ in
     cloudflared
     polkit_gnome
     nixd
+    nil
     ripgrep
     fd
     miniupnpc
@@ -235,7 +234,10 @@ in
     eza
     wget
     hyprshutdown
+    quickemu
+    virt-manager
     (pkgs.writeShellScriptBin "dua" "${pkgs.dua}/bin/dua -i /tmp -i /mnt/secondary $@")
+    (pkgs.writeShellScriptBin "tmux-session" "TMUX_TMPDIR=/run/user/1000 ${pkgs.tmux}/bin/tmux new-session -A -s $(basename $PWD) $@")
   ];
 
   users = {

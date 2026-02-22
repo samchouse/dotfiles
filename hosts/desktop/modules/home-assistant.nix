@@ -3,17 +3,19 @@ let
   inherit (constants) flake;
 in
 {
-  virtualisation.oci-containers = {
-    containers = {
-      homeassistant = {
-        image = "ghcr.io/home-assistant/home-assistant:2025.12.5";
-        volumes = [
-          "home-assistant:/config"
-          "${flake}/hosts/desktop/config/ha-config.yaml:/config/configuration.yaml:rw"
-          "/run/dbus:/run/dbus:ro"
-        ];
-        environment.TZ = "America/Toronto";
-        extraOptions = [ "--network=host" ];
+  virtualisation.oci-containers.containers = {
+    homeassistant = {
+      image = "ghcr.io/home-assistant/home-assistant:2026.2.3";
+      volumes = [
+        "home-assistant:/config"
+        "${flake}/hosts/desktop/config/ha-config.yaml:/config/configuration.yaml:rw"
+        "/run/dbus:/run/dbus:ro"
+      ];
+      environment.TZ = "America/Toronto";
+      extraOptions = [ "--network=host" ];
+      capabilities = {
+        NET_RAW = true;
+        NET_ADMIN = true;
       };
     };
   };

@@ -88,13 +88,19 @@ in
     };
     hardware.openrgb = {
       enable = true;
-      package = pkgs.openrgb;
+      package = pkgs.openrgb.withPlugins (
+        with pkgs;
+        [
+          openrgb-plugin-effects
+          openrgb-plugin-visual-map
+        ]
+      );
     };
 
     nfs.server = {
       enable = true;
       exports = ''
-        /home/sam 100.123.34.40(rw,sync,no_subtree_check,insecure,all_squash,anonuid=1000,anongid=100)
+        /home/sam 100.123.34.40(rw,sync,no_subtree_check,insecure,all_squash,anonuid=1000,anongid=100) 100.120.233.96(rw,sync,no_subtree_check,insecure,all_squash,anonuid=1000,anongid=100)
       '';
     };
 
@@ -118,7 +124,6 @@ in
   };
 
   systemd.services = {
-    openrgb.after = lib.mkAfter [ "lm_sensors.service" ];
     no-kb = {
       description = "no-kb";
       serviceConfig = {
@@ -162,14 +167,55 @@ in
     };
   };
 
-  virtualisation.oci-containers = {
-    containers = {
-      podman-socket-proxy = {
-        image = "tecnativa/docker-socket-proxy:v0.4.2";
-        volumes = [ "/run/podman/podman.sock:/var/run/docker.sock:ro" ];
-        ports = [ "2375:2375" ];
-        environment.CONTAINERS = "1";
-      };
+  virtualisation.oci-containers.containers = {
+    podman-socket-proxy = {
+      image = "tecnativa/docker-socket-proxy:v0.4.2";
+      volumes = [ "/run/podman/podman.sock:/var/run/docker.sock:ro" ];
+      ports = [ "2375:2375" ];
+      environment.CONTAINERS = "1";
     };
+  };
+
+  systemd.user.services.kill-easyeffects = {
+    description = "Monitor and destroy Easy Effects Sink in PipeWire";
+
+    after = [
+      "pipewire.service"
+      "wireplumber.service"
+    ];
+    wantedBy = [ "graphical-session.target" ];
+
+    path = with pkgs; [
+      pipewire
+      jq
+      gnugrep
+      gawk
+    ];
+
+    serviceConfig = {
+      Restart = "always";
+      RestartSec = "5s";
+      NoNewPrivileges = true;
+    };
+
+    script = ''
+      kill_sink() {
+        NODE_IDS=$(pw-dump Node | jq -r '.[] | select(.info.props["node.description"] == "Easy Effects Sink") | .id')
+        
+        for ID in $NODE_IDS; do
+          if [ ! -z "$ID" ]; then
+            echo "Found Easy Effects Sink (ID: $ID). Destroying..."
+            pw-cli destroy "$ID"
+          fi
+        done
+      }
+
+      echo "Starting Easy Effects Killer Service..."
+      kill_sink
+
+      pw-mon -o | grep --line-buffered "added:" | while read -r line; do
+        kill_sink
+      done
+    '';
   };
 }

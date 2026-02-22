@@ -48,12 +48,12 @@
       url = "github:hyprwm/hyprshutdown";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     # TODO: https://github.com/Mic92/sops-nix/issues/576
     sops-nix = {
-      url = "github:samchouse/sops-nix";
+      url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     age-plugin-op = {
       url = "github:samchouse/age-plugin-op";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -75,7 +75,7 @@
           (patcher.fetchpatch {
             name = "beszel-systemd-monitoring.patch";
             url = "https://github.com/NixOS/nixpkgs/pull/461327.patch";
-            hash = "sha256-+cpTgQKH7L16cuFffqv9XCIrCpCOcgVN2lqEEJNqdnA=";
+            hash = "sha256-0EvLrR7x2LTtSl7knqoRgnVNI14UfiiJuILPdXKBrXw=";
           })
         ];
         niri.patches = [
@@ -115,7 +115,6 @@
       };
       pkgs = import nixpkgs pkgs-config;
 
-      openrgb-version = "1.0rc2";
       configuration = {
         inherit system;
 
@@ -135,41 +134,6 @@
                   hyprlock = nixpkgs-old.legacyPackages.${system}.hyprlock;
                   hyprshutdown = hyprshutdown.packages.${system}.hyprshutdown;
 
-                  sweet = pkgs.callPackage ./pkgs/sweet { };
-
-                  beszel =
-                    (prev.beszel.override {
-                      buildGoModule = final.staging.buildGo125Module;
-                    }).overrideAttrs
-                      (old: rec {
-                        version = "0.17.0";
-                        src = old.src.override {
-                          tag = "v${version}";
-                          hash = "sha256-MY/rsWdIiYsqcw6gqDkfA8A/Ied3OSHfJI3KUBxoRKc=";
-                        };
-
-                        vendorHash = "sha256-gfQU3jGwTGmMJIy9KTjk/Ncwpk886vMo4CJvm5Y5xpA=";
-
-                        webui = old.webui.overrideAttrs rec {
-                          inherit src version;
-
-                          sourceRoot = "${src.name}/internal/site";
-                          npmDepsHash = "sha256-1au4kSxyjdwFExIoUBSPf/At0jQsfbzlEXuigygBTRM=";
-
-                          npmDeps = prev.fetchNpmDeps {
-                            inherit src sourceRoot version;
-
-                            name = "${old.pname}-${version}-npm-deps";
-                            hash = npmDepsHash;
-                          };
-                        };
-
-                        preBuild = ''
-                          mkdir -p internal/site/dist
-                          cp -r ${webui}/* internal/site/dist
-                        '';
-                      });
-
                   # https://github.com/NixOS/nixpkgs/issues/226575#issuecomment-2813539847
                   logiops = prev.logiops.overrideAttrs (old: {
                     patches = (old.patches or [ ]) ++ [
@@ -180,72 +144,18 @@
                       })
                     ];
                   });
-
-                  openrgb = prev.openrgb.overrideAttrs (old: rec {
-                    version = openrgb-version;
-                    src = prev.fetchFromGitLab {
-                      owner = "CalcProgrammer1";
-                      repo = "OpenRGB";
-                      rev = "release_candidate_${version}";
-                      hash = "sha256-vdIA9i1ewcrfX5U7FkcRR+ISdH5uRi9fz9YU5IkPKJQ=";
-                    };
-
-                    patches = [ ./patches/openrgb_systemd.patch ];
-
-                    postPatch = ''
-                      patchShebangs scripts/build-udev-rules.sh
-                      substituteInPlace scripts/build-udev-rules.sh \
-                        --replace-fail /usr/bin/env "${prev.coreutils}/bin/env"
-                    '';
-
-                    qmakeFlags = old.qmakeFlags ++ [
-                      "OPENRGB_SYSTEM_PLUGIN_DIRECTORY=${
-                        toString (
-                          prev.symlinkJoin {
-                            name = "openrgb-plugins";
-                            paths = [
-                              final.openrgb-plugin-effects
-                              final.openrgb-plugin-visual-map
-                            ];
-                            # Remove all library version symlinks except one,
-                            # or they will result in duplicates in the UI.
-                            # We leave the one pointing to the actual library, usually the most
-                            # qualified one (eg. libOpenRGBHardwareSyncPlugin.so.1.0.0).
-                            postBuild = ''
-                              for f in $out/lib/*; do
-                                if [ "$(dirname $(readlink "$f"))" == "." ]; then
-                                  rm "$f"
-                                fi
-                              done
-                            '';
-                          }
-                        )
-                      }/lib/openrgb/plugins"
-                    ];
-                  });
-                  openrgb-plugin-effects = prev.openrgb-plugin-effects.overrideAttrs (old: rec {
-                    version = openrgb-version;
-                    src = prev.fetchFromGitLab {
-                      owner = "OpenRGBDevelopers";
-                      repo = "OpenRGBEffectsPlugin";
-                      rev = "release_candidate_${version}";
-                      hash = "sha256-0W0hO3PSMpPLc0a7g/Nn7GWMcwBXhOxh1Y2flpdcnfE=";
-                      fetchSubmodules = true;
+                  quickemu = prev.quickemu.overrideAttrs (old: rec {
+                    version = "7ea4e95";
+                    src = old.src.override {
+                      rev = version;
+                      hash = "sha256-pj6YQc7e4I6XvGq/uGGq2z/UhAs3ZeKrsJd8oLWjauA=";
                     };
 
                     patches = [ ];
-                    postPatch = "";
-
-                    buildInputs = old.buildInputs ++ [ prev.pipewire.dev ];
-
-                    CPATH = "${prev.pipewire.dev}/include/pipewire-0.3:${prev.pipewire.dev}/include/spa-0.2";
-                    qmakeFlags = [
-                      "QT_TOOL.lrelease.binary=${prev.lib.getDev prev.kdePackages.qttools}/bin/lrelease"
-                    ];
                   });
-                  openrgb-plugin-visual-map = prev.callPackage ./pkgs/openrgb-plugin-visual-map {
-                    version = openrgb-version;
-                  };
+
+                  sweet = pkgs.callPackage ./pkgs/sweet { };
+                  openrgb-plugin-visual-map = prev.callPackage ./pkgs/openrgb-plugin-visual-map { };
 
                   small = import nixpkgs-small pkgs-config;
                   staging = import nixpkgs-staging pkgs-config;
@@ -292,7 +202,7 @@
           biome
           shfmt
           shellcheck
-          nixfmt-rfc-style
+          nixfmt
           treefmt
           nodejs_25
           nodePackages.typescript

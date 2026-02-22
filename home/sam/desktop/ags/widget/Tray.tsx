@@ -54,7 +54,7 @@ export function Tray({
   }
 
   return (
-    <box class="tray">
+    <box class="tray wrapper">
       <IconsList items={items} config={config} />
 
       <box>
@@ -64,7 +64,7 @@ export function Tray({
           $={(self) => {
             labelRef = self;
           }}
-          class="icon"
+          class="icon big"
           label="arrow_drop_down"
         />
 

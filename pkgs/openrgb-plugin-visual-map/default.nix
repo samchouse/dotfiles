@@ -1,38 +1,46 @@
 {
+  lib,
   stdenv,
   fetchFromGitLab,
   glib,
+  openal,
+  hidapi,
+  pipewire,
   pkg-config,
-  kdePackages,
-  version,
-  lib,
+  qt6Packages,
+  openrgb,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "openrgb-plugin-visual-map";
-  version = version;
+  version = openrgb.version;
 
   src = fetchFromGitLab {
     owner = "OpenRGBDevelopers";
     repo = "OpenRGBVisualMapPlugin";
-    rev = "release_candidate_${finalAttrs.version}";
+    tag = "release_candidate_${finalAttrs.version}";
     hash = "sha256-XrYqDFj4tlIL0fEpWbtrKMwC08rtN1whIK6INi4qy+s=";
     fetchSubmodules = true;
   };
 
+  qmakeFlags = [
+    "CONFIG+=link_pkgconfig"
+    "PKGCONFIG+=libpipewire-0.3"
+    "QT_TOOL.lrelease.binary=${lib.getDev qt6Packages.qttools}/bin/lrelease"
+  ];
+
   nativeBuildInputs = [
     pkg-config
-    kdePackages.wrapQtAppsHook
-    kdePackages.qmake
+    qt6Packages.wrapQtAppsHook
+    qt6Packages.qmake
   ];
 
   buildInputs = [
-    kdePackages.qtbase
-    kdePackages.qt5compat
+    qt6Packages.qtbase
+    qt6Packages.qt5compat
     glib
-  ];
-
-  qmakeFlags = [
-    "QT_TOOL.lrelease.binary=${lib.getDev kdePackages.qttools}/bin/lrelease"
+    openal
+    hidapi
+    pipewire
   ];
 })

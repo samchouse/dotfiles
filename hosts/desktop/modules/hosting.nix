@@ -14,32 +14,17 @@
     };
 
     email = "sam@chouse.dev";
-    virtualHosts = {
-      "http://dev.coalesc.xyz" = {
-        extraConfig = ''
-          @userpath path_regexp userpath ^/([^/]+)(?:(/.*)|/?)?$
-          handle @userpath {
-            rewrite * {re.userpath.2}
-            reverse_proxy dev-{re.userpath.1}.coalesc.xyz:443 {
-              transport http { tls }
-              header_up Host dev-{re.userpath.1}.coalesc.xyz
-            }
-          }
-        '';
-      };
-    }
-    // builtins.listToAttrs (
+    globalConfig = ''
+      dns cloudflare {env.CF_API_TOKEN}
+    '';
+    virtualHosts = builtins.listToAttrs (
       map
         (host: {
           name = host.domain;
           value = {
             extraConfig = ''
-              tls {
-                dns cloudflare ${if host ? cloudflare then host.cloudflare else "{env.CF_API_TOKEN}"} 
-              }
-              reverse_proxy ${if host ? host then host.host else ""}:${toString host.port} {
+              reverse_proxy ${if host ? hostname then host.hostname else ""}:${toString host.port} {
                 header_up X-Forwarded-For {header.CF-Connecting-IP}
-                ${if host ? extra then host.extra else ""}
               }
             '';
           };
@@ -55,61 +40,22 @@
           }
           {
             domain = "deploy.xenfo.dev";
+            hostname = "pi";
             port = 3000;
-            host = "pi";
-          }
-          {
-            domain = "preview.coalesc.xyz";
-            port = 443;
-            host = "https://staging1";
-            cloudflare = "{env.COALESC_CF_API_TOKEN}";
-            extra = ''
-              header_up Host preview.coalesc.xyz
-              header_up Origin https://preview.coalesc.xyz
-
-              transport http {
-                tls_server_name preview.coalesc.xyz
-              }
-            '';
-          }
-          {
-            domain = "preview.smartbankconverter.com";
-            port = 443;
-            host = "https://staging1";
-            cloudflare = "{env.COALESC_CF_API_TOKEN}";
-            extra = ''
-              header_up Host preview.smartbankconverter.com
-              header_up Origin https://preview.smartbankconverter.com
-
-              transport http {
-                tls_server_name preview.smartbankconverter.com
-              }
-            '';
           }
         ]
     );
   };
 
-  virtualisation.oci-containers = {
-    containers = {
-      cloudflared = {
-        image = "cloudflare/cloudflared:2025.11.1";
-        autoStart = false;
-        cmd = [
-          "tunnel"
-          "--no-autoupdate"
-          "run"
-        ];
-      };
-      cloudflared-coalesc = {
-        image = "cloudflare/cloudflared:2025.11.1";
-        autoStart = false;
-        cmd = [
-          "tunnel"
-          "--no-autoupdate"
-          "run"
-        ];
-      };
+  virtualisation.oci-containers.containers = {
+    cloudflared = {
+      image = "cloudflare/cloudflared:2026.2.0";
+      autoStart = false;
+      cmd = [
+        "tunnel"
+        "--no-autoupdate"
+        "run"
+      ];
     };
   };
 }

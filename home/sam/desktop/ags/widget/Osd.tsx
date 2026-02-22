@@ -2,7 +2,8 @@ import Wireplumber from "gi://AstalWp";
 import type GLib from "gi://GLib?version=2.0";
 import { Astal, type Gdk, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
-import { createBinding, createComputed } from "gnim";
+import { createBinding } from "gnim";
+import { VolumeIcon } from "./VolumeIcon";
 
 export function Osd(gdkmonitor: Gdk.Monitor) {
   const { TOP, RIGHT } = Astal.WindowAnchor;
@@ -63,19 +64,7 @@ export function Osd(gdkmonitor: Gdk.Monitor) {
         onPressed={(self) => self.set_state(Gtk.EventSequenceState.CLAIMED)}
       />
       <box>
-        <label
-          label={createComputed(() => {
-            const volume = createBinding(speaker, "volume")();
-            return createBinding(speaker, "mute")()
-              ? "no_sound"
-              : volume === 0
-                ? "no_sound"
-                : volume < 0.5
-                  ? "volume_down"
-                  : "volume_up";
-          })}
-          class="icon"
-        />
+        <VolumeIcon />
         <slider
           $={(self) => {
             sliderRef = self;

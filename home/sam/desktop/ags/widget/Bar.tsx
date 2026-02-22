@@ -1,14 +1,17 @@
 import Hyprland from "gi://AstalHyprland";
+import Wireplumber from "gi://AstalWp";
+import type GLib from "gi://GLib?version=2.0";
 import { Astal, type Gdk, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
 import { execAsync } from "ags/process";
 import { createPoll } from "ags/time";
-import { createBinding, createComputed, For } from "gnim";
+import { createBinding, createComputed, createState, For } from "gnim";
 import { clsx } from "../utils";
 import { Audio } from "./Audio";
 import { Backdrop } from "./Backdrop";
 import { Clock } from "./Clock";
 import { Tray } from "./Tray";
+import { VolumeIcon } from "./VolumeIcon";
 
 export default function Bar(gdkmonitor: Gdk.Monitor) {
   const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
@@ -16,7 +19,9 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
   const time = createPoll("", 1000, "date '+%-I:%M %p'");
   const date = createPoll("", 1000, "date '+%a %b %-d'");
 
+  const wp = Wireplumber.get_default();
   const hyprland = Hyprland.get_default();
+
   const monitor = hyprland.monitors.find(
     (monitor) => monitor.name === gdkmonitor.connector,
   );
@@ -55,6 +60,10 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
     connectOnBackdropClick: connectOnClick,
   });
 
+  const { defaultSpeaker: speaker } = wp;
+  let volumeHoverTimeout: GLib.Source | null = null;
+  const [revealVolume, setRevealVolume] = createState(false);
+
   return (
     <window
       visible
@@ -75,7 +84,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
             <label label="Welcome to AGS!" />
           </button>
         </box>
-        <box $type="center" spacing={5} class="workspaces">
+        <box $type="center" spacing={5} class="workspaces wrapper">
           <For each={workspaces}>
             {([workspace, isEmpty, isActive, isFocused]) => (
               <centerbox
@@ -103,16 +112,44 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
             connectOnBackdropClick={connectOnClick}
           />
 
-          <button onClicked={toggleAudio}>
-            <label class="icon" label="volume_down" />
+          <button onClicked={toggleAudio} class="wrapper">
+            <Gtk.EventControllerMotion
+              onEnter={() => {
+                volumeHoverTimeout = setTimeout(() => {
+                  setRevealVolume(true);
+                  setTimeout(() => {});
+                }, 500);
+              }}
+              onLeave={() => {
+                if (volumeHoverTimeout) clearTimeout(volumeHoverTimeout);
+                setRevealVolume(false);
+              }}
+            />
+
+            <box class="volume">
+              <revealer
+                revealChild={revealVolume}
+                transitionType={Gtk.RevealerTransitionType.SLIDE_LEFT}
+              >
+                <label
+                  label={createComputed(
+                    () =>
+                      `${(createBinding(speaker, "volume")() * 100).toFixed(0)}%`,
+                  )}
+                />
+              </revealer>
+              <VolumeIcon class="medium" />
+            </box>
           </button>
-          <button onClicked={toggleClock}>
+          <button onClicked={toggleClock} class="wrapper">
             <box spacing={8}>
               <label label={date} />
               <label label={time} />
             </box>
           </button>
-          <label label="power_settings_new" class="icon" />
+          <button class="wrapper">
+            <label label="settings" class="icon medium" />
+          </button>
         </box>
       </centerbox>
     </window>

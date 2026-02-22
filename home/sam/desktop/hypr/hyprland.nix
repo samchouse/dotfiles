@@ -124,6 +124,7 @@
         "$mod, S, exec, ~/.config/hypr/scripts/screenshot.sh"
         "$mod, space, exec, vicinae toggle"
         "$mod, V, exec, vicinae vicinae://extensions/vicinae/clipboard/history"
+        "$mod, B, exec, hyprctl -j getoption binds:disable_keybind_grabbing | jq '.int | (. + 1) % 2' | xargs hyprctl keyword binds:disable_keybind_grabbing"
 
         "$mod, left, movefocus, l"
         "$mod, right, movefocus, r"

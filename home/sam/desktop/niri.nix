@@ -1,3 +1,11 @@
+# https://github.com/YaLTeR/niri/blob/main/resources/default-config.kdl
+# https://github.com/nix-community/disko
+# https://github.com/nix-community/lanzaboote
+# https://github.com/nix-community/stylix
+# https://github.com/YaLTeR/niri
+# https://yalter.github.io/niri/Configuration%3A-Key-Bindings.html
+# https://github.com/sodiboo/niri-flake/blob/main/docs.md
+# https://github.com/Aylur/astal/pull/70
 {
   programs.niri.settings = {
     binds = {
@@ -31,7 +39,7 @@
             x:
             let
               wsNum = x + 1;
-              key = if wsNum == 10 then "0" else builtins.toString wsNum;
+              key = if wsNum == 10 then "0" else toString wsNum;
             in
             [
               {
