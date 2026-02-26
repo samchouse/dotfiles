@@ -1,6 +1,5 @@
 {
   imports = [
-    ./hosting.nix
     ./desktop.nix
     ./nvidia.nix
     ./tailscale.nix

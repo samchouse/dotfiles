@@ -174,6 +174,16 @@ in
       ports = [ "2375:2375" ];
       environment.CONTAINERS = "1";
     };
+
+    cloudflared = {
+      image = "cloudflare/cloudflared:2026.2.0";
+      autoStart = false;
+      cmd = [
+        "tunnel"
+        "--no-autoupdate"
+        "run"
+      ];
+    };
   };
 
   systemd.user.services.kill-easyeffects = {

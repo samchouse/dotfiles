@@ -7,7 +7,7 @@
     ./desktop
     ./zsh.nix
     ./git.nix
-    ./projects.nix
+    ./services.nix
     ../ssh.nix
   ];
 

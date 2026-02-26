@@ -153,6 +153,59 @@
 
                     patches = [ ];
                   });
+                  beszel =
+                    (prev.beszel.override {
+                      buildGoModule = final.staging.buildGo126Module;
+                    }).overrideAttrs
+                      (old: rec {
+                        version = "0.18.4";
+                        src = old.src.override {
+                          tag = "v${version}";
+                          hash = "sha256-Ugxy23bLrKIDclrYRFJc6Nq4Ak2S3OLeyMaxuRkS/tY=";
+                        };
+
+                        webui = prev.buildNpmPackage {
+                          inherit
+                            version
+                            src
+                            ;
+
+                          pname = old.pname;
+                          meta = old.meta;
+
+                          npmFlags = [ "--legacy-peer-deps" ];
+
+                          buildPhase = ''
+                            runHook preBuild
+
+                            npx lingui extract --overwrite
+                            npx lingui compile
+                            node --max_old_space_size=1024000 ./node_modules/vite/bin/vite.js build
+
+                            runHook postBuild
+                          '';
+
+                          installPhase = ''
+                            runHook preInstall
+
+                            mkdir -p $out
+                            cp -r dist/* $out
+
+                            runHook postInstall
+                          '';
+
+                          sourceRoot = "${src.name}/internal/site";
+
+                          npmDepsHash = "sha256-509/n5OH4z6LZH+jlmDLl2DlqKrD7M5ajtalmF/4n1o=";
+                        };
+
+                        vendorHash = "sha256-V9P3VP4CsboaWPIt/MhtxYDsYH3pwKL4xK5YcLKgbI8=";
+
+                        preBuild = ''
+                          mkdir -p internal/site/dist
+                          cp -r ${webui}/* internal/site/dist
+                        '';
+                      });
 
                   sweet = pkgs.callPackage ./pkgs/sweet { };
                   openrgb-plugin-visual-map = prev.callPackage ./pkgs/openrgb-plugin-visual-map { };

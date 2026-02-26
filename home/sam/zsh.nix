@@ -191,6 +191,7 @@ in
 
     shellAliases = {
       c = "code-insiders";
+      ts = "tmux-session";
       rb = "${rebuild}/bin/rebuild";
     };
 

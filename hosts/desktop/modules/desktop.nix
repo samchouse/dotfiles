@@ -26,6 +26,7 @@
   services = {
     sunshine = {
       enable = true;
+      package = pkgs.staging.sunshine;
       capSysAdmin = true;
       openFirewall = true;
       applications = {

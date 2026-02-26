@@ -10,5 +10,5 @@ scene: !include scenes.yaml
 http:
   cors_allowed_origins: https://ha.xenfo.dev
   use_x_forwarded_for: true
-  trusted_proxies: 127.0.0.1
+  trusted_proxies: 10.88.0.0/16
   login_attempts_threshold: 5

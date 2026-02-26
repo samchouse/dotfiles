@@ -17,7 +17,7 @@
       };
     };
 
-    gooners = {
+    tmux = {
       Install = {
         WantedBy = [ "graphical-session.target" ];
       };
@@ -28,9 +28,8 @@
 
       Service = {
         Type = "forking";
-        WorkingDirectory = "/home/sam/Documents/servers/Gooners";
-        ExecStart = "${pkgs.tmux}/bin/tmux new-session -s gooners -d devenv shell java -Xms4G -Xmx4G -jar server.jar --nogui";
-        ExecStop = "${pkgs.tmux}/bin/tmux kill-session -t gooners";
+        ExecStart = "${pkgs.tmux}/bin/tmux new-session -s main -d";
+        ExecStop = "${pkgs.tmux}/bin/tmux kill-session -t main";
         Environment = [ "TMUX_TMPDIR=/run/user/1000" ];
       };
     };
