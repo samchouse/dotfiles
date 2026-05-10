@@ -7,7 +7,6 @@
 
   security.pam.services.hyprlock = { };
   programs = {
-    niri.enable = false;
     hyprland = {
       enable = true;
       package = pkgs.hyprland;
@@ -56,14 +55,14 @@
         default_session = {
           command = "${pkgs.tuigreet}/bin/tuigreet -t --time-format '%a, %B %-d, %Y - %-I:%M %p' -r --user-menu --asterisks --power-shutdown 'systemctl poweroff' --power-reboot 'systemctl reboot'";
         };
+        initial_session = {
+          user = "sam";
+          command = "${pkgs.hyprland}/bin/start-hyprland";
+        };
       };
     };
 
     udev.packages = [ pkgs.swayosd ];
-    gnome = {
-      gnome-keyring.enable = true;
-      gcr-ssh-agent.enable = false;
-    };
   };
   systemd = {
     services.swayosd-libinput-backend = {

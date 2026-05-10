@@ -226,7 +226,7 @@ in
     gparted
     jujutsu
     arduino-ide
-    protonvpn-gui
+    proton-vpn
     ffmpeg
     lunar-client
     easyeffects
@@ -237,7 +237,6 @@ in
     quickemu
     virt-manager
     (pkgs.writeShellScriptBin "dua" "${pkgs.dua}/bin/dua -i /tmp -i /mnt/secondary $@")
-    (pkgs.writeShellScriptBin "tmux-session" "TMUX_TMPDIR=/run/user/1000 ${pkgs.tmux}/bin/tmux new-session -A -s $(basename $PWD) $@")
   ];
 
   users = {

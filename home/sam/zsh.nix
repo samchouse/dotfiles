@@ -202,7 +202,29 @@ in
 
     initContent = lib.mkMerge [
       (lib.mkBefore ''
-        [[ "$ZED_TERM" == "true" || "$TERM_PROGRAM" == "vscode" ]] && [[ "$TERM_PROGRAM" != "TMUX" ]] && tmux-session
+        tmux-session() {
+          TMUX_TMPDIR=/run/user/1000 ${pkgs.tmux}/bin/tmux new-session -A -s "$(basename "$PWD")" "$@"
+        }
+
+        update_ssh_tty() {
+          if [ -e "/tmp/tmux/$(tmux display-message -p '#S')/$(basename $(tmux display-message -p '#{client_name}'))-ssh_tty" ]; then
+            export SSH_TTY=''${SSH_TTY:-/dev/pts/9999}
+          else
+            unset SSH_TTY
+          fi
+        }
+
+        if [ -n "$TMUX" ]; then
+          add-zsh-hook precmd update_ssh_tty
+          export SSH_AUTH_SOCK="/tmp/tmux/$(tmux display-message -p '#S')/auth_sock"
+        fi
+        export SSH_AUTH_SOCK=''${SSH_AUTH_SOCK:-/home/sam/.1password/agent.sock}
+
+        if [[ "$ZED_TERM" == "true" || "$TERM_PROGRAM" == "vscode" ]]; then
+          while true; do
+            tmux-session
+          done
+        fi
       '')
       ''
         function y() {
@@ -214,15 +236,11 @@ in
           rm -f -- "$tmp"
         }
 
-        [ -z "$SSH_TTY" ] && [ -n "$SSH_CONNECTION" ] && export SSH_TTY="/dev/pts/9999"
-        [ -n "$SSH_CONNECTION" ] && [[ "$TERM_PROGRAM" == "vscode" ]] && export SSH_AUTH_SOCK=$(ls -t /tmp | rg auth-agent | head -1 | xargs -I {} echo /tmp/{}/listener.sock)
-        export SSH_AUTH_SOCK=''${SSH_AUTH_SOCK:-/home/sam/.1password/agent.sock}
-
-        export PATH="$PATH:${pkgs.qt6Packages.qtstyleplugin-kvantum}/bin"
-
         export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
         zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
         source <(${pkgs.carapace}/bin/carapace _carapace)
+
+        export PATH="$PATH:${pkgs.qt6Packages.qtstyleplugin-kvantum}/bin"
       ''
     ];
   };

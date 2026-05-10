@@ -8,6 +8,7 @@
     enable = true;
 
     signing = {
+      format = "openpgp";
       signByDefault = true;
       key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJvAcV+VOvK8Gg2NqLp/CYMOHtydekmVO+GPQ2vrGprp";
     };

@@ -5,7 +5,7 @@ in
 {
   virtualisation.oci-containers.containers = {
     homeassistant = {
-      image = "ghcr.io/home-assistant/home-assistant:2026.2.3";
+      image = "ghcr.io/home-assistant/home-assistant:2026.5.1";
       volumes = [
         "home-assistant:/config"
         "${flake}/hosts/desktop/config/ha-config.yaml:/config/configuration.yaml:rw"

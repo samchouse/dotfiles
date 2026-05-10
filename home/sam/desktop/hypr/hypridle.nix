@@ -17,6 +17,7 @@
         {
           timeout = 300;
           on-timeout = "pidof hyprlock || ~/.config/eww/scripts/lock.sh";
+          on-resume = "~/.config/eww/scripts/lock.sh chat";
         }
       ];
     };

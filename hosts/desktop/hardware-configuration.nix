@@ -10,40 +10,52 @@
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  boot.initrd.availableKernelModules = [
-    "xhci_pci"
-    "ahci"
-    "nvme"
-    "usb_storage"
-    "usbhid"
-    "sd_mod"
-  ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
+  boot = {
+    kernelModules = [ "kvm-intel" ];
+    extraModulePackages = [ ];
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/08a2d42f-ccf6-4a34-ae5e-df77642d24ed";
-    fsType = "ext4";
+    initrd = {
+      kernelModules = [ ];
+      systemd.enable = true;
+      availableKernelModules = [
+        "xhci_pci"
+        "ahci"
+        "nvme"
+        "usb_storage"
+        "usbhid"
+        "sd_mod"
+      ];
+    };
   };
 
-  boot.initrd.luks.devices."luks-68f12c7e-fc53-49de-9b3d-91ab69f6c2a4".device =
-    "/dev/disk/by-uuid/68f12c7e-fc53-49de-9b3d-91ab69f6c2a4";
-  boot.initrd.luks.devices."luks-3123f1b8-9b1e-4d7b-931f-416a79602070".device =
-    "/dev/disk/by-uuid/3123f1b8-9b1e-4d7b-931f-416a79602070";
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/71F0-031A";
-    fsType = "vfat";
-    options = [
-      "fmask=0077"
-      "dmask=0077"
-    ];
+  boot.initrd.luks.devices = {
+    "luks-68f12c7e-fc53-49de-9b3d-91ab69f6c2a4" = {
+      device = "/dev/disk/by-uuid/68f12c7e-fc53-49de-9b3d-91ab69f6c2a4";
+      crypttabExtraOpts = [ "tpm2-device=auto" ];
+    };
+    "luks-3123f1b8-9b1e-4d7b-931f-416a79602070" = {
+      device = "/dev/disk/by-uuid/3123f1b8-9b1e-4d7b-931f-416a79602070";
+      crypttabExtraOpts = [ "tpm2-device=auto" ];
+    };
   };
 
-  fileSystems."/mnt/secondary" = {
-    device = "/dev/disk/by-uuid/422fb13d-33f6-4a00-a2ef-744af615c26f";
-    fsType = "ext4";
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-uuid/08a2d42f-ccf6-4a34-ae5e-df77642d24ed";
+      fsType = "ext4";
+    };
+    "/boot" = {
+      device = "/dev/disk/by-uuid/71F0-031A";
+      fsType = "vfat";
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
+    };
+    "/mnt/secondary" = {
+      device = "/dev/disk/by-uuid/422fb13d-33f6-4a00-a2ef-744af615c26f";
+      fsType = "ext4";
+    };
   };
 
   swapDevices = [ ];

@@ -3,9 +3,7 @@
     ./hypr
     ./eww
     ./ags
-    ./neovim
     ./discord
-    ./niri.nix
     ./dunst.nix
     ./kitty.nix
     ./theme.nix

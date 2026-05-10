@@ -40,6 +40,46 @@ case $1 in
     fi
   ) &
   ;;
+"chat1")
+LOG_FILE="/tmp/hypridle_input_log"
+
+: > "$LOG_FILE"
+
+sudo libinput debug-events | while read -r line; do
+    now=$(date +"%H:%M:%S.%3N")
+
+    if [[ "$line" == *"KEYBOARD_KEY"* ]]; then
+        echo "$now keyboard" >> "$LOG_FILE"
+    elif [[ "$line" == *"POINTER"* ]]; then
+        echo "$now mouse" >> "$LOG_FILE"
+    elif [[ "$line" == *"TOUCH"* ]]; then
+        echo "$now touch" >> "$LOG_FILE"
+    else
+        continue
+    fi
+
+    # keep only last 5 events
+    tail -n 5 "$LOG_FILE" > "$LOG_FILE.tmp" && mv "$LOG_FILE.tmp" "$LOG_FILE"
+done
+  ;;
+"chat")
+
+LOG_FILE="/tmp/hypridle_input_log"
+
+now=$(date +"%H:%M:%S.%3N")
+
+output="Wake @ $now\n"
+
+if [[ -f "$LOG_FILE" ]]; then
+    while read -r line; do
+        output+="$line\n"
+    done < "$LOG_FILE"
+else
+    output+="no input history"
+fi
+
+echo "$output"
+  ;;
 *)
   if ! pgrep -x "hyprlock" >/dev/null; then
     playerctl --player playerctld pause || true
@@ -49,9 +89,8 @@ case $1 in
     if [ "$i_status" == "active" ]; then
       "$INHIBITOR" toggle true
     fi
-    systemctl --user status hypridle --no-pager
 
-    if [ "$1" == "eww" ]; then
+    if [ "$1" == "full" ]; then
       $0 work ss &
     else
       $0 work

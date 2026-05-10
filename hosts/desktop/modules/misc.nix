@@ -9,6 +9,24 @@ let
     mv /var/lib/OpenRGB/OpenRGB.json /var/lib/OpenRGB/OpenRGB.json.bak
     ${pkgs.jq}/bin/jq '.Detectors.detectors."Genesis Thor 300" = false | .' /var/lib/OpenRGB/OpenRGB.json.bak > /var/lib/OpenRGB/OpenRGB.json
   '';
+
+  update-symlinks = pkgs.writeShellScriptBin "update-symlinks" ''
+    IS_ATTACH="$1"
+    CLIENT_ID="$2"
+    SESSION_NAME="$3"
+
+    BASE_DIR="/tmp/tmux/''${SESSION_NAME}"
+    BASE_PATH="''${BASE_DIR}/$(basename "''${CLIENT_ID}")"
+    AUTH_SOCKET="''${BASE_PATH}-auth_sock"
+
+    mkdir -p "$BASE_DIR"
+
+    if [ "$IS_ATTACH" = "true" ]; then
+      ln -sf "$(tmux show-environment SSH_AUTH_SOCK | sed 's/SSH_AUTH_SOCK=//')" "$AUTH_SOCKET"
+      [ "$(tmux show-environment SSH_CONNECTION | sed 's/SSH_CONNECTION//' | sed 's/=//')" != "-" ] && touch "''${BASE_PATH}-ssh_tty"
+    fi
+    ln -sf "$AUTH_SOCKET" "''${BASE_DIR}/auth_sock"
+  '';
 in
 {
   environment = {
@@ -46,6 +64,8 @@ in
       ];
       terminal = "tmux-256color";
       extraConfig = ''
+        set -g allow-passthrough on
+
         set-option -g status-position top
         set -g mouse on
 
@@ -69,6 +89,12 @@ in
         set -agF status-right "#{E:@catppuccin_status_cpu}"
         set -ag status-right "#{E:@catppuccin_status_session}"
         run-shell ${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/cpu.tmux
+
+        set-hook -g session-created 'run-shell "rm -r /tmp/tmux/#{session_name}"'
+        set-hook -g client-active 'run-shell "${update-symlinks}/bin/update-symlinks false #{hook_client} #{session_name}"'
+        set-hook -g client-attached 'run-shell "${update-symlinks}/bin/update-symlinks true #{hook_client} #{session_name}"'
+        set-hook -g client-focus-in 'run-shell "${update-symlinks}/bin/update-symlinks false #{hook_client} #{session_name}"'
+        set-hook -g client-session-changed 'run-shell "${update-symlinks}/bin/update-symlinks true #{hook_client} #{session_name}"'
       '';
     };
   };
@@ -176,7 +202,7 @@ in
     };
 
     cloudflared = {
-      image = "cloudflare/cloudflared:2026.2.0";
+      image = "cloudflare/cloudflared:2026.3.0";
       autoStart = false;
       cmd = [
         "tunnel"
@@ -211,7 +237,7 @@ in
     script = ''
       kill_sink() {
         NODE_IDS=$(pw-dump Node | jq -r '.[] | select(.info.props["node.description"] == "Easy Effects Sink") | .id')
-        
+
         for ID in $NODE_IDS; do
           if [ ! -z "$ID" ]; then
             echo "Found Easy Effects Sink (ID: $ID). Destroying..."

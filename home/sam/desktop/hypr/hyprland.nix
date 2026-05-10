@@ -177,6 +177,7 @@
         "hyprctl output create headless VIRT-1 >>/dev/null 2>&1"
         "$HOME/.config/hypr/scripts/startup.sh >>/dev/null 2>&1"
         "$HOME/.config/hypr/scripts/monitor-watcher.sh >>/dev/null 2>&1"
+        "$HOME/.config/eww/scripts/lock.sh full >>/dev/null 2>&1"
       ];
     };
   };

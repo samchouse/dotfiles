@@ -1,5 +1,6 @@
 {
   pkgs,
+  config,
   ...
 }:
 let
@@ -42,6 +43,7 @@ in
 
   gtk = {
     enable = true;
+    gtk4.theme = config.gtk.theme;
 
     cursorTheme = {
       name = "Bibata-Modern-Classic";

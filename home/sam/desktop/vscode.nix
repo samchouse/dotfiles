@@ -8,14 +8,14 @@
     package =
       (pkgs.vscode.override {
         isInsiders = true;
-        commandLineArgs = "--password-store='gnome-libsecret'";
+        commandLineArgs = "--password-store='basic'";
       }).overrideAttrs
         (oldAttrs: {
           version = "latest";
           src = (
             fetchTarball {
               url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-              sha256 = "sha256:0pjrh1rvxiw5wigasr1hyzkhwxds5lca9g80bsjks05ymc00nq59";
+              sha256 = "sha256:1v1r8vq41dmxaifqhfhgji12qwgm44xanwbihrv3319384s8bf5f";
             }
           );
         });
