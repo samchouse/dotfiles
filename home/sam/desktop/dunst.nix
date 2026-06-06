@@ -19,8 +19,13 @@
     };
   };
 
-  catppuccin.dunst = {
+  catppuccin = {
     enable = true;
-    flavor = "macchiato";
+    autoEnable = false;
+
+    dunst = {
+      enable = true;
+      flavor = "macchiato";
+    };
   };
 }

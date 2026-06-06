@@ -9,18 +9,6 @@
 
       background = [
         {
-          monitor = "DP-2";
-          path = "/tmp/hyprlock-1.png";
-          blur_passes = 1;
-          blur_size = 3;
-        }
-        {
-          monitor = "DP-1";
-          path = "/tmp/hyprlock-2.png";
-          blur_passes = 1;
-          blur_size = 3;
-        }
-        {
           monitor = "VIRT-1";
           path = "/tmp/hyprlock-3.png";
           blur_passes = 1;

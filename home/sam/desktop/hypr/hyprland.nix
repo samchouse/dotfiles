@@ -3,18 +3,18 @@
   ...
 }:
 {
-  services.swayosd.enable = true;
+  home = {
+    sessionVariables = {
+      QT_QPA_PLATFORM = "wayland";
+    };
 
-  home.pointerCursor = {
-    gtk.enable = false;
-    x11.enable = true;
-    package = pkgs.niqs.bibata-hyprcursor;
-    name = "Bibata-modern";
-    size = 24;
-  };
-
-  home.sessionVariables = {
-    QT_QPA_PLATFORM = "wayland";
+    pointerCursor = {
+      gtk.enable = false;
+      x11.enable = true;
+      package = pkgs.niqs.bibata-hyprcursor;
+      name = "Bibata-modern";
+      size = 24;
+    };
   };
 
   wayland.windowManager.hyprland = {
@@ -22,17 +22,21 @@
     package = null;
     portalPackage = null;
 
+    configType = "hyprlang";
     settings = {
       env = [
+        "NVD_BACKEND,direct"
         "LIBVA_DRIVER_NAME,nvidia"
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-        "NVD_BACKEND,direct"
+
+        "HYPRCURSOR_SIZE,24"
+        "HYPRCURSOR_THEME,Bitbata-modern"
+        "XCURSOR_SIZE,24"
+        "XCURSOR_THEME,Bibata-Modern-Classic"
+
         "XDG_SESSION_TYPE,wayland"
         "ELECTRON_OZONE_PLATFORM_HINT,auto"
-        "XCURSOR_THEME,Bibata-Modern-Classic"
-        "XCURSOR_SIZE,24"
-        "HYPRCURSOR_THEME,Bitbata-modern"
-        "HYPRCURSOR_SIZE,24"
+
         "QT_QPA_PLATFORMTHEME,qt5ct"
         "PATH,$PATH:${pkgs.qt6Packages.qtstyleplugin-kvantum}/bin"
       ];
@@ -85,21 +89,14 @@
         kb_options = "ctrl:nocaps";
       };
 
-      dwindle = {
-        pseudotile = true;
-        preserve_split = true;
-      };
+      dwindle.preserve_split = true;
 
       monitor = [
-        "DP-2,2560x1440@144,0x0,1"
-        "DP-1,2560x1440@60,2560x0,1"
         ",preferred,auto,auto"
       ];
 
       workspace = [
-        "1,monitor:DP-2,default:true"
-        "2,monitor:DP-1,default:true"
-        "10,monitor:VIRT-1,default:true"
+        "1,monitor:VIRT-1,default:true"
       ];
 
       layerrule = [
@@ -119,7 +116,7 @@
         "$mod, M, exec, hyprshutdown"
         "$mod SHIFT, V, togglefloating, "
         "$mod, P, pseudo, "
-        "$mod, J, togglesplit, "
+        "$mod, J, layoutmsg, togglesplit"
         "$mod, F, fullscreen, "
         "$mod, S, exec, ~/.config/hypr/scripts/screenshot.sh"
         "$mod, space, exec, vicinae toggle"
@@ -162,22 +159,8 @@
         "$mod, mouse:273, resizewindow"
       ];
 
-      binde = [
-        # Volume keys
-        ", XF86AudioNext, exec, playerctl --player playerctld next"
-        ", XF86AudioPrev, exec, playerctl --player playerctld previous"
-        ", XF86AudioPlay, exec, playerctl --player playerctld play-pause"
-        ", XF86AudioMute, exec, swayosd-client --output-volume mute-toggle"
-        ", XF86AudioRaiseVolume, exec, swayosd-client --output-volume raise"
-        ", XF86AudioLowerVolume, exec, swayosd-client --output-volume lower"
-      ];
-
       exec-once = [
-        "gammastep -O 4000 >>/dev/null 2>&1"
-        "hyprctl output create headless VIRT-1 >>/dev/null 2>&1"
-        "$HOME/.config/hypr/scripts/startup.sh >>/dev/null 2>&1"
-        "$HOME/.config/hypr/scripts/monitor-watcher.sh >>/dev/null 2>&1"
-        "$HOME/.config/eww/scripts/lock.sh full >>/dev/null 2>&1"
+        "$HOME/.config/hypr/scripts/startup.sh"
       ];
     };
   };

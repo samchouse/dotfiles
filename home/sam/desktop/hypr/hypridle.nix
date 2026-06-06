@@ -6,18 +6,17 @@
       listener = [
         {
           timeout = 60;
-          on-timeout = "pidof hyprlock && ~/.config/eww/scripts/lock.sh misc off";
-          on-resume = "~/.config/eww/scripts/lock.sh misc on";
+          on-timeout = "pidof hyprlock && ~/.config/hypr/scripts/lock.sh misc off";
+          on-resume = "~/.config/hypr/scripts/lock.sh misc on";
         }
         {
           timeout = 180;
-          on-timeout = "pidof hyprlock || (~/.config/eww/scripts/lock.sh ss && ~/.config/eww/scripts/lock.sh misc off)";
-          on-resume = "~/.config/eww/scripts/lock.sh misc on";
+          on-timeout = "pidof hyprlock || (~/.config/hypr/scripts/lock.sh ss && ~/.config/hypr/scripts/lock.sh misc off)";
+          on-resume = "~/.config/hypr/scripts/lock.sh misc on";
         }
         {
           timeout = 300;
-          on-timeout = "pidof hyprlock || ~/.config/eww/scripts/lock.sh";
-          on-resume = "~/.config/eww/scripts/lock.sh chat";
+          on-timeout = "pidof hyprlock || ~/.config/hypr/scripts/lock.sh";
         }
       ];
     };

@@ -17,31 +17,21 @@
   home.homeDirectory = "/home/sam";
 
   home.packages = with pkgs; [
-    firefox
-    zen-browser
-    gammastep
-    google-chrome
     gh
-    zed-editor
+    yazi
+    grim
+    slurp
+    devenv
+    lumafly
+    rainfrog
+    r2modman
+    wayfreeze
+    zen-browser
+    wl-clipboard
     prismlauncher
     bibata-cursors
-    playerctl
-    grim
-    niqs.bibata-hyprcursor
     kora-icon-theme
-    wayfreeze
-    slurp
-    wl-clipboard
-    yazi
-    qview
-    devenv
-    rainfrog
-    cider-2
-    thunderbird
-    r2modman
-    lumafly
-    libreoffice
-    gtrash
+    niqs.bibata-hyprcursor
     (pkgs.writeShellScriptBin "upnp" ''
       case $1 in
       open)

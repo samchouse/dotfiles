@@ -40,7 +40,7 @@
         ];
       };
       settings = {
-        output_name = "2";
+        output_name = "0";
         global_prep_cmd = builtins.toJSON [
           {
             do = "sh -c \"hyprctl keyword monitor VIRT-1,\${SUNSHINE_CLIENT_WIDTH}x\${SUNSHINE_CLIENT_HEIGHT}@\${SUNSHINE_CLIENT_FPS},5120x0,1\"";
@@ -61,42 +61,18 @@
         };
       };
     };
-
-    udev.packages = [ pkgs.swayosd ];
   };
-  systemd = {
-    services.swayosd-libinput-backend = {
-      enable = true;
-
-      wantedBy = [ "graphical-session.target" ];
-
-      unitConfig = {
-        Description = "SwayOSD LibInput backend for listening to certain keys like CapsLock, ScrollLock, VolumeUp, etc...";
-        PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
-        Documentation = "https://github.com/ErikReider/SwayOSD";
-      };
-
-      serviceConfig = {
-        Type = "dbus";
-        BusName = "org.erikreider.swayosd";
-        ExecStart = "${pkgs.swayosd}/bin/swayosd-libinput-backend";
-        Restart = "on-failure";
-      };
-    };
-
-    user.services.polkit-gnome-authentication-agent-1 = {
-      description = "polkit-gnome-authentication-agent-1";
-      wantedBy = [ "graphical-session.target" ];
-      wants = [ "graphical-session.target" ];
-      after = [ "graphical-session.target" ];
-      serviceConfig = {
-        Type = "simple";
-        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-        Restart = "on-failure";
-        RestartSec = 1;
-        TimeoutStopSec = 10;
-      };
+  systemd.user.services.polkit-gnome-authentication-agent-1 = {
+    description = "polkit-gnome-authentication-agent-1";
+    wantedBy = [ "graphical-session.target" ];
+    wants = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 1;
+      TimeoutStopSec = 10;
     };
   };
 

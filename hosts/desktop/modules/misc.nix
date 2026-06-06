@@ -5,11 +5,6 @@
   ...
 }:
 let
-  no-kb = pkgs.writeShellScriptBin "no-kb" ''
-    mv /var/lib/OpenRGB/OpenRGB.json /var/lib/OpenRGB/OpenRGB.json.bak
-    ${pkgs.jq}/bin/jq '.Detectors.detectors."Genesis Thor 300" = false | .' /var/lib/OpenRGB/OpenRGB.json.bak > /var/lib/OpenRGB/OpenRGB.json
-  '';
-
   update-symlinks = pkgs.writeShellScriptBin "update-symlinks" ''
     IS_ATTACH="$1"
     CLIENT_ID="$2"
@@ -33,7 +28,6 @@ in
     systemPackages = with pkgs; [ logiops ];
 
     etc = {
-      "logid.cfg".source = ../config/logid.cfg;
       "1password/custom_allowed_browsers" = {
         text = ''
           zen
@@ -101,9 +95,6 @@ in
 
   services = {
     udev = {
-      extraRules = ''
-        ACTION=="change", SUBSYSTEM=="power_supply", ATTRS{manufacturer}=="Logitech", ATTRS{model_name}=="MX Master 3S", RUN{program}="${pkgs.systemd}/bin/systemctl --no-block try-restart logiops.service"
-      '';
       packages = [
         (pkgs.writeTextFile {
           name = "xbox-one-elite-2-udev-rules";
@@ -111,16 +102,6 @@ in
           destination = "/etc/udev/rules.d/60-xbox-elite-2-hid.rules";
         })
       ];
-    };
-    hardware.openrgb = {
-      enable = true;
-      package = pkgs.openrgb.withPlugins (
-        with pkgs;
-        [
-          openrgb-plugin-effects
-          openrgb-plugin-visual-map
-        ]
-      );
     };
 
     nfs.server = {
@@ -150,30 +131,6 @@ in
   };
 
   systemd.services = {
-    no-kb = {
-      description = "no-kb";
-      serviceConfig = {
-        ExecStart = "${no-kb}/bin/no-kb";
-        Type = "oneshot";
-        After = "openrgb.service";
-      };
-      wantedBy = [ "multi-user.target" ];
-    };
-    logid = {
-      description = "Logitech Configuration Daemon";
-
-      after = [ "multi-user.target" ];
-      wants = [ "multi-user.target" ];
-      wantedBy = [ "graphical.target" ];
-
-      startLimitIntervalSec = 0;
-      serviceConfig = {
-        Type = "simple";
-        ExecStart = "${pkgs.logiops}/bin/logid -v -c /etc/logid.cfg";
-        User = "root";
-      };
-    };
-
     beszel-hub = {
       serviceConfig = {
         ExecStartPre = lib.mkForce [
@@ -202,7 +159,7 @@ in
     };
 
     cloudflared = {
-      image = "cloudflare/cloudflared:2026.3.0";
+      image = "cloudflare/cloudflared:2026.5.2";
       autoStart = false;
       cmd = [
         "tunnel"
@@ -210,48 +167,5 @@ in
         "run"
       ];
     };
-  };
-
-  systemd.user.services.kill-easyeffects = {
-    description = "Monitor and destroy Easy Effects Sink in PipeWire";
-
-    after = [
-      "pipewire.service"
-      "wireplumber.service"
-    ];
-    wantedBy = [ "graphical-session.target" ];
-
-    path = with pkgs; [
-      pipewire
-      jq
-      gnugrep
-      gawk
-    ];
-
-    serviceConfig = {
-      Restart = "always";
-      RestartSec = "5s";
-      NoNewPrivileges = true;
-    };
-
-    script = ''
-      kill_sink() {
-        NODE_IDS=$(pw-dump Node | jq -r '.[] | select(.info.props["node.description"] == "Easy Effects Sink") | .id')
-
-        for ID in $NODE_IDS; do
-          if [ ! -z "$ID" ]; then
-            echo "Found Easy Effects Sink (ID: $ID). Destroying..."
-            pw-cli destroy "$ID"
-          fi
-        done
-      }
-
-      echo "Starting Easy Effects Killer Service..."
-      kill_sink
-
-      pw-mon -o | grep --line-buffered "added:" | while read -r line; do
-        kill_sink
-      done
-    '';
   };
 }

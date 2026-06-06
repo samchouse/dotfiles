@@ -3,7 +3,7 @@
     enable = true;
 
     enableDefaultConfig = false;
-    matchBlocks."*" = {
+    settings."Host *" = {
       forwardAgent = false;
       addKeysToAgent = "no";
       compression = false;

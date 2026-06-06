@@ -4,26 +4,8 @@ let
     set -e
 
     args=()
-    while getopts ":cd" opt; do
+    while getopts ":d" opt; do
       case $opt in
-      c)
-        FILE="$NH_FLAKE/home/sam/desktop/vscode.nix"
-        URL=$(${pkgs.ripgrep}/bin/rg 'url = "' "$FILE" --json | jq -cM 'select(.type | contains("match"))' | ${pkgs.ripgrep}/bin/rg '\s+url =' | jq -r .data.lines.text | sed -E 's/.*url = "(.*)".*/\1/' | tr -d '\n')
-        OLD_HASH=$(${pkgs.ripgrep}/bin/rg 'sha256 = "' "$FILE" --json | jq -cM 'select(.type | contains("match"))' | ${pkgs.ripgrep}/bin/rg '\s+sha256 =' | jq -r .data.lines.text | sed -E 's/.*sha256 = "(.*)".*/\1/' | tr -d '\n')
-
-        echo -e "\033[1;34m📦 Updating VSCode version...\033[0m"
-        hash=$(nix build --expr "fetchTarball { url = \"$URL\"; sha256 = \"\"; }" |& grep got: | sed -E 's/\s+got:\s+//')
-        if [ -z "$hash" ]; then
-          echo -e "\033[1;31m❌ Error: Failed to fetch new version\033[0m"
-        elif [ "$hash" == "$OLD_HASH" ]; then
-          echo -e "\033[1;33m⚠️  No newer version of VSCode found\033[0m"
-        else
-          echo -e "\033[90m→ Found hash: \033[1;32m$hash\033[0m"
-          sed -i -r "s/(sha256 = \").+(\";)/\1$hash\2/" "$FILE"
-          echo -e "\033[1;32m✅ VSCode version updated successfully\033[0m"
-        fi
-        echo
-        ;;
       d)
         echo -e "\033[1;34m🔍 Checking for Docker image updates...\033[0m"
         parse_semver_like() {
@@ -225,6 +207,8 @@ in
             tmux-session
           done
         fi
+
+        eval "$(${pkgs.atuin}/bin/atuin pty-proxy init zsh)"
       '')
       ''
         function y() {
@@ -241,6 +225,8 @@ in
         source <(${pkgs.carapace}/bin/carapace _carapace)
 
         export PATH="$PATH:${pkgs.qt6Packages.qtstyleplugin-kvantum}/bin"
+
+        export ARCCODEX_API_KEY=$(cat /run/secrets/arccodex_api_key)
       ''
     ];
   };

@@ -10,6 +10,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    hyprland.url = "github:hyprwm/Hyprland";
     vicinae.url = "github:vicinaehq/vicinae";
     flake-input-patcher = {
       url = "github:jfly/flake-input-patcher";
@@ -57,7 +58,11 @@
       system = "x86_64-linux";
 
       patcher = unpatchedInputs.flake-input-patcher.lib.${system};
-      inputs = patcher.patch unpatchedInputs { };
+      inputs = patcher.patch {
+        inherit unpatchedInputs;
+        flakePath = ./.;
+        patchSpec = { };
+      };
       inherit (inputs)
         ags
         astal
@@ -65,6 +70,7 @@
         nixpkgs
         vicinae
         niqspkgs
+        hyprland
         sops-nix
         catppuccin
         zen-browser
@@ -102,6 +108,28 @@
                   vicinae = vicinae.packages.${system}.default;
                   zen-browser = zen-browser.packages.${system}.default;
                   age-plugin-op = age-plugin-op.defaultPackage.${system};
+
+                  xdg-desktop-portal-hyprland = hyprland.packages.${system}.xdg-desktop-portal-hyprland;
+                  hyprland = hyprland.packages.${system}.hyprland.overrideAttrs (old: {
+                    src = prev.fetchFromGitHub {
+                      owner = "hyprwm";
+                      repo = "hyprland";
+                      fetchSubmodules = true;
+                      rev = old.env.GIT_COMMIT_HASH;
+                      hash = "sha256-sHtVg0Fpvd8dFcI5oKGYwe4zEYxgS2LwhWVzwDXePpc=";
+                    };
+
+                    patchPhase = ''
+                      ${prev.git}/bin/git init -qb main
+                      ${prev.git}/bin/git add -A
+                      ${prev.git}/bin/git apply ${
+                        prev.fetchurl {
+                          url = "https://github.com/hyprwm/Hyprland/pull/14547.diff";
+                          hash = "sha256-QRXgsZmBl310alMaLRnk3zqcPBgaurFgJdk9+wPcQnQ=";
+                        }
+                      }
+                    '';
+                  });
 
                   # https://github.com/NixOS/nixpkgs/issues/226575#issuecomment-2813539847
                   logiops = prev.logiops.overrideAttrs (old: {
@@ -162,7 +190,7 @@
           shellcheck
           nixfmt
           treefmt
-          nodejs_25
+          nodejs_latest
           typescript
         ];
       };

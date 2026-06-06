@@ -5,7 +5,7 @@ import { type Accessor, createState } from "gnim";
 export function clsx(...classes: (string | boolean | undefined)[]) {
   const finalClasses = [];
   for (const cssClass of classes) {
-    if (!!cssClass && typeof cssClass === "string") finalClasses.push(cssClass);
+    if (cssClass && typeof cssClass === "string") finalClasses.push(cssClass);
   }
   return finalClasses.join(" ");
 }

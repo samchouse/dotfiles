@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   ...
 }:
@@ -16,20 +17,6 @@ in
 
   environment.sessionVariables.NH_FLAKE = flake;
 
-  hardware = {
-    bluetooth = {
-      enable = true;
-
-      powerOnBoot = true;
-      settings = {
-        General = {
-          Experimental = true;
-          Enable = "Source,Sink,Media,Socket";
-        };
-      };
-    };
-  };
-
   security = {
     rtkit.enable = true;
     polkit.enable = true;
@@ -43,6 +30,24 @@ in
       qemu.swtpm.enable = true;
     };
   };
+
+  environment.etc."containers/registries.conf".source =
+    let
+      tomlFormat = pkgs.formats.toml { };
+    in
+    lib.mkForce (
+      tomlFormat.generate "registries.conf" {
+        unqualified-search-registries = [
+          "docker.io"
+          "quay.io"
+        ];
+
+        registry = [
+          { location = "docker.io"; }
+          { location = "quay.io"; }
+        ];
+      }
+    );
 
   networking = {
     hostName = "desktop";
@@ -116,56 +121,6 @@ in
         enable = true;
         support32Bit = true;
       };
-      wireplumber.extraConfig = {
-        "11-bluetooth-policy" = {
-          "wireplumber.settings" = {
-            "bluetooth.autoswitch-to-headset-profile" = false;
-          };
-        };
-
-        "51-rename-outputs" = {
-          "monitor.alsa.rules" = [
-            {
-              matches = [
-                {
-                  "node.name" = "~alsa_output.*hdmi.*";
-                }
-              ];
-              actions = {
-                update-props = {
-                  "node.description" = "Speakers (HDMI)";
-                };
-              };
-            }
-          ];
-          "monitor.bluez.rules" = [
-            {
-              matches = [
-                {
-                  "node.name" = "~bluez_output.*";
-                }
-              ];
-              actions = {
-                update-props = {
-                  "node.description" = "Headphones (Bluetooth)";
-                };
-              };
-            }
-          ];
-        };
-      };
-    };
-  };
-
-  security.auditd.enable = true;
-  security.audit.rules = [
-    "-D"
-    "-w /tmp/ -p rwa -k tmp_watch"
-    "-a always,exit -F arch=b64 -S open,openat,openat2 -F path=/tmp -k tmp_io"
-  ];
-  systemd.services.systemd-tmpfiles-clean = {
-    environment = {
-      SYSTEMD_LOG_LEVEL = "debug";
     };
   };
 
@@ -203,39 +158,39 @@ in
         configurationLimit = 10;
       };
     };
+
+    tmp.useTmpfs = true;
   };
 
   environment.systemPackages = with pkgs; [
     jq
+    fd
     git
     zip
+    eza
+    nil
+    wget
     btop
+    nixd
+    tlrc
     unzip
     socat
+    ffmpeg
+    t3code
     ethtool
+    jujutsu
+    ripgrep
+    gparted
     usbutils
+    quickemu
+    miniupnpc
     postgresql
-    cudaPackages_12_6.cudatoolkit
     cloudflared
     polkit_gnome
-    nixd
-    nil
-    ripgrep
-    fd
-    miniupnpc
-    gparted
-    jujutsu
-    arduino-ide
-    proton-vpn
-    ffmpeg
     lunar-client
-    easyeffects
-    tlrc
-    eza
-    wget
     hyprshutdown
-    quickemu
     virt-manager
+    cudaPackages_12_6.cudatoolkit
     (pkgs.writeShellScriptBin "dua" "${pkgs.dua}/bin/dua -i /tmp -i /mnt/secondary $@")
   ];
 
@@ -277,12 +232,14 @@ in
       "pipe-operators"
     ];
 
+    trusted-substituters = [ "https://hyprland.cachix.org" ];
     substituters = [
       "https://nix-community.cachix.org"
       "https://cache.nixos-cuda.org"
       "https://cache.flox.dev"
       "https://devenv.cachix.org"
       "https://vicinae.cachix.org"
+      "https://hyprland.cachix.org"
     ];
     trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -290,6 +247,7 @@ in
       "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
       "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
       "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
     ];
   };
 
