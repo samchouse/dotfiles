@@ -10,6 +10,6 @@ sleep 3
 discordcanary --start-minimized &
 steam -nochatui -nofriendsui -silent -vgui &
 
-~/.config/hypr/scripts/lock.sh full &
+~/.config/hypr/scripts/lock.sh &
 
 disown

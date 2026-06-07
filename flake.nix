@@ -41,7 +41,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    devenv.url = "github:samchouse/devenv";
     age-plugin-op = {
       url = "github:samchouse/age-plugin-op";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -61,12 +60,19 @@
       inputs = patcher.patch {
         inherit unpatchedInputs;
         flakePath = ./.;
-        patchSpec = { };
+        patchSpec = {
+          nixpkgs.patches = [
+            (patcher.fetchpatch {
+              name = "sunshine_2026.patch";
+              url = "https://github.com/NixOS/nixpkgs/pull/521906.diff";
+              hash = "sha256-+/OHCsSzrqwBJeHIbY3B1joe7eKrLg/Y3SxoDxMMgXc=";
+            })
+          ];
+        };
       };
       inherit (inputs)
         ags
         astal
-        devenv
         nixpkgs
         vicinae
         niqspkgs
@@ -104,7 +110,6 @@
                 (final: prev: {
                   astal = astal.packages.${system};
                   niqs = niqspkgs.packages.${system};
-                  devenv = devenv.packages.${system}.default;
                   vicinae = vicinae.packages.${system}.default;
                   zen-browser = zen-browser.packages.${system}.default;
                   age-plugin-op = age-plugin-op.defaultPackage.${system};
@@ -129,17 +134,6 @@
                         }
                       }
                     '';
-                  });
-
-                  # https://github.com/NixOS/nixpkgs/issues/226575#issuecomment-2813539847
-                  logiops = prev.logiops.overrideAttrs (old: {
-                    patches = (old.patches or [ ]) ++ [
-                      (prev.fetchpatch {
-                        name = "bolt_receiver_fix.patch";
-                        url = "https://github.com/PixlOne/logiops/pull/460.patch";
-                        hash = "sha256-A+StDD+Dp7lPWVpuYR9JR5RuvwPU/5h50B0lY8Qu7nY=";
-                      })
-                    ];
                   });
 
                   sweet = pkgs.callPackage ./pkgs/sweet { };

@@ -3,13 +3,11 @@ import Wireplumber from "gi://AstalWp";
 import type GLib from "gi://GLib?version=2.0";
 import { Astal, type Gdk, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
-import { execAsync } from "ags/process";
 import { createPoll } from "ags/time";
 import { createBinding, createComputed, createState, For } from "gnim";
 import { clsx } from "../utils";
 import { Audio } from "./Audio";
 import { Backdrop } from "./Backdrop";
-import { Clock } from "./Clock";
 import { Tray } from "./Tray";
 import { VolumeIcon } from "./VolumeIcon";
 
@@ -49,11 +47,6 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
   );
 
   const { toggleVisible, connectOnClick } = Backdrop(gdkmonitor);
-  const { toggleWindow: toggleClock } = Clock({
-    gdkmonitor,
-    toggleBackdrop: toggleVisible,
-    connectOnBackdropClick: connectOnClick,
-  });
   const { toggleWindow: toggleAudio } = Audio({
     gdkmonitor,
     toggleBackdrop: toggleVisible,
@@ -75,15 +68,6 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
       application={app}
     >
       <centerbox cssName="centerbox">
-        <box $type="start" hexpand={false}>
-          <button
-            onClicked={() => execAsync("echo hello").then(console.log)}
-            hexpand
-            halign={Gtk.Align.CENTER}
-          >
-            <label label="Welcome to AGS!" />
-          </button>
-        </box>
         <box $type="center" spacing={5} class="workspaces wrapper">
           <For each={workspaces}>
             {([workspace, isEmpty, isActive, isFocused]) => (
@@ -141,15 +125,12 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
               <VolumeIcon class="medium" />
             </box>
           </button>
-          <button onClicked={toggleClock} class="wrapper">
+          <box class="wrapper">
             <box spacing={8}>
               <label label={date} />
               <label label={time} />
             </box>
-          </button>
-          <button class="wrapper">
-            <label label="settings" class="icon medium" />
-          </button>
+          </box>
         </box>
       </centerbox>
     </window>

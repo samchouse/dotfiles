@@ -25,8 +25,6 @@ let
 in
 {
   environment = {
-    systemPackages = with pkgs; [ logiops ];
-
     etc = {
       "1password/custom_allowed_browsers" = {
         text = ''

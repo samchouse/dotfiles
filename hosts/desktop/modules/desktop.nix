@@ -25,7 +25,6 @@
   services = {
     sunshine = {
       enable = true;
-      package = pkgs.staging.sunshine;
       capSysAdmin = true;
       openFirewall = true;
       applications = {
@@ -44,6 +43,13 @@
         global_prep_cmd = builtins.toJSON [
           {
             do = "sh -c \"hyprctl keyword monitor VIRT-1,\${SUNSHINE_CLIENT_WIDTH}x\${SUNSHINE_CLIENT_HEIGHT}@\${SUNSHINE_CLIENT_FPS},5120x0,1\"";
+          }
+          {
+            do = "bash -c \"pkill gjs || true; ags run & disown\"";
+          }
+          {
+            do = "sh -c \"pkill -USR1 hyprlock || true\"";
+            undo = "/home/sam/.config/hypr/scripts/lock.sh";
           }
         ];
       };

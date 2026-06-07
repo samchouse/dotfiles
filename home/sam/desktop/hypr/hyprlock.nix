@@ -10,7 +10,7 @@
       background = [
         {
           monitor = "VIRT-1";
-          path = "/tmp/hyprlock-3.png";
+          path = "/tmp/hyprlock.png";
           blur_passes = 1;
           blur_size = 3;
         }
