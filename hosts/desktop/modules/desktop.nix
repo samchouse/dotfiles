@@ -5,28 +5,14 @@
 {
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
+  programs.hyprland.enable = true;
+  xdg.portal.xdgOpenUsePortal = true;
   security.pam.services.hyprlock = { };
-  programs = {
-    hyprland = {
-      enable = true;
-      package = pkgs.hyprland;
-      portalPackage = pkgs.xdg-desktop-portal-hyprland;
-    };
-  };
-  xdg.portal = {
-    enable = true;
-
-    xdgOpenUsePortal = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal-gtk
-    ];
-  };
 
   services = {
     sunshine = {
       enable = true;
       capSysAdmin = true;
-      openFirewall = true;
       applications = {
         env = {
           PATH = "$(PATH):$(HOME)/.local/bin";

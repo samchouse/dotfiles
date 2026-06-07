@@ -92,9 +92,6 @@
         config = {
           cudaSupport = true;
           allowUnfree = true;
-          permittedInsecurePackages = [
-            "openssl-1.1.1w"
-          ];
         };
       };
       pkgs = import nixpkgs pkgs-config;
@@ -137,7 +134,6 @@
                   });
 
                   sweet = pkgs.callPackage ./pkgs/sweet { };
-                  openrgb-plugin-visual-map = prev.callPackage ./pkgs/openrgb-plugin-visual-map { };
 
                   small = import nixpkgs-small pkgs-config;
                   staging = import nixpkgs-staging pkgs-config;
@@ -181,11 +177,11 @@
         packages = with pkgs; [
           biome
           shfmt
-          shellcheck
           nixfmt
           treefmt
-          nodejs_latest
+          shellcheck
           typescript
+          nodejs_latest
         ];
       };
     };

@@ -57,10 +57,6 @@ in
       enable = true;
 
       trustedInterfaces = [ "podman0" ];
-      allowedTCPPorts = [
-        631 # printer
-        10767 # cider
-      ];
       interfaces.wlp6s0.allowedTCPPorts = [
         8081
       ];
@@ -105,7 +101,6 @@ in
       variant = "";
     };
 
-    printing.enable = true;
     avahi = {
       enable = true;
 
