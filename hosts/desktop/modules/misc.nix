@@ -92,6 +92,15 @@ in
   };
 
   services = {
+    hardware.openrgb.enable = true;
+
+    nfs.server = {
+      enable = true;
+      exports = ''
+        /home/sam 100.123.34.40(rw,sync,no_subtree_check,insecure,all_squash,anonuid=1000,anongid=100) 100.120.233.96(rw,sync,no_subtree_check,insecure,all_squash,anonuid=1000,anongid=100)
+      '';
+    };
+
     udev = {
       packages = [
         (pkgs.writeTextFile {
@@ -100,13 +109,6 @@ in
           destination = "/etc/udev/rules.d/60-xbox-elite-2-hid.rules";
         })
       ];
-    };
-
-    nfs.server = {
-      enable = true;
-      exports = ''
-        /home/sam 100.123.34.40(rw,sync,no_subtree_check,insecure,all_squash,anonuid=1000,anongid=100) 100.120.233.96(rw,sync,no_subtree_check,insecure,all_squash,anonuid=1000,anongid=100)
-      '';
     };
 
     beszel = {
@@ -119,16 +121,30 @@ in
         enable = true;
         environment = {
           HUB_URL = "http://localhost:7463";
+          DOCKER_HOST = "http://localhost:2375";
           EXTRA_FILESYSTEMS = "/mnt/secondary__Secondary";
           TOKEN = "885fd152-b855-4924-ae54-bac24f36878a";
           KEY = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHpWIT7z6MkRkDOeFLMC9JlBzYbXxM7q+aDOnQiCKdwP";
-          DOCKER_HOST = "http://localhost:2375";
         };
       };
     };
   };
 
   systemd.services = {
+    openrgb = {
+      serviceConfig = {
+        Type = "oneshot";
+        Restart = lib.mkForce "on-failure";
+        ExecStart = lib.mkForce (
+          lib.escapeShellArgs [
+            (lib.getExe pkgs.openrgb)
+            "--profile"
+            "Black"
+          ]
+        );
+      };
+    };
+
     beszel-hub = {
       serviceConfig = {
         ExecStartPre = lib.mkForce [

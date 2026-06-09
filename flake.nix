@@ -111,27 +111,8 @@
                   zen-browser = zen-browser.packages.${system}.default;
                   age-plugin-op = age-plugin-op.defaultPackage.${system};
 
+                  hyprland = hyprland.packages.${system}.hyprland;
                   xdg-desktop-portal-hyprland = hyprland.packages.${system}.xdg-desktop-portal-hyprland;
-                  hyprland = hyprland.packages.${system}.hyprland.overrideAttrs (old: {
-                    src = prev.fetchFromGitHub {
-                      owner = "hyprwm";
-                      repo = "hyprland";
-                      fetchSubmodules = true;
-                      rev = old.env.GIT_COMMIT_HASH;
-                      hash = "sha256-sHtVg0Fpvd8dFcI5oKGYwe4zEYxgS2LwhWVzwDXePpc=";
-                    };
-
-                    patchPhase = ''
-                      ${prev.git}/bin/git init -qb main
-                      ${prev.git}/bin/git add -A
-                      ${prev.git}/bin/git apply ${
-                        prev.fetchurl {
-                          url = "https://github.com/hyprwm/Hyprland/pull/14547.diff";
-                          hash = "sha256-QRXgsZmBl310alMaLRnk3zqcPBgaurFgJdk9+wPcQnQ=";
-                        }
-                      }
-                    '';
-                  });
 
                   sweet = pkgs.callPackage ./pkgs/sweet { };
 

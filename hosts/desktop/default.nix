@@ -56,7 +56,10 @@ in
     firewall = {
       enable = true;
 
-      trustedInterfaces = [ "podman0" ];
+      trustedInterfaces = [
+        "enp5s0"
+        "podman0"
+      ];
       interfaces.wlp6s0.allowedTCPPorts = [
         8081
       ];
@@ -125,7 +128,6 @@ in
     kernelParams = [
       "quiet"
       "loglevel=3"
-      "audit=1"
     ];
 
     initrd = {

@@ -13,6 +13,7 @@
     sunshine = {
       enable = true;
       capSysAdmin = true;
+      openFirewall = true;
       applications = {
         env = {
           PATH = "$(PATH):$(HOME)/.local/bin";
