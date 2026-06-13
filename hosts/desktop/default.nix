@@ -180,6 +180,7 @@ in
     gparted
     usbutils
     quickemu
+    copyparty
     miniupnpc
     postgresql
     cloudflared

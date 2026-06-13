@@ -12,6 +12,10 @@
 
     hyprland.url = "github:hyprwm/Hyprland";
     vicinae.url = "github:vicinaehq/vicinae";
+    copyparty = {
+      url = "github:9001/copyparty";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     flake-input-patcher = {
       url = "github:jfly/flake-input-patcher";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -78,6 +82,7 @@
         niqspkgs
         hyprland
         sops-nix
+        copyparty
         catppuccin
         zen-browser
         home-manager
@@ -104,6 +109,7 @@
             nixpkgs = {
               pkgs = pkgs;
               overlays = [
+                copyparty.overlays.default
                 (final: prev: {
                   astal = astal.packages.${system};
                   niqs = niqspkgs.packages.${system};
@@ -125,6 +131,7 @@
 
           ./hosts/desktop
           sops-nix.nixosModules.sops
+          copyparty.nixosModules.default
 
           home-manager.nixosModules.home-manager
           {

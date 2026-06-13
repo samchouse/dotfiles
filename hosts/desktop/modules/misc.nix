@@ -94,13 +94,6 @@ in
   services = {
     hardware.openrgb.enable = true;
 
-    nfs.server = {
-      enable = true;
-      exports = ''
-        /home/sam 100.123.34.40(rw,sync,no_subtree_check,insecure,all_squash,anonuid=1000,anongid=100) 100.120.233.96(rw,sync,no_subtree_check,insecure,all_squash,anonuid=1000,anongid=100)
-      '';
-    };
-
     udev = {
       packages = [
         (pkgs.writeTextFile {
@@ -109,6 +102,32 @@ in
           destination = "/etc/udev/rules.d/60-xbox-elite-2-hid.rules";
         })
       ];
+    };
+
+    copyparty = {
+      enable = true;
+      user = "sam";
+      group = "users";
+      settings = {
+        i = "100.82.217.30";
+        e2ts = true;
+        e2vu = true;
+        e2dsa = true;
+      };
+      volumes = {
+        "/" = {
+          path = "/srv/copyparty";
+          access.A = "*";
+        };
+        "/desktop" = {
+          path = "/home/sam";
+          access.A = "*";
+          flags = {
+            d2d = true;
+            d2t = true;
+          };
+        };
+      };
     };
 
     beszel = {
@@ -130,36 +149,42 @@ in
     };
   };
 
-  systemd.services = {
-    openrgb = {
-      serviceConfig = {
-        Type = "oneshot";
-        Restart = lib.mkForce "on-failure";
-        ExecStart = lib.mkForce (
-          lib.escapeShellArgs [
-            (lib.getExe pkgs.openrgb)
-            "--profile"
-            "Black"
-          ]
-        );
-      };
-    };
+  systemd = {
+    tmpfiles.rules = [
+      "d /srv/copyparty 0755 sam users -"
+    ];
 
-    beszel-hub = {
-      serviceConfig = {
-        ExecStartPre = lib.mkForce [
-          "${config.services.beszel.hub.package}/bin/beszel-hub migrate up"
-          "${config.services.beszel.hub.package}/bin/beszel-hub migrate history-sync"
-        ];
+    services = {
+      openrgb = {
+        serviceConfig = {
+          Type = "oneshot";
+          Restart = lib.mkForce "on-failure";
+          ExecStart = lib.mkForce (
+            lib.escapeShellArgs [
+              (lib.getExe pkgs.openrgb)
+              "--profile"
+              "Black"
+            ]
+          );
+        };
       };
-    };
-    beszel-agent = {
-      path = [ config.hardware.nvidia.package ];
-      serviceConfig = {
-        DeviceAllow = [
-          "/dev/nvidiactl rw"
-          "/dev/nvidia0 rw"
-        ];
+
+      beszel-hub = {
+        serviceConfig = {
+          ExecStartPre = lib.mkForce [
+            "${config.services.beszel.hub.package}/bin/beszel-hub migrate up"
+            "${config.services.beszel.hub.package}/bin/beszel-hub migrate history-sync"
+          ];
+        };
+      };
+      beszel-agent = {
+        path = [ config.hardware.nvidia.package ];
+        serviceConfig = {
+          DeviceAllow = [
+            "/dev/nvidiactl rw"
+            "/dev/nvidia0 rw"
+          ];
+        };
       };
     };
   };
@@ -173,7 +198,7 @@ in
     };
 
     cloudflared = {
-      image = "cloudflare/cloudflared:2026.5.2";
+      image = "cloudflare/cloudflared:2026.6.0";
       autoStart = false;
       cmd = [
         "tunnel"
