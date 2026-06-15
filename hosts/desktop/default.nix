@@ -3,10 +3,6 @@
   pkgs,
   ...
 }:
-let
-  constants = import ./constants.nix;
-  inherit (constants) flake;
-in
 {
   imports = [
     ./hardware-configuration.nix
@@ -14,8 +10,6 @@ in
     ./modules
     ../../secrets
   ];
-
-  environment.sessionVariables.NH_FLAKE = flake;
 
   security = {
     rtkit.enable = true;
@@ -84,16 +78,6 @@ in
   programs = {
     zsh.enable = true;
     nix-ld.enable = true;
-
-    nh = {
-      enable = true;
-      inherit flake;
-
-      clean = {
-        enable = true;
-        extraArgs = "--keep-since 4d --keep 3";
-      };
-    };
   };
 
   services = {
@@ -159,39 +143,6 @@ in
     tmp.useTmpfs = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    jq
-    fd
-    git
-    zip
-    eza
-    nil
-    wget
-    btop
-    nixd
-    tlrc
-    unzip
-    socat
-    ffmpeg
-    t3code
-    ethtool
-    jujutsu
-    ripgrep
-    gparted
-    usbutils
-    quickemu
-    copyparty
-    miniupnpc
-    postgresql
-    cloudflared
-    polkit_gnome
-    lunar-client
-    hyprshutdown
-    virt-manager
-    cudaPackages_12_6.cudatoolkit
-    (pkgs.writeShellScriptBin "dua" "${pkgs.dua}/bin/dua -i /tmp -i /mnt/secondary $@")
-  ];
-
   users = {
     defaultUserShell = pkgs.zsh;
     users.sam = {
@@ -223,13 +174,6 @@ in
   };
 
   nix.settings = {
-    auto-optimise-store = true;
-    experimental-features = [
-      "nix-command"
-      "flakes"
-      "pipe-operators"
-    ];
-
     trusted-substituters = [ "https://hyprland.cachix.org" ];
     substituters = [
       "https://nix-community.cachix.org"

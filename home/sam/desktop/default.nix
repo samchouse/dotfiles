@@ -1,6 +1,5 @@
 {
   imports = [
-    ./hypr
     ./ags
     ./discord
     ./dunst.nix

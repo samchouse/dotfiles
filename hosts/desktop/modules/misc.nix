@@ -36,7 +36,6 @@ in
   };
 
   programs = {
-    zoxide.enable = true;
     steam.enable = true;
 
     _1password.enable = true;
