@@ -1,6 +1,19 @@
+{ den, ... }:
 {
   den.aspects.desktopPackages = {
+    includes = [
+      den.aspects.ags
+      den.aspects.zen
+      den.aspects.fonts
+      den.aspects.discord
+      den.aspects.terminal
+      den.aspects.packages
+      den.aspects._1password
+    ];
+
     nixos = { pkgs, ... }: {
+      programs.steam.enable = true;
+
       environment.systemPackages = with pkgs; [
         yazi
         grim
@@ -11,7 +24,6 @@
         quickemu
         r2modman
         wayfreeze
-        zen-browser
         wl-clipboard
         polkit_gnome
         lunar-client
@@ -26,13 +38,10 @@
 
     darwin = {
       homebrew = {
-        enable = true;
         brews = [ "mole" ];
         casks = [
-          "zen"
           "loop"
           "codex"
-          "discord"
           "t3-code"
           "betterdisplay"
         ];

@@ -1,0 +1,40 @@
+{ inputs, ... }: {
+  den.aspects.dunst = {
+    homeManager =
+      { pkgs, ... }:
+      {
+        imports = [
+          inputs.catppuccin.homeModules.catppuccin
+        ];
+
+        services.dunst = {
+          enable = true;
+
+          settings = {
+            global = {
+              offset = "30x50";
+              font = "Monolist Nerd Font 10";
+              dmenu = "${pkgs.vicinae}/bin/vicinae dmenu -p dunst:";
+
+              corner_radius = 10;
+              icon_corner_radius = 10;
+
+              mouse_left_click = "close_current";
+              mouse_middle_click = "do_action, close_current";
+              mouse_right_click = "close_all";
+            };
+          };
+        };
+
+        catppuccin = {
+          enable = true;
+          autoEnable = false;
+
+          dunst = {
+            enable = true;
+            flavor = "macchiato";
+          };
+        };
+      };
+  };
+}

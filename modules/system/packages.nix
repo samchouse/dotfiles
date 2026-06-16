@@ -1,5 +1,14 @@
-{
+{ den, ... }: {
   den.aspects.packages = {
+    includes = [
+      den.aspects.nh
+      den.aspects.tmux
+      den.aspects.podman
+      den.aspects.homebrew
+      den.aspects.tailscale
+      den.aspects.home-assistant
+    ];
+
     nixos = { pkgs, ... }: {
       environment.systemPackages = with pkgs; [
         gh

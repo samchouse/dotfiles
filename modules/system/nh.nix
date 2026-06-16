@@ -2,8 +2,7 @@
   den.aspects.nh = {
     nixos =
       let
-        constants = import ../hosts/desktop/constants.nix;
-        inherit (constants) flake;
+        flake = "/home/sam/Documents/projects/personal/dotfiles";
       in
       {
         programs.nh = {

@@ -1,7 +1,11 @@
 { den, ... }: {
   den.aspects.hyprland = {
     includes = [
+      den.aspects.theme
+      den.aspects.dunst
+      den.aspects.vicinae
       den.aspects.sunshine
+      den.aspects.security
     ];
 
     nixos = {
