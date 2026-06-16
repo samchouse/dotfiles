@@ -1,6 +1,6 @@
-{lib, ...}:{
+{ lib, ... }: {
   den.aspects.beszel = {
-    nixos = {config, ...}:{
+    nixos = { config, ... }: {
       services = {
         beszel = {
           hub = {

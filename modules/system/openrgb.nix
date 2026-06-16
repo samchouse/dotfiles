@@ -1,6 +1,6 @@
-{lib, ...}:{
+{ lib, ... }: {
   den.aspects.openrgb = {
-    nixos = {pkgs, ...}:{
+    nixos = { pkgs, ... }: {
       services.hardware.openrgb.enable = true;
       systemd.services.openrgb = {
         serviceConfig = {
