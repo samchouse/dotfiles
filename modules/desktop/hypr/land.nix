@@ -1,4 +1,6 @@
 { den, ... }: {
+  flake-file.inputs.hyprland.url = "github:hyprwm/Hyprland";
+
   den.aspects.hyprland = {
     includes = [
       den.aspects.theme

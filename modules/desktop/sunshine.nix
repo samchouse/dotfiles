@@ -1,4 +1,6 @@
 {
+  flake-file.inputs.nixpkgs-sunshine.url = "github:NixOS/nixpkgs/refs/pull/521906/head";
+
   den.aspects.sunshine = {
     nixos = {
       services = {

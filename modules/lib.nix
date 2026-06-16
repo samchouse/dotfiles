@@ -3,7 +3,22 @@
   ...
 }:
 {
-  config.flake.lib.mkNixpkgs =
+  flake-file.inputs = {
+    nixpkgs-staging.url = "github:nixos/nixpkgs/staging-next";
+    nixpkgs-small.url = "github:nixos/nixpkgs/nixos-unstable-small";
+
+    niqspkgs = {
+      url = "github:diniamo/niqspkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    age-plugin-op = {
+      url = "github:samchouse/age-plugin-op";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
+  flake.lib.mkNixpkgs =
     let
       config = {
         cudaSupport = true;

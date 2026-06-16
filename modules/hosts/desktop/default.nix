@@ -4,6 +4,11 @@
   ...
 }:
 {
+  flake-file.inputs.sops-nix = {
+    url = "github:Mic92/sops-nix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   den.hosts.x86_64-linux.desktop.users = {
     sam = { };
     root = { };
