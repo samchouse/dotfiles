@@ -2,7 +2,6 @@
   den.aspects.networking = {
     nixos = { pkgs, ... }: {
       networking = {
-        hostName = "desktop";
         networkmanager.enable = true;
 
         firewall = {

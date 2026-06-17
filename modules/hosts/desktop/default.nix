@@ -16,6 +16,8 @@
 
   den.aspects.desktop = {
     includes = [
+      den.batteries.hostname
+
       den.aspects.beszel
       den.aspects.openrgb
       den.aspects.hardware

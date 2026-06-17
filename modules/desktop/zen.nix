@@ -30,7 +30,7 @@
     };
 
     darwin = {
-      homebrew.casks = "zen";
+      homebrew.casks = [ "zen" ];
     };
   };
 }

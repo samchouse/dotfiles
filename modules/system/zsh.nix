@@ -236,6 +236,11 @@
 
               export ARCCODEX_API_KEY=$(cat /run/secrets/arccodex_api_key)
             '')
+            ((lib.mkIf pkgs.stdenv.isDarwin) ''
+              if [ -n "''${GHOSTTY_RESOURCES_DIR}" ]; then
+                builtin source "''${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration"
+              fi
+            '')
             ''
               export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
               zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'

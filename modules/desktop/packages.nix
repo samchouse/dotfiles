@@ -1,4 +1,4 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.desktopPackages = {
     includes = [
@@ -36,16 +36,45 @@
       ];
     };
 
-    darwin = {
+    darwin = { host, ... }: {
       homebrew = {
         brews = [ "mole" ];
+        taps = [ "xykong/tap" ];
+        masApps = {
+          Noir = 1592917505;
+          Xcode = 497799835;
+          Mapper = 1589391989;
+          # Sequel = 1630746993; https://github.com/mas-cli/mas/issues/321
+          Dropover = 1355679052;
+          "Wipr 2" = 1662217862;
+          Notability = 360593530;
+          "Refined GitHub" = 1519867270;
+          "1Password for Safari" = 1569813296;
+        };
         casks = [
+          "zed"
           "loop"
           "codex"
+          "shottr"
+          "alcove"
           "t3-code"
+          "firefox"
+          "thaw@beta"
+          "sf-symbols"
+          "google-chrome"
           "betterdisplay"
+          "flux-markdown"
+          "microsoft-word"
+          "keepingyouawake"
+          "microsoft-excel"
+          "microsoft-powerpoint"
+          "homebrew/cask/onedrive"
+          "visual-studio-code@insiders"
+          (lib.mkIf (host.name == "mini") "logi-options+")
         ];
       };
+
+      nix-homebrew.trust.casks = [ "xykong/tap/flux-markdown" ];
     };
   };
 }
