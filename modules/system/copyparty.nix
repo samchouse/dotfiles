@@ -27,7 +27,7 @@
           xff-src = "lan";
           no-robots = true;
           xff-hdr = "cf-connecting-ip";
-          site="https://srv.xenfo.dev/";
+          site = "https://srv.xenfo.dev/";
         };
         globalExtraConfig = ''
           ipu: 100.64.0.0/10=sam

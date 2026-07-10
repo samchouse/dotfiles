@@ -1,22 +1,13 @@
 {
   den.aspects.ssh = {
-    homeManager = {
+    homeManager = {host, ...}: {
       programs.ssh = {
         enable = true;
 
         enableDefaultConfig = false;
-        settings."Host *" = {
-          forwardAgent = false;
-          addKeysToAgent = "no";
-          compression = false;
-          serverAliveInterval = 0;
-          serverAliveCountMax = 3;
-          hashKnownHosts = false;
-          userKnownHostsFile = "~/.ssh/known_hosts";
-          controlMaster = "no";
-          controlPath = "~/.ssh/master-%r@%n:%p";
-          controlPersist = "no";
-          identityAgent = "$SSH_AUTH_SOCK";
+        settings = {
+          "Host *".identityAgent = if host.class == "nixos" then "$SSH_AUTH_SOCK" else "\"~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock\"";
+          "Host desktop".forwardAgent = true;
         };
       };
     };

@@ -210,16 +210,10 @@
                   add-zsh-hook precmd update_ssh_tty
                   export SSH_AUTH_SOCK="/tmp/tmux/$(tmux display-message -p '#S')/auth_sock"
                 fi
+
+                export SSH_AUTH_SOCK=''${SSH_AUTH_SOCK:-/home/sam/.1password/agent.sock}
               ''
             ))
-            (lib.mkBefore ''
-              export SSH_AUTH_SOCK=''${SSH_AUTH_SOCK:-${
-                if host.class == "nixos" then
-                  "/home/sam/.1password/agent.sock"
-                else
-                  "~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-              }}
-            '')
             (lib.mkIf pkgs.stdenv.isLinux (
               lib.mkBefore ''
                 if [[ "$ZED_TERM" == "true" || "$TERM_PROGRAM" == "vscode" ]]; then
@@ -274,8 +268,8 @@
           };
           atuin = {
             enable = true;
-            daemon.enable = true;
             settings.enter_accept = true;
+            daemon.enable = host.class == "nixos";
           };
         };
       };

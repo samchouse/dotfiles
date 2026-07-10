@@ -1,4 +1,5 @@
 {
+  lib,
   inputs,
   ...
 }:
@@ -32,6 +33,16 @@
           in
           {
             age-plugin-op = inputs.age-plugin-op.defaultPackage.${system};
+
+            starship = prev.starship.overrideAttrs (old: {
+              nativeBuildInputs =
+                old.nativeBuildInputs ++ lib.optionals prev.stdenv.hostPlatform.isDarwin [ prev.llvmPackages.lld ];
+              env =
+                old.env
+                // lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
+                  NIX_CFLAGS_LINK = "-fuse-ld=lld";
+                };
+            });
 
             small = import inputs.nixpkgs-small (pkgs-config system);
             staging = import inputs.nixpkgs-staging (pkgs-config system);
