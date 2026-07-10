@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{ lib, inputs, ... }: {
   flake-file.inputs.zen-browser = {
     url = "github:0xc000022070/zen-browser-flake/beta";
     inputs = {
@@ -25,8 +25,8 @@
         };
       };
 
-    nixos = { pkgs, ... }: {
-      environment.systemPackages = with pkgs; [ zen-browser ];
+    nixos = { host, ... }: {
+      environment.systemPackages = [ inputs.zen-browser.packages.${host.system}.default ];
     };
 
     darwin = {

@@ -23,7 +23,7 @@
 
         programs.ags = {
           enable = true;
-          extraPackages = with pkgs.astal; [
+          extraPackages = with inputs.astal.packages.${host.system}; [
             tray
             mpris
             notifd

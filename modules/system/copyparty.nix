@@ -5,7 +5,7 @@
   };
 
   den.aspects.copyparty = {
-    nixos = {
+    nixos = { config, ... }: {
       imports = [
         inputs.copyparty.nixosModules.default
       ];
@@ -16,20 +16,34 @@
         enable = true;
         user = "sam";
         group = "users";
+        accounts.sam.passwordFile = config.sops.secrets."copyparty_password".path;
         settings = {
-          i = "100.82.217.30";
+          rproxy = 1;
           e2ts = true;
           e2vu = true;
           e2dsa = true;
+          i = "0.0.0.0";
+          shr = "/share";
+          xff-src = "lan";
+          no-robots = true;
+          xff-hdr = "cf-connecting-ip";
+          site="https://srv.xenfo.dev/";
         };
+        globalExtraConfig = ''
+          ipu: 100.64.0.0/10=sam
+          ipu: 192.168.2.2/32=sam
+        '';
         volumes = {
           "/" = {
             path = "/srv/copyparty";
-            access.A = "*";
+            access = {
+              rw = "*";
+              A = "sam";
+            };
           };
           "/desktop" = {
             path = "/home/sam";
-            access.A = "*";
+            access.A = "sam";
             flags = {
               d2d = true;
               d2t = true;

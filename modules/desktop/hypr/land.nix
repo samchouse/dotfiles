@@ -1,5 +1,11 @@
-{ den, ... }: {
-  flake-file.inputs.hyprland.url = "github:hyprwm/Hyprland";
+{ den, inputs, ... }: {
+  flake-file.inputs = {
+    hyprland.url = "github:hyprwm/Hyprland"; # https://github.com/hyprwm/Hyprland/pull/14547
+    niqspkgs = {
+      url = "github:diniamo/niqspkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
 
   den.aspects.hyprland = {
     includes = [
@@ -10,11 +16,19 @@
       den.aspects.security
     ];
 
-    nixos = {
+    nixos = { host, ... }: {
       programs.hyprland.enable = true;
       xdg.portal.xdgOpenUsePortal = true;
       security.pam.services.hyprlock = { };
       environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
+      nixpkgs.overlays = [
+        (_: _: {
+          niqs = inputs.niqspkgs.packages.${host.system};
+          hyprland = inputs.hyprland.packages.${host.system}.hyprland;
+          xdg-desktop-portal-hyprland = inputs.hyprland.packages.${host.system}.xdg-desktop-portal-hyprland;
+        })
+      ];
     };
 
     homeManager = { pkgs, ... }: {

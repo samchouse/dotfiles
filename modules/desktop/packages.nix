@@ -12,10 +12,25 @@
     ];
 
     nixos = { pkgs, ... }: {
-      programs.steam.enable = true;
+      programs = {
+        steam.enable = true;
+        yazi = {
+          enable = true;
+          plugins = {
+            inherit (pkgs.yaziPlugins) mount;
+          };
+          settings = {
+            keymap.mgr.prepend_keymap = [
+              {
+                on = "M";
+                run = "plugin mount";
+              }
+            ];
+          };
+        };
+      };
 
       environment.systemPackages = with pkgs; [
-        yazi
         grim
         slurp
         t3code

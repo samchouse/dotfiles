@@ -33,8 +33,8 @@
             device = "/dev/disk/by-uuid/68f12c7e-fc53-49de-9b3d-91ab69f6c2a4";
             crypttabExtraOpts = [ "tpm2-device=auto" ];
           };
-          "luks-3123f1b8-9b1e-4d7b-931f-416a79602070" = {
-            device = "/dev/disk/by-uuid/3123f1b8-9b1e-4d7b-931f-416a79602070";
+          "luks-7b200881-3dc7-471a-adba-e45778f7d51f" = {
+            device = "/dev/disk/by-uuid/7b200881-3dc7-471a-adba-e45778f7d51f";
             crypttabExtraOpts = [ "tpm2-device=auto" ];
           };
         };
@@ -53,7 +53,7 @@
             ];
           };
           "/mnt/secondary" = {
-            device = "/dev/disk/by-uuid/422fb13d-33f6-4a00-a2ef-744af615c26f";
+            device = "/dev/disk/by-uuid/f022a4be-95eb-4b71-a73c-649ae3ce0005";
             fsType = "ext4";
           };
         };

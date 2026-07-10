@@ -24,6 +24,8 @@
       den.aspects.hyprland
       den.aspects.services
       den.aspects.copyparty
+      den.aspects.pocket-id
+      den.aspects.lanzaboote
       den.aspects.networking
       den.aspects.desktopPackages
     ];

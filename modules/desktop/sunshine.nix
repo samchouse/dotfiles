@@ -1,11 +1,10 @@
 {
-  flake-file.inputs.nixpkgs-sunshine.url = "github:NixOS/nixpkgs/refs/pull/521906/head";
-
   den.aspects.sunshine = {
-    nixos = {
+    nixos = { pkgs, ... }: {
       services = {
         sunshine = {
           enable = true;
+          package = pkgs.sunshine;
           capSysAdmin = true;
           openFirewall = true;
           applications = {

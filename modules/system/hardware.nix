@@ -68,23 +68,7 @@
           };
         };
 
-        loader = {
-          efi.canTouchEfiVariables = true;
-
-          systemd-boot.enable = false;
-          grub = {
-            enable = true;
-
-            device = "nodev";
-            gfxmodeEfi = "2560x1440x32,auto";
-            gfxmodeBios = "2560x1440x32,auto";
-            gfxpayloadEfi = "keep";
-            gfxpayloadBios = "keep";
-            efiSupport = true;
-
-            configurationLimit = 10;
-          };
-        };
+        loader.efi.canTouchEfiVariables = true;
 
         tmp.useTmpfs = true;
       };

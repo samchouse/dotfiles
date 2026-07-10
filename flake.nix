@@ -47,6 +47,10 @@
     };
     hyprland.url = "github:hyprwm/Hyprland";
     import-tree.url = "github:vic/import-tree";
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.1.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     niqspkgs = {
       url = "github:diniamo/niqspkgs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -55,7 +59,6 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-small.url = "github:nixos/nixpkgs/nixos-unstable-small";
     nixpkgs-staging.url = "github:nixos/nixpkgs/staging-next";
-    nixpkgs-sunshine.url = "github:NixOS/nixpkgs/refs/pull/521906/head";
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";

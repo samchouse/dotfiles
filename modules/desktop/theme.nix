@@ -60,7 +60,7 @@
 
           theme = {
             name = "Sweet-Ambar-Blue-Dark";
-            package = pkgs.sweet;
+            package = pkgs.callPackage ../../pkgs/sweet { };
           };
         };
 

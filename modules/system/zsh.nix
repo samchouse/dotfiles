@@ -6,7 +6,7 @@
     ];
 
     homeManager =
-      { pkgs, ... }:
+      { pkgs, host, ... }:
       let
         rebuild = pkgs.writeShellScriptBin "rebuild" ''
           set -e
@@ -183,6 +183,7 @@
             c = lib.mkIf pkgs.stdenv.isLinux "code-insiders";
             ts = lib.mkIf pkgs.stdenv.isLinux "tmux-session";
             rb = if pkgs.stdenv.isLinux then "${rebuild}/bin/rebuild" else "nh darwin switch";
+            to-windows = lib.mkIf pkgs.stdenv.isLinux "sudo systemctl reboot --boot-loader-entry=auto-windows";
           };
 
           oh-my-zsh = {
@@ -209,8 +210,18 @@
                   add-zsh-hook precmd update_ssh_tty
                   export SSH_AUTH_SOCK="/tmp/tmux/$(tmux display-message -p '#S')/auth_sock"
                 fi
-                export SSH_AUTH_SOCK=''${SSH_AUTH_SOCK:-/home/sam/.1password/agent.sock}
-
+              ''
+            ))
+            (lib.mkBefore ''
+              export SSH_AUTH_SOCK=''${SSH_AUTH_SOCK:-${
+                if host.class == "nixos" then
+                  "/home/sam/.1password/agent.sock"
+                else
+                  "~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+              }}
+            '')
+            (lib.mkIf pkgs.stdenv.isLinux (
+              lib.mkBefore ''
                 if [[ "$ZED_TERM" == "true" || "$TERM_PROGRAM" == "vscode" ]]; then
                   while true; do
                     tmux-session

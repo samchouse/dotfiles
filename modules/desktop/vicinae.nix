@@ -7,10 +7,14 @@
         inputs.vicinae.homeManagerModules.default
       ];
 
-      services.vicinae = {
+      programs.vicinae = {
         enable = true;
         systemd.enable = true;
       };
+    };
+
+    nixos = { host, ... }: {
+      nixpkgs.overlays = [ (_: _: { vicinae = inputs.vicinae.packages.${host.system}.default; }) ];
     };
   };
 }
