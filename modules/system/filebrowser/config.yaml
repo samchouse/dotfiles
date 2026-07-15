@@ -1,0 +1,31 @@
+server:
+    disableWebDAV: true
+    cacheDir: /srv/cache
+    externalUrl: "http://srv.xenfo.dev"
+    internalUrl: "http://host.containers.internal:3924"
+    sources:
+        - path: /srv/share
+          name: "Shared Files"
+          config:
+              defaultEnabled: true
+              useLogicalSize: true
+
+integrations:
+    office:
+        url: "https://docs.xenfo.dev"
+        internalUrl: "http://host.containers.internal:9880"
+    media:
+        convert:
+            imagePreview:
+                heic: true
+
+auth:
+    methods:
+        password:
+            enabled: false
+        oidc:
+            enabled: true
+            adminGroup: admin
+            issuerUrl: "https://id.xenfo.dev"
+            scopes: "openid email profile groups"
+            logoutRedirectUrl: "https://id.xenfo.dev/api/oidc/end-session"

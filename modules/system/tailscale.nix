@@ -1,7 +1,10 @@
 {
   den.aspects.tailscale = {
     nixos = {
-      networking.firewall.trustedInterfaces = [ "tailscale0" ];
+      networking = {
+        useNetworkd = true;
+        firewall.trustedInterfaces = [ "tailscale0" ];
+      };
 
       boot.kernel.sysctl = {
         "net.ipv4.ip_forward" = 1;

@@ -1,6 +1,6 @@
 {
   den.aspects.networking = {
-    nixos = { pkgs, ... }: {
+    nixos = { pkgs, config, ... }: {
       networking = {
         networkmanager.enable = true;
 
@@ -36,13 +36,14 @@
 
       virtualisation.oci-containers.containers = {
         cloudflared = {
-          image = "cloudflare/cloudflared:2026.7.1";
+          image = "cloudflare/cloudflared:2026.7.2";
           autoStart = false;
           cmd = [
             "tunnel"
             "--no-autoupdate"
             "run"
           ];
+          environmentFiles = [ config.sops.templates."cloudflared.env".path ];
         };
       };
     };
