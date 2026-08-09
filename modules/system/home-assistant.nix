@@ -3,10 +3,9 @@
     nixos = {
       virtualisation.oci-containers.containers = {
         homeassistant = {
-          image = "ghcr.io/home-assistant/home-assistant:2026.7.2";
+          image = "ghcr.io/home-assistant/home-assistant:2026.8.1";
           volumes = [
             "home-assistant:/config"
-            "${./config.yaml}:/config/configuration.yaml:rw"
             "/run/dbus:/run/dbus:ro"
           ];
           environment.TZ = "America/Toronto";

@@ -165,8 +165,6 @@
       in
       {
         programs.zsh = {
-          enable = true;
-
           plugins = [
             {
               name = "fast-syntax-highlighting";
@@ -223,8 +221,13 @@
                 fi
               ''
             ))
+            # https://github.com/atuinsh/atuin/issues/3606
             (lib.mkBefore ''
-              eval "$(${pkgs.atuin}/bin/atuin pty-proxy init zsh)"
+              if [[ -z "''${ATUIN_PTY_PROXY_ACTIVE:-}" ]]; then
+                export ATUIN_PTY_PROXY_ACTIVE=1
+                export ATUIN_PTY_PROXY_TMUX=""
+                ${pkgs.atuin}/bin/atuin pty-proxy --shell "''$(command -v ${pkgs.zsh}/bin/zsh)"
+              fi
             '')
 
             (lib.mkIf pkgs.stdenv.isLinux ''
@@ -236,8 +239,6 @@
                 fi
                 rm -f -- "$tmp"
               }
-
-              export PATH="$PATH:${pkgs.qt6Packages.qtstyleplugin-kvantum}/bin"
 
               export ARCCODEX_API_KEY=$(cat /run/secrets/arccodex_api_key)
             '')

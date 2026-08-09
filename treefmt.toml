@@ -15,3 +15,7 @@ includes = ["*.sh"]
 [formatter.shellcheck]
 command = "shellcheck"
 includes = ["*.sh"]
+
+[formatter.stylua]
+command = "stylua"
+includes = ["*.lua"]

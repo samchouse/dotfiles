@@ -1,7 +1,6 @@
 {
   stdenv,
   fetchFromGitHub,
-  gtk-engine-murrine,
 }:
 
 stdenv.mkDerivation {
@@ -14,8 +13,6 @@ stdenv.mkDerivation {
     rev = "d44d76dc488bbe9588c065eacd7422a9333b1428";
     sha256 = "sha256-F+9zXXyCUVtNmuP8I42bPO1AgaC8kgoFM9IWGONSN7Y=";
   };
-
-  propagatedUserEnvPkgs = [ gtk-engine-murrine ];
 
   installPhase = ''
     runHook preInstall

@@ -22,7 +22,13 @@
             output_name = "0";
             global_prep_cmd = builtins.toJSON [
               {
-                do = "sh -c \"hyprctl keyword monitor VIRT-1,\${SUNSHINE_CLIENT_WIDTH}x\${SUNSHINE_CLIENT_HEIGHT}@\${SUNSHINE_CLIENT_FPS},5120x0,1\"";
+                do =
+                  let
+                    setup-monitor = pkgs.writeShellScriptBin "setup-monitor" ''
+                      hyprctl eval "hl.monitor({ output = 'VIRT-1', mode = \"''${SUNSHINE_CLIENT_WIDTH}x''${SUNSHINE_CLIENT_HEIGHT}@''${SUNSHINE_CLIENT_FPS}\" })"
+                    '';
+                  in
+                  "${setup-monitor}/bin/setup-monitor";
               }
               {
                 do = "bash -c \"pkill gjs || true; ags run & disown\"";

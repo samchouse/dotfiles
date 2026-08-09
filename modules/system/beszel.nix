@@ -42,7 +42,7 @@
       };
 
       virtualisation.oci-containers.containers.podman-socket-proxy = {
-        image = "tecnativa/docker-socket-proxy:v0.4.2";
+        image = "tecnativa/docker-socket-proxy:v0.5.0";
         volumes = [ "/run/podman/podman.sock:/var/run/docker.sock:ro" ];
         ports = [ "2375:2375" ];
         environment.CONTAINERS = "1";

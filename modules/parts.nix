@@ -19,6 +19,7 @@
           biome
           shfmt
           nixfmt
+          stylua
           treefmt
           shellcheck
           typescript
