@@ -5,7 +5,7 @@
     nixos = { config, ... }: {
       virtualisation.oci-containers.containers = {
         filebrowser = {
-          image = "gtstef/filebrowser:1.5.1-stable";
+          image = "gtstef/filebrowser:2.0.1-beta";
           ports = [ "3924:80" ];
           volumes = [
             "/srv:/srv"

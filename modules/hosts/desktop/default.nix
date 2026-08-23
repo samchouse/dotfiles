@@ -21,6 +21,7 @@
       den.aspects.beszel
       den.aspects.openrgb
       den.aspects.hardware
+      den.aspects.importer
       den.aspects.hyprland
       den.aspects.services
       den.aspects.pocket-id

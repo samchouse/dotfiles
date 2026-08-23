@@ -42,7 +42,7 @@
                 done
               }
 
-              ${pkgs.ripgrep}/bin/rg 'image = "' "$NH_FLAKE" --json | jq -cM 'select(.type | contains("match"))' | ${pkgs.ripgrep}/bin/rg '\s+image =' | while IFS= read -r line; do
+              ${pkgs.ripgrep}/bin/rg --glob '!_**' 'image = "' "$NH_FLAKE" --json | jq -cM 'select(.type | contains("match"))' | ${pkgs.ripgrep}/bin/rg '\s+image =' | while IFS= read -r line; do
                 echo "$line" | jq -r .data.lines.text | sed -E 's/.*image = "(.*)".*/\1/' | tr -d '\n' | sed 's/$/\n/' | while IFS=: read -r name version; do
                   echo -e "\n\033[1;34m📦 Checking for updates: \033[1;36m$name\033[0m (\033[33m$version\033[0m)"
 
@@ -178,10 +178,10 @@
           ];
 
           shellAliases = {
-            c = lib.mkIf pkgs.stdenv.isLinux "code-insiders";
-            ts = lib.mkIf pkgs.stdenv.isLinux "tmux-session";
-            rb = if pkgs.stdenv.isLinux then "${rebuild}/bin/rebuild" else "nh darwin switch";
-            to-windows = lib.mkIf pkgs.stdenv.isLinux "sudo systemctl reboot --boot-loader-entry=auto-windows";
+            c = lib.mkIf pkgs.stdenv.hostPlatform.isLinux "code-insiders";
+            ts = lib.mkIf pkgs.stdenv.hostPlatform.isLinux "tmux-session";
+            rb = if pkgs.stdenv.hostPlatform.isLinux then "${rebuild}/bin/rebuild" else "nh darwin switch";
+            to-windows = lib.mkIf pkgs.stdenv.hostPlatform.isLinux "sudo systemctl reboot --boot-loader-entry=auto-windows";
           };
 
           oh-my-zsh = {
@@ -190,7 +190,7 @@
           };
 
           initContent = lib.mkMerge [
-            (lib.mkIf pkgs.stdenv.isLinux (
+            (lib.mkIf pkgs.stdenv.hostPlatform.isLinux (
               lib.mkBefore ''
                 tmux-session() {
                   TMUX_TMPDIR=/run/user/1000 ${pkgs.tmux}/bin/tmux new-session -A -s "$(basename "$PWD")" "$@"
@@ -212,7 +212,7 @@
                 export SSH_AUTH_SOCK=''${SSH_AUTH_SOCK:-/home/sam/.1password/agent.sock}
               ''
             ))
-            (lib.mkIf pkgs.stdenv.isLinux (
+            (lib.mkIf pkgs.stdenv.hostPlatform.isLinux (
               lib.mkBefore ''
                 if [[ "$ZED_TERM" == "true" || "$TERM_PROGRAM" == "vscode" ]]; then
                   while true; do
@@ -223,14 +223,10 @@
             ))
             # https://github.com/atuinsh/atuin/issues/3606
             (lib.mkBefore ''
-              if [[ -z "''${ATUIN_PTY_PROXY_ACTIVE:-}" ]]; then
-                export ATUIN_PTY_PROXY_ACTIVE=1
-                export ATUIN_PTY_PROXY_TMUX=""
-                ${pkgs.atuin}/bin/atuin pty-proxy --shell "''$(command -v ${pkgs.zsh}/bin/zsh)"
-              fi
+              eval "$(atuin pty-proxy init zsh | sed 's|--shell "''${_atuin_pty_proxy_zsh#-}"|--shell "$(command -v zsh)"|')"
             '')
 
-            (lib.mkIf pkgs.stdenv.isLinux ''
+            (lib.mkIf pkgs.stdenv.hostPlatform.isLinux ''
               function y() {
                 local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
                 yazi "$@" --cwd-file="$tmp"
@@ -242,7 +238,7 @@
 
               export ARCCODEX_API_KEY=$(cat /run/secrets/arccodex_api_key)
             '')
-            ((lib.mkIf pkgs.stdenv.isDarwin) ''
+            ((lib.mkIf pkgs.stdenv.hostPlatform.isDarwin) ''
               if [ -n "''${GHOSTTY_RESOURCES_DIR}" ]; then
                 builtin source "''${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration"
               fi

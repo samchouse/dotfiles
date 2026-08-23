@@ -3,6 +3,7 @@
     includes = [
       den.aspects.nh
       den.aspects.tmux
+      den.aspects.sure
       den.aspects.podman
       den.aspects.homebrew
       den.aspects.tailscale
@@ -34,6 +35,7 @@
         copyparty
         postgresql
         cloudflared
+        compose2nix
         (pkgs.writeShellScriptBin "dua" "${pkgs.dua}/bin/dua -i /tmp -i /mnt/secondary $@")
         (pkgs.writeShellScriptBin "upnp" ''
           case $1 in

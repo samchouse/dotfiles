@@ -1,14 +1,16 @@
 server:
-    disableWebDAV: true
     cacheDir: /srv/cache
-    externalUrl: "http://srv.xenfo.dev"
-    internalUrl: "http://host.containers.internal:3924"
     sources:
         - path: /srv/share
           name: "Shared Files"
           config:
               defaultEnabled: true
               useLogicalSize: true
+
+http:
+    externalUrl: "https://srv.xenfo.dev"
+    internalUrl: "http://host.containers.internal:3924"
+    disableWebDAV: true
 
 integrations:
     office:
