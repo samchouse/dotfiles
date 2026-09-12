@@ -8,9 +8,9 @@ server:
               useLogicalSize: true
 
 http:
+    trustProxyHeaders: true
     externalUrl: "https://srv.xenfo.dev"
     internalUrl: "http://host.containers.internal:3924"
-    disableWebDAV: true
 
 integrations:
     office:

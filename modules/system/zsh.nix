@@ -235,8 +235,6 @@
                 fi
                 rm -f -- "$tmp"
               }
-
-              export ARCCODEX_API_KEY=$(cat /run/secrets/arccodex_api_key)
             '')
             ((lib.mkIf pkgs.stdenv.hostPlatform.isDarwin) ''
               if [ -n "''${GHOSTTY_RESOURCES_DIR}" ]; then

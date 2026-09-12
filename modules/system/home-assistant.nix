@@ -3,7 +3,7 @@
     nixos = {
       virtualisation.oci-containers.containers = {
         homeassistant = {
-          image = "ghcr.io/home-assistant/home-assistant:2026.8.3";
+          image = "ghcr.io/home-assistant/home-assistant:2026.9.2";
           volumes = [
             "home-assistant:/config"
             "/run/dbus:/run/dbus:ro"

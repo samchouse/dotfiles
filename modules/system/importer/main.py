@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import datetime
 from typing import Annotated, Literal, cast
+from zoneinfo import ZoneInfo
 
 import requests
 from fastapi import Depends, FastAPI, HTTPException
@@ -57,7 +58,9 @@ class Item(BaseModel):
     @property
     def timestamp(self) -> str | None:
         return (
-            self.watched_at.strftime("%Y-%m-%dT%H:%M:%SZ") if self.watched_at else None
+            self.watched_at.astimezone(ZoneInfo("America/New_York")).isoformat()
+            if self.watched_at
+            else None
         )
 
 
