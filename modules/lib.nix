@@ -1,8 +1,12 @@
-{
-  lib,
-  inputs,
-  ...
-}:
+{ inputs, ... }:
+let
+  config = {
+    cudaSupport = true;
+    allowUnfree = true;
+  };
+
+  mkPkgsConfig = system: { inherit system config; };
+in
 {
   flake-file.inputs = {
     nixpkgs-staging.url = "github:nixos/nixpkgs/staging-next";
@@ -14,30 +18,22 @@
     };
   };
 
-  flake.lib.mkNixpkgs =
-    let
-      config = {
-        cudaSupport = true;
-        allowUnfree = true;
-      };
+  flake.lib.mkPkgsConfig = mkPkgsConfig;
+  flake.lib.mkNixpkgs = {
+    inherit config;
+    overlays = [
+      (
+        final: prev:
+        let
+          system = prev.stdenv.hostPlatform.system;
+        in
+        {
+          age-plugin-op = inputs.age-plugin-op.defaultPackage.${system};
 
-      pkgs-config = system: { inherit system config; };
-    in
-    {
-      inherit config;
-      overlays = [
-        (
-          final: prev:
-          let
-            system = prev.stdenv.hostPlatform.system;
-          in
-          {
-            age-plugin-op = inputs.age-plugin-op.defaultPackage.${system};
-
-            small = import inputs.nixpkgs-small (pkgs-config system);
-            staging = import inputs.nixpkgs-staging (pkgs-config system);
-          }
-        )
-      ];
-    };
+          small = import inputs.nixpkgs-small (mkPkgsConfig system);
+          staging = import inputs.nixpkgs-staging (mkPkgsConfig system);
+        }
+      )
+    ];
+  };
 }

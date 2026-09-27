@@ -4,7 +4,7 @@
       services = {
         sunshine = {
           enable = true;
-          package = pkgs.sunshine;
+          package = pkgs.callPackage ../../pkgs/sunshine { };
           capSysAdmin = true;
           openFirewall = true;
           applications = {

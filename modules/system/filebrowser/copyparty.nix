@@ -5,7 +5,7 @@
   };
 
   den.aspects.copyparty = {
-    nixos = { pkgs, ... }: {
+    nixos = {
       imports = [
         inputs.copyparty.nixosModules.default
       ];

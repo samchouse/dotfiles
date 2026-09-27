@@ -33,7 +33,6 @@
       environment.systemPackages = with pkgs; [
         grim
         slurp
-        t3code
         lumafly
         gparted
         quickemu

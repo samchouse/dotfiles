@@ -19,6 +19,7 @@
       den.batteries.hostname
 
       den.aspects.beszel
+      den.aspects.glance
       den.aspects.openrgb
       den.aspects.hardware
       den.aspects.importer
@@ -28,6 +29,7 @@
       den.aspects.lanzaboote
       den.aspects.networking
       den.aspects.filebrowser
+      den.aspects.aiometadata
       den.aspects.desktopPackages
     ];
 

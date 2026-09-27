@@ -5,7 +5,9 @@
         enable = true;
         package = pkgs.pocket-id;
         settings = {
+          EMAILS_VERIFIED = true;
           APP_URL = "https://id.xenfo.dev";
+          ALLOW_USER_SIGNUPS = "withToken";
           TRUSTED_PLATFORM = "CF-Connecting-IP";
         };
         credentials = {

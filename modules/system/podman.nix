@@ -10,23 +10,26 @@
         };
       };
 
-      environment.etc."containers/registries.conf".source =
-        let
-          tomlFormat = pkgs.formats.toml { };
-        in
-        lib.mkForce (
-          tomlFormat.generate "registries.conf" {
-            unqualified-search-registries = [
-              "docker.io"
-              "quay.io"
-            ];
+      environment = {
+        systemPackages = with pkgs; [ podman-compose ];
+        etc."containers/registries.conf".source =
+          let
+            tomlFormat = pkgs.formats.toml { };
+          in
+          lib.mkForce (
+            tomlFormat.generate "registries.conf" {
+              unqualified-search-registries = [
+                "docker.io"
+                "quay.io"
+              ];
 
-            registry = [
-              { location = "docker.io"; }
-              { location = "quay.io"; }
-            ];
-          }
-        );
+              registry = [
+                { location = "docker.io"; }
+                { location = "quay.io"; }
+              ];
+            }
+          );
+      };
 
       networking.firewall.trustedInterfaces = [ "podman0" ];
     };

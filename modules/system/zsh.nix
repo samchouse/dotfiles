@@ -42,7 +42,7 @@
                 done
               }
 
-              ${pkgs.ripgrep}/bin/rg --glob '!_**' 'image = "' "$NH_FLAKE" --json | jq -cM 'select(.type | contains("match"))' | ${pkgs.ripgrep}/bin/rg '\s+image =' | while IFS= read -r line; do
+              ${pkgs.ripgrep}/bin/rg --glob '!_**' --glob '!aiometadata.nix' 'image = "' "$NH_FLAKE" --json | jq -cM 'select(.type | contains("match"))' | ${pkgs.ripgrep}/bin/rg '\s+image =' | while IFS= read -r line; do
                 echo "$line" | jq -r .data.lines.text | sed -E 's/.*image = "(.*)".*/\1/' | tr -d '\n' | sed 's/$/\n/' | while IFS=: read -r name version; do
                   echo -e "\n\033[1;34m📦 Checking for updates: \033[1;36m$name\033[0m (\033[33m$version\033[0m)"
 
@@ -221,10 +221,6 @@
                 fi
               ''
             ))
-            # https://github.com/atuinsh/atuin/issues/3606
-            (lib.mkBefore ''
-              eval "$(atuin pty-proxy init zsh | sed 's|--shell "''${_atuin_pty_proxy_zsh#-}"|--shell "$(command -v zsh)"|')"
-            '')
 
             (lib.mkIf pkgs.stdenv.hostPlatform.isLinux ''
               function y() {
@@ -263,6 +259,17 @@
           };
           atuin = {
             enable = true;
+            package = pkgs.atuin.overrideAttrs (
+              old: final: {
+                version = "18.23.0";
+                src = pkgs.fetchFromGitHub {
+                  owner = "atuinsh";
+                  repo = "atuin";
+                  tag = "v${final.version}";
+                  hash = "sha256-kz8qdgxg79jX3hfPi7EY9c9SmFqUK6lWnMTLb3TKDQQ=";
+                };
+              }
+            );
             settings.enter_accept = true;
             daemon.enable = host.class == "nixos";
           };

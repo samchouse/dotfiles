@@ -7,6 +7,7 @@ let
 
   pocketIdUnits = [ "pocket-id.service" ];
   cloudflaredUnits = [ "podman-cloudflared.service" ];
+  aiometadataUnits = [ "podman-aiometadata.service" ];
   filebrowserUnits = [
     "podman-eurooffice.service"
     "podman-filebrowser.service"
@@ -23,6 +24,12 @@ in
   sops.secrets."fb_oidc_client_secret" = util.mkOpts filebrowserUnits;
   sops.secrets."eurooffice_jwt_secret" = util.mkOpts filebrowserUnits;
 
+  sops.secrets."aiom_admin_key" = util.mkOpts aiometadataUnits;
+  sops.secrets."aiom_tmdb_key" = util.mkOpts aiometadataUnits;
+  sops.secrets."aiom_tvdb_key" = util.mkOpts aiometadataUnits;
+  sops.secrets."aiom_oidc_client_id" = util.mkOpts aiometadataUnits;
+  sops.secrets."aiom_oidc_client_secret" = util.mkOpts aiometadataUnits;
+
   sops.templates."cloudflared.env".content = ''
     TUNNEL_TOKEN=${config.sops.placeholder.cf_tunnel_token}
   '';
@@ -34,5 +41,13 @@ in
     FILEBROWSER_OIDC_CLIENT_ID=${config.sops.placeholder."fb_oidc_client_id"}
     FILEBROWSER_OIDC_CLIENT_SECRET=${config.sops.placeholder."fb_oidc_client_secret"}
     FILEBROWSER_ONLYOFFICE_SECRET=${config.sops.placeholder."eurooffice_jwt_secret"}
+  '';
+
+  sops.templates."aiometadata.env".content = ''
+    ADMIN_KEY=${config.sops.placeholder."aiom_admin_key"}
+    BUILT_IN_TMDB_API_KEY=${config.sops.placeholder."aiom_tmdb_key"}
+    BUILT_IN_TVDB_API_KEY=${config.sops.placeholder."aiom_tvdb_key"}
+    OIDC_CLIENT_ID=${config.sops.placeholder."aiom_oidc_client_id"}
+    OIDC_CLIENT_SECRET=${config.sops.placeholder."aiom_oidc_client_secret"}
   '';
 }
