@@ -4,7 +4,18 @@
       services = {
         sunshine = {
           enable = true;
-          package = pkgs.callPackage ../../pkgs/sunshine { };
+          package = pkgs.sunshine.overrideAttrs (old: rec {
+            version = "2026.1018.5342";
+            src = old.src.overrideAttrs (_: {
+              hash = "sha256-AOJCHmDBFnGuilfzqg3+FWmuKaZhO7D7fF5dX14Q93k=";
+            });
+            ui = old.ui.overrideAttrs (_: {
+              npmDeps = pkgs.fetchNpmDeps {
+                inherit src;
+                hash = "sha256-eOhQxVEV4Nhps1WzN4igI8xdOjXPvGn/fOFCvGemKjc=";
+              };
+            });
+          });
           capSysAdmin = true;
           openFirewall = true;
           applications = {
@@ -20,6 +31,7 @@
           };
           settings = {
             output_name = "0";
+            system_tray = false;
             global_prep_cmd = builtins.toJSON [
               {
                 do =

@@ -5,7 +5,7 @@
     nixos = { config, ... }: {
       virtualisation.oci-containers.containers = {
         filebrowser = {
-          image = "gtstef/filebrowser:2.0.9-beta";
+          image = "gtstef/filebrowser:2.1.3-beta";
           ports = [ "3924:80" ];
           volumes = [
             "/srv:/srv"
@@ -20,7 +20,7 @@
         };
 
         eurooffice = {
-          image = "ghcr.io/euro-office/documentserver:v9.3.4";
+          image = "ghcr.io/euro-office/documentserver:v9.3.7";
           ports = [ "9880:80" ];
           autoStart = false;
           environmentFiles = [ config.sops.templates."eurooffice.env".path ];

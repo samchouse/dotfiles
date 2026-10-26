@@ -60,12 +60,9 @@
           "nvidia_uvm"
         ];
 
-        initrd = {
-          systemd.enable = true;
-          luks.devices."luks-68f12c7e-fc53-49de-9b3d-91ab69f6c2a4" = {
-            allowDiscards = true;
-            bypassWorkqueues = true;
-          };
+        initrd.luks.devices."luks-68f12c7e-fc53-49de-9b3d-91ab69f6c2a4" = {
+          allowDiscards = true;
+          bypassWorkqueues = true;
         };
 
         loader.efi.canTouchEfiVariables = true;

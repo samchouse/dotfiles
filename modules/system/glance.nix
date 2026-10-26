@@ -1,22 +1,8 @@
 {
   den.aspects.glance = {
-    nixos = { pkgs, ... }: {
+    nixos = {
       services.glance = {
         enable = true;
-        package = pkgs.glance.overrideAttrs (
-          old: final: {
-            version = "0.8.6";
-
-            src = pkgs.fetchFromGitHub {
-              owner = "glanceapp";
-              repo = "glance";
-              tag = "v${final.version}";
-              hash = "sha256-2WFX1Gca7ign9i1zOQ9lRdtOSGq9QG33vIA5QTnq9E8=";
-            };
-
-            vendorHash = "sha256-a92V/duqvrWEb8QSJLA5rHYYZCcJ4fBC962SEr4FJDA=";
-          }
-        );
 
         settings = {
           server.host = "0.0.0.0";

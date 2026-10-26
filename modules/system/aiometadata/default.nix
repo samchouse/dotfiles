@@ -18,6 +18,7 @@
         };
 
         aiometadata = {
+          autoStart = false;
           image = "aiometadata:latest";
           ports = [ "3232:3232" ];
           dependsOn = [ "aiometadata_redis" ];

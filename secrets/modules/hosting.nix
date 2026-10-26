@@ -14,7 +14,8 @@ let
   ];
 in
 {
-  systemd.services.sops-secrets.wants = filebrowserUnits ++ pocketIdUnits ++ cloudflaredUnits;
+  systemd.services.sops-secrets.wants =
+    filebrowserUnits ++ pocketIdUnits ++ cloudflaredUnits ++ aiometadataUnits;
 
   sops.secrets."cf_tunnel_token" = util.mkOpts cloudflaredUnits;
   sops.secrets."pocketid_maxmind_key" = util.mkOpts pocketIdUnits;
